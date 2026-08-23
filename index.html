@@ -621,7 +621,10 @@ function loadNames(){
     });
 }
 
-loadNames();
+loadSupabaseData().then(data=>{
+  window.__supabaseData = data;
+  loadNames();
+});
 document.getElementById('search').addEventListener('input',e=>{
  const q=e.target.value.toLowerCase();
  document.querySelectorAll('#list tr:not(.gen)').forEach(r=>r.classList.toggle('hidden',q && !r.dataset.name.includes(q)));
