@@ -521,9 +521,24 @@ function makeRow(p){
  <td><input class="cb" type="checkbox" aria-label="Tenho carta de ${pretty(p.name)}" data-k="${key(p.id,'card')}" ${hasCard ? 'checked' : ''}></td>
  <td><input class="cb" type="checkbox" aria-label="Tenho Full Art de ${pretty(p.name)}" data-k="${key(p.id,'fa')}" ${hasFullArt ? 'checked' : ''}></td>`;
 
- tr.querySelectorAll('.cb').forEach(c=>{
-   c.addEventListener('change',()=>{updateCounts();});
- });
+tr.querySelectorAll('.cb').forEach(c=>{
+   c.addEventListener('change',async ()=>{
+     updateCounts();
+
+     const type = c.dataset.k.endsWith('-fa') ? 'full_art' : 'card';
+     const value = c.checked;
+
+     const { error } = await supabaseClient
+       .from('pokemon_cards')
+       .update({ [type]: value })
+       .eq('pokemon_id', p.id);
+
+     if(error){
+       console.error('Erro ao guardar no Supabase:', error);
+       alert('Não foi possível guardar: ' + error.message);
+     }
+   });
+});
 
  return tr;
 }
