@@ -509,82 +509,136 @@ if(error){
   return data || [];
 }
 function makeRow(p){
- const tr=document.createElement('tr');
- tr.dataset.name=p.name.toLowerCase();
+  const tr = document.createElement('tr');
+  tr.dataset.name = p.name.toLowerCase();
 
- const supa = window.__supabaseData?.find(x => Number(x.pokemon_id) === Number(p.id));
+  const supa = window.__supabaseData?.find(
+    x => Number(x.pokemon_id) === Number(p.id)
+  );
 
- const hasCard = supa?.card === true;
- const hasFullArt = supa?.full_art === true;
+  const hasCard = supa?.card === true;
+  const hasFullArt = supa?.full_art === true;
 
- tr.innerHTML=`<td>${String(p.id).padStart(4,'0')}</td><td>${pretty(p.name)}</td>
- <td><input class="cb" type="checkbox" aria-label="Tenho carta de ${pretty(p.name)}" data-k="${key(p.id,'card')}" ${hasCard ? 'checked' : ''}></td>
- <td><input class="cb" type="checkbox" aria-label="Tenho Full Art de ${pretty(p.name)}" data-k="${key(p.id,'fa')}" ${hasFullArt ? 'checked' : ''}></td>`;
+  tr.innerHTML = `
+    <td>${String(p.id).padStart(4,'0')}</td>
+    <td>${pretty(p.name)}</td>
 
-tr.querySelectorAll('.cb').forEach(c=>{
-  c.addEventListener('change',async ()=>{
-    console.log('CLIQUE DETETADO', p.id, c.checked);
+    <td>
+      <input
+        class="cb"
+        type="checkbox"
+        aria-label="Tenho carta de ${pretty(p.name)}"
+        data-k="${key(p.id,'card')}"
+        ${hasCard ? 'checked' : ''}
+      >
+    </td>
 
-    const type = c.dataset.k.endsWith('-fa') ? 'full_art' : 'card';
-    const value = c.checked;
+    <td>
+      <input
+        class="cb"
+        type="checkbox"
+        aria-label="Tenho Full Art de ${pretty(p.name)}"
+        data-k="${key(p.id,'fa')}"
+        ${hasFullArt ? 'checked' : ''}
+      >
+    </td>
+  `;
 
-    const supa = window.__supabaseData?.find(
-      x => Number(x.pokemon_id) === Number(p.id)
-    );
+  tr.querySelectorAll('.cb').forEach(c => {
 
-    const cardValue = type === 'card'
-      ? value
-      : (supa?.card ?? false);
+    c.addEventListener('change', async () => {
 
-    const fullArtValue = type === 'full_art'
-      ? value
-      : (supa?.full_art ?? false);
+      console.log('CLIQUE DETETADO', p.id, c.checked);
 
-    const { error } = await supabaseClient
-      .from('pokemon_cards')
-      .upsert({
-        pokemon_id: p.id,
-        card: cardValue,
-        full_art: fullArtValue
-      }, {
-        onConflict: 'pokemon_id'
-      });
+      const type = c.dataset.k.endsWith('-fa')
+        ? 'full_art'
+        : 'card';
 
-    if(error){
-      console.error('Erro ao guardar no Supabase:', error);
-      alert('Não foi possível guardar: ' + error.message);
-      return;
-    }
+      const value = c.checked;
 
-    // Atualizar os dados locais depois de o Supabase confirmar
-    const existing = window.__supabaseData?.find(
-      x => Number(x.pokemon_id) === Number(p.id)
-    );
+      const supa = window.__supabaseData?.find(
+        x => Number(x.pokemon_id) === Number(p.id)
+      );
 
-    if(existing){
-      existing.card = cardValue;
-      existing.full_art = fullArtValue;
-    } else {
-      window.__supabaseData.push({
-        pokemon_id: p.id,
-        card: cardValue,
-        full_art: fullArtValue
-      });
-    }
+      const cardValue = type === 'card'
+        ? value
+        : (supa?.card ?? false);
 
-    // ATUALIZA O PROGRESSO DEPOIS DA ALTERAÇÃO
-    updateCounts();
+      const fullArtValue = type === 'full_art'
+        ? value
+        : (supa?.full_art ?? false);
 
-    console.log(
-      'SUPABASE + CONTADORES ATUALIZADOS:',
-      p.id,
-      cardValue,
-      fullArtValue
-    );
+
+      // ==============================
+      // GUARDAR NO SUPABASE
+      // ==============================
+
+      const { error } = await supabaseClient
+        .from('pokemon_cards')
+        .upsert({
+          pokemon_id: p.id,
+          card: cardValue,
+          full_art: fullArtValue
+        }, {
+          onConflict: 'pokemon_id'
+        });
+
+
+      if(error){
+        console.error('Erro ao guardar no Supabase:', error);
+
+        alert(
+          'Não foi possível guardar: ' +
+          error.message
+        );
+
+        return;
+      }
+
+
+      // ==============================
+      // ATUALIZAR MEMÓRIA LOCAL
+      // ==============================
+
+      const existing = window.__supabaseData?.find(
+        x => Number(x.pokemon_id) === Number(p.id)
+      );
+
+      if(existing){
+
+        existing.card = cardValue;
+        existing.full_art = fullArtValue;
+
+      } else {
+
+        window.__supabaseData.push({
+          pokemon_id: p.id,
+          card: cardValue,
+          full_art: fullArtValue
+        });
+
+      }
+
+
+      // ==============================
+      // ATUALIZAR PROGRESSO
+      // ==============================
+
+      updateCounts();
+
+
+      console.log(
+        'SUPABASE + CONTADORES ATUALIZADOS:',
+        p.id,
+        cardValue,
+        fullArtValue
+      );
+
+    });
+
   });
-});
 
-return tr;
+  return tr;
 }
 const genRanges=[
 {label:'GEN 1',min:1,max:151,name:'Kanto'},
