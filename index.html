@@ -566,20 +566,41 @@ const genRanges=[
 {label:'GEN 8',min:810,max:905,name:'Galar / Hisui'},
 {label:'GEN 9',min:906,max:1025,name:'Paldea'}];
 function updateCounts(){
- const all=window.__all||[];
- const owned=id=>localStorage.getItem(key(id,'card'))==='1';
- const totalOwned=all.filter(p=>owned(p.id)).length;
- document.getElementById('count').textContent=`${String(totalOwned).padStart(3,'0')}/1025 Pokémon`;
- const box=document.getElementById('genCounts');
- if(!box)return;
- box.innerHTML=genRanges.map(g=>{
-  const total=g.max-g.min+1;
-  const have=all.filter(p=>p.id>=g.min&&p.id<=g.max&&owned(p.id)).length;
-  const pct=((have/total)*100).toFixed(1);
-  return `<div class="gen-badge">${g.label} · ${String(have).padStart(3,'0')}/${total}<small>${g.name} · ${pct}%</small></div>`;
+ const all = window.__all || [];
+ const supaData = window.__supabaseData || [];
+
+ const owned = id => {
+   const p = supaData.find(x => Number(x.pokemon_id) === Number(id));
+   return p?.card === true;
+ };
+
+ const totalOwned = all.filter(p => owned(p.id)).length;
+
+ document.getElementById('count').textContent =
+   `${String(totalOwned).padStart(3,'0')}/1025 Pokémon`;
+
+ const box = document.getElementById('genCounts');
+ if(!box) return;
+
+ box.innerHTML = genRanges.map(g => {
+   const total = g.max - g.min + 1;
+
+   const have = all.filter(p =>
+     p.id >= g.min &&
+     p.id <= g.max &&
+     owned(p.id)
+   ).length;
+
+   const pct = ((have / total) * 100).toFixed(1);
+
+   return `
+     <div class="gen-count">
+       <strong>${g.label} · ${g.name}</strong>
+       <span>${have}/${total} (${pct}%)</span>
+     </div>
+   `;
  }).join('');
 }
-
 function render(data){
  const tbody=document.getElementById('list'); tbody.innerHTML='';
  let lastGen='';
