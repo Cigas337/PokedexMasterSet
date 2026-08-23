@@ -545,6 +545,20 @@ tr.querySelectorAll('.cb').forEach(c=>{
       }, {
         onConflict: 'pokemon_id'
       });
+    const existing = window.__supabaseData?.find(
+      x => Number(x.pokemon_id) === Number(p.id)
+    );
+
+    if(existing){
+      existing.card = cardValue;
+      existing.full_art = fullArtValue;
+    } else {
+      window.__supabaseData.push({
+        pokemon_id: p.id,
+        card: cardValue,
+        full_art: fullArtValue
+      });
+    }
 
     if(error){
       console.error('Erro ao guardar no Supabase:', error);
