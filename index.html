@@ -523,6 +523,7 @@ function makeRow(p){
 
 tr.querySelectorAll('.cb').forEach(c=>{
   c.addEventListener('change',async ()=>{
+   console.log('CLIQUE DETETADO', p.id, c.checked);
     updateCounts();
 
     const type = c.dataset.k.endsWith('-fa') ? 'full_art' : 'card';
