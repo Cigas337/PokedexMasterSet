@@ -529,9 +529,13 @@ tr.querySelectorAll('.cb').forEach(c=>{
      const value = c.checked;
 
      const { error } = await supabaseClient
-       .from('pokemon_cards')
-       .update({ [type]: value })
-       .eq('pokemon_id', p.id);
+  .from('pokemon_cards')
+  .upsert({
+    pokemon_id: p.id,
+    [type]: value
+  }, {
+    onConflict: 'pokemon_id'
+  });
 
      if(error){
        console.error('Erro ao guardar no Supabase:', error);
