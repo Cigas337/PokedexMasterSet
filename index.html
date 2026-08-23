@@ -639,15 +639,36 @@ function refreshTypeRows(ids){
 
 async function loadSupabaseData(){
   setSyncStatus('saving','A sincronizar…');
-  const {data,error}=await supabaseClient.from('pokemon_cards').select('pokemon_id, card, full_art');
-  if(error){
-    console.error('Erro ao carregar Supabase:',error);
+
+  // v8: a escolha da carta concreta e a carta principal também vivem no Supabase.
+  // Se a coluna ainda não tiver sido criada, mantemos a Pokédex funcional e avisamos.
+  let result=await supabaseClient.from('pokemon_cards').select('pokemon_id, card, full_art, card_details');
+  if(result.error){
+    const msg=String(result.error.message||'');
+    const missingCardDetails=/card_details|column/i.test(msg);
+    if(missingCardDetails){
+      console.warn('Supabase ainda sem card_details. A usar modo compatibilidade:',result.error);
+      window.__cardDetailsCloudReady=false;
+      const fallback=await supabaseClient.from('pokemon_cards').select('pokemon_id, card, full_art');
+      if(fallback.error){
+        console.error('Erro ao carregar Supabase:',fallback.error);
+        setSyncStatus('error','Erro de sincronização');
+        alert('ERRO SUPABASE: '+fallback.error.message);
+        return [];
+      }
+      setSyncStatus('error','Falta ativar sync das cartas');
+      return (fallback.data||[]).map(r=>({...r,card_details:null}));
+    }
+
+    console.error('Erro ao carregar Supabase:',result.error);
     setSyncStatus('error','Erro de sincronização');
-    alert('ERRO SUPABASE: '+error.message);
+    alert('ERRO SUPABASE: '+result.error.message);
     return [];
   }
+
+  window.__cardDetailsCloudReady=true;
   setSyncStatus('synced','Sincronizado');
-  return data||[];
+  return result.data||[];
 }
 
 
@@ -777,9 +798,20 @@ function firstPartner30thCardFor(pokemonId){
   };
 }
 
-const CARD_DETAIL_STORE_KEY='pokedexxl-specific-card-collection-v2'; // mantém os dados da v2
+const CARD_DETAIL_STORE_KEY='pokedexxl-specific-card-collection-v2'; // cache local / compatibilidade
 let CARD_DETAIL_STORE=null;
 
+function emptyCardDetails(){ return {owned:{},featured:null}; }
+function normalizeCardDetails(value){
+  const d=(value&&typeof value==='object'&&!Array.isArray(value))?value:{};
+  const owned=(d.owned&&typeof d.owned==='object'&&!Array.isArray(d.owned))?d.owned:{};
+  const featured=d.featured!=null?String(d.featured):null;
+  return {owned:{...owned},featured:featured&&owned[featured]?featured:null};
+}
+function hasMeaningfulCardDetails(value){
+  const d=normalizeCardDetails(value);
+  return Object.keys(d.owned).length>0 || !!d.featured;
+}
 function loadCardDetailStore(){
   if(CARD_DETAIL_STORE) return CARD_DETAIL_STORE;
   try{
@@ -795,8 +827,8 @@ function saveCardDetailStore(){
 function pokemonCardDetail(id,create=false){
   const store=loadCardDetailStore();
   const k=String(Number(id));
-  if(!store[k]&&create) store[k]={owned:{},featured:null};
-  if(store[k]&&(!store[k].owned||typeof store[k].owned!=='object')) store[k].owned={};
+  if(!store[k]&&create) store[k]=emptyCardDetails();
+  if(store[k]) store[k]=normalizeCardDetails(store[k]);
   return store[k]||null;
 }
 function cardSnapshot(card){
@@ -821,7 +853,62 @@ function featuredCardFor(pokemonId){
   return d?.featured ? (d.owned?.[d.featured]||null) : null;
 }
 function ownedSpecificCount(pokemonId){ return Object.keys(pokemonCardDetail(pokemonId)?.owned||{}).length; }
-function setSpecificCardOwned(pokemonId,card,owned,{makeFeatured=true}={}){
+
+function applyCloudCardDetailsRow(row,{save=true}={}){
+  if(!row?.pokemon_id) return;
+  const store=loadCardDetailStore();
+  const k=String(Number(row.pokemon_id));
+  store[k]=normalizeCardDetails(row.card_details);
+  if(!hasMeaningfulCardDetails(store[k])) delete store[k];
+  if(save) saveCardDetailStore();
+}
+
+async function persistCardDetails(pokemonId){
+  const id=Number(pokemonId);
+  const details=normalizeCardDetails(pokemonCardDetail(id,true));
+  saveCardDetailStore();
+
+  if(window.__cardDetailsCloudReady===false){
+    setSyncStatus('error','Carta principal só neste dispositivo');
+    return false;
+  }
+
+  const before=supaFor(id)||{card:false,full_art:false};
+  setSyncStatus('saving','A sincronizar carta principal…');
+  const {data,error}=await supabaseClient.from('pokemon_cards').upsert({
+    pokemon_id:id,
+    card:before.card===true,
+    full_art:before.full_art===true,
+    card_details:details
+  },{onConflict:'pokemon_id'}).select('pokemon_id, card, full_art, card_details').single();
+
+  if(error){
+    console.error('Erro ao sincronizar carta específica:',error);
+    if(/card_details|column/i.test(String(error.message||''))) window.__cardDetailsCloudReady=false;
+    setSyncStatus('error','Carta principal só neste dispositivo');
+    return false;
+  }
+
+  window.__cardDetailsCloudReady=true;
+  const existing=supaFor(id);
+  if(existing){
+    existing.card=data?.card===true;
+    existing.full_art=data?.full_art===true;
+    existing.card_details=normalizeCardDetails(data?.card_details||details);
+  }else{
+    window.__supabaseData.push({
+      pokemon_id:id,
+      card:data?.card===true,
+      full_art:data?.full_art===true,
+      card_details:normalizeCardDetails(data?.card_details||details)
+    });
+  }
+  applyCloudCardDetailsRow({pokemon_id:id,card_details:data?.card_details||details});
+  setSyncStatus('synced','Sincronizado');
+  return true;
+}
+
+async function setSpecificCardOwned(pokemonId,card,owned,{makeFeatured=true}={}){
   const d=pokemonCardDetail(pokemonId,true);
   const id=String(card.id);
   if(owned){
@@ -832,20 +919,67 @@ function setSpecificCardOwned(pokemonId,card,owned,{makeFeatured=true}={}){
     if(d.featured===id) d.featured=null;
   }
   saveCardDetailStore();
+  return persistCardDetails(pokemonId);
 }
-function setFeaturedSpecificCard(pokemonId,card){
+async function setFeaturedSpecificCard(pokemonId,card){
   const d=pokemonCardDetail(pokemonId,true);
   const id=String(card.id);
   d.owned[id]=cardSnapshot(card);
   d.featured=id;
   saveCardDetailStore();
+  return persistCardDetails(pokemonId);
 }
-function clearSpecificCardsForPokemon(pokemonId){
+async function clearSpecificCardsForPokemon(pokemonId){
   const store=loadCardDetailStore();
-  delete store[String(Number(pokemonId))];
+  store[String(Number(pokemonId))]=emptyCardDetails();
   saveCardDetailStore();
+  const ok=await persistCardDetails(pokemonId);
+  if(ok){
+    delete store[String(Number(pokemonId))];
+    saveCardDetailStore();
+  }
+  return ok;
 }
 
+// Carrega as escolhas de carta principal do Supabase.
+// Se esta for a primeira utilização da v8, migra automaticamente o cache local antigo
+// para o Supabase apenas quando o servidor ainda não tiver dados para esse Pokémon.
+async function hydrateAndMigrateCardDetails(rows){
+  const local=loadCardDetailStore();
+  const migrations=[];
+  for(const row of rows||[]){
+    const id=Number(row.pokemon_id);
+    const k=String(id);
+    const cloud=normalizeCardDetails(row.card_details);
+    const localDetails=normalizeCardDetails(local[k]);
+
+    if(hasMeaningfulCardDetails(cloud)){
+      local[k]=cloud; // servidor é a fonte de verdade
+    }else if(hasMeaningfulCardDetails(localDetails) && window.__cardDetailsCloudReady!==false){
+      // Migração transparente dos dados v7 guardados neste aparelho.
+      row.card_details=localDetails;
+      migrations.push({
+        pokemon_id:id,
+        card:row.card===true,
+        full_art:row.full_art===true,
+        card_details:localDetails
+      });
+    }else{
+      delete local[k];
+    }
+  }
+  saveCardDetailStore();
+
+  if(!migrations.length) return;
+  for(let i=0;i<migrations.length;i+=100){
+    const {error}=await supabaseClient.from('pokemon_cards').upsert(migrations.slice(i,i+100),{onConflict:'pokemon_id'});
+    if(error){
+      console.warn('Não foi possível migrar cartas específicas locais:',error);
+      if(/card_details|column/i.test(String(error.message||''))) window.__cardDetailsCloudReady=false;
+      return;
+    }
+  }
+}
 function escapeHtml(v){
   return String(v??'').replace(/[&<>'"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
 }
@@ -1365,8 +1499,8 @@ function renderModalCards(resetLimit=false,skipEnrich=false){
       const card=currentModalCards.find(c=>String(c.id)===String(btn.dataset.ownCard));
       if(!card||!currentModalPokemon) return;
       const nowOwned=isSpecificCardOwned(currentModalPokemon.id,card.id);
-      setSpecificCardOwned(currentModalPokemon.id,card,!nowOwned,{makeFeatured:!nowOwned});
       if(!nowOwned) await ensurePokemonOwnedFromSpecificCard(currentModalPokemon.id);
+      await setSpecificCardOwned(currentModalPokemon.id,card,!nowOwned,{makeFeatured:!nowOwned});
       renderCurrentPage(false);
       renderModalCards(false);
     });
@@ -1375,8 +1509,8 @@ function renderModalCards(resetLimit=false,skipEnrich=false){
     btn.addEventListener('click',async()=>{
       const card=currentModalCards.find(c=>String(c.id)===String(btn.dataset.featureCard));
       if(!card||!currentModalPokemon) return;
-      setFeaturedSpecificCard(currentModalPokemon.id,card);
       await ensurePokemonOwnedFromSpecificCard(currentModalPokemon.id);
+      await setFeaturedSpecificCard(currentModalPokemon.id,card);
       renderCurrentPage(false);
       renderModalCards(false);
     });
@@ -1444,7 +1578,10 @@ async function ensurePokemonOwnedFromSpecificCard(pokemonId){
   if(before.card===true) return true;
   setSyncStatus('saving','A guardar carta…');
   const {error}=await supabaseClient.from('pokemon_cards').upsert({
-    pokemon_id:Number(pokemonId),card:true,full_art:before.full_art===true
+    pokemon_id:Number(pokemonId),
+    card:true,
+    full_art:before.full_art===true,
+    ...(window.__cardDetailsCloudReady===false?{}:{card_details:normalizeCardDetails(pokemonCardDetail(pokemonId))})
   },{onConflict:'pokemon_id'});
   if(error){
     console.error('Erro ao sincronizar CARTA:',error);
@@ -1534,7 +1671,8 @@ function makeCard(p){
       const {error}=await supabaseClient.from('pokemon_cards').upsert({
         pokemon_id:p.id,
         card:cardValue,
-        full_art:artValue
+        full_art:artValue,
+        ...(window.__cardDetailsCloudReady===false?{}:{card_details:normalizeCardDetails(pokemonCardDetail(p.id))})
       },{onConflict:'pokemon_id'});
 
       if(error){
@@ -1548,7 +1686,7 @@ function makeCard(p){
       const existing=supaFor(p.id);
       if(existing){existing.card=cardValue;existing.full_art=artValue}
       else window.__supabaseData.push({pokemon_id:p.id,card:cardValue,full_art:artValue});
-      if(!cardValue) clearSpecificCardsForPokemon(p.id);
+      if(!cardValue) await clearSpecificCardsForPokemon(p.id);
 
       setSyncStatus('synced','Sincronizado');
       updateCounts();
@@ -1731,10 +1869,10 @@ function exportBackup(){
   const all=window.__all||[];
   const rows=all.map(p=>{
     const s=supaFor(p.id)||{};
-    return {pokemon_id:p.id,pokemon:pretty(p.name),card:s.card===true,art:s.full_art===true};
+    return {pokemon_id:p.id,pokemon:pretty(p.name),card:s.card===true,art:s.full_art===true,card_details:normalizeCardDetails(pokemonCardDetail(p.id))};
   });
   const payload={
-    format:'pokedex-xl-backup-v2',
+    format:'pokedex-xl-backup-v3',
     exported_at:new Date().toISOString(),
     total_pokemon:1025,
     art_database_version:ART_DATABASE.version,
@@ -1759,7 +1897,8 @@ async function importBackupFile(file){
       .map(r=>({
         pokemon_id:Number(r.pokemon_id),
         card:Boolean(r.card || r.art),
-        full_art:Boolean(r.art)
+        full_art:Boolean(r.art),
+        ...(window.__cardDetailsCloudReady===false?{}:{card_details:normalizeCardDetails(r.card_details)})
       }))
       .filter(r=>Number.isInteger(r.pokemon_id)&&r.pokemon_id>=1&&r.pokemon_id<=1025);
     if(!rows.length) throw new Error('O backup não contém Pokémon válidos.');
@@ -1771,11 +1910,21 @@ async function importBackupFile(file){
       const {error}=await supabaseClient.from('pokemon_cards').upsert(chunk,{onConflict:'pokemon_id'});
       if(error) throw error;
     }
-    window.__supabaseData=rows.map(r=>({pokemon_id:r.pokemon_id,card:r.card,full_art:r.full_art}));
+    window.__supabaseData=rows.map(r=>({
+      pokemon_id:r.pokemon_id,
+      card:r.card,
+      full_art:r.full_art,
+      card_details:normalizeCardDetails(r.card_details)
+    }));
     if(parsed.specific_card_collection&&typeof parsed.specific_card_collection==='object'){
       CARD_DETAIL_STORE=parsed.specific_card_collection;
-      saveCardDetailStore();
+    }else{
+      CARD_DETAIL_STORE={};
+      for(const r of rows){
+        if(hasMeaningfulCardDetails(r.card_details)) CARD_DETAIL_STORE[String(r.pokemon_id)]=normalizeCardDetails(r.card_details);
+      }
     }
+    saveCardDetailStore();
     setSyncStatus('synced','Backup restaurado');
     updateCounts();
     renderCurrentPage(false);
@@ -1798,15 +1947,32 @@ function startRealtime(){
         const existing=supaFor(id);
         if(payload.eventType==='DELETE'){
           window.__supabaseData=(window.__supabaseData||[]).filter(x=>Number(x.pokemon_id)!==id);
+          const store=loadCardDetailStore();
+          delete store[String(id)];
+          saveCardDetailStore();
         }else if(existing){
           existing.card=row.card===true;
           existing.full_art=row.full_art===true;
+          if(Object.prototype.hasOwnProperty.call(row,'card_details')){
+            existing.card_details=normalizeCardDetails(row.card_details);
+            applyCloudCardDetailsRow(row);
+          }
         }else{
-          window.__supabaseData.push({pokemon_id:id,card:row.card===true,full_art:row.full_art===true});
+          const fresh={
+            pokemon_id:id,
+            card:row.card===true,
+            full_art:row.full_art===true,
+            card_details:normalizeCardDetails(row.card_details)
+          };
+          window.__supabaseData.push(fresh);
+          if(Object.prototype.hasOwnProperty.call(row,'card_details')) applyCloudCardDetailsRow(row);
         }
         setSyncStatus('synced','Sincronizado em tempo real');
         updateCounts();
         renderCurrentPage(false);
+        if(currentModalPokemon?.id===id && document.getElementById('artModal')?.classList.contains('open')){
+          renderModalCards(false,true);
+        }
       })
       .subscribe(status=>{
         if(status==='SUBSCRIBED') setSyncStatus('synced','Sincronizado');
@@ -1837,10 +2003,12 @@ document.getElementById('artModalClose').addEventListener('click',closeArtModal)
 document.getElementById('artModal').addEventListener('click',e=>{if(e.target.id==='artModal') closeArtModal()});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElementById('artModal').classList.contains('open')) closeArtModal()});
 
-loadSupabaseData().then(data=>{
+loadSupabaseData().then(async data=>{
   window.__supabaseData=data;
+  await hydrateAndMigrateCardDetails(data);
   loadNames();
   startRealtime();
+  renderCurrentPage(false);
 });
 
 document.getElementById('search').addEventListener('input',e=>{state.search=e.target.value.trim();state.page=1;renderCurrentPage()});
