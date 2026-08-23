@@ -494,6 +494,20 @@ function genFor(id){
  return 'Geração IX · Paldea';
 }
 function key(id,type){return 'pokedexxl-'+id+'-'+type}
+async function loadSupabaseData(){
+  const { data, error } = await supabaseClient
+    .from('pokemon_cards')
+    .select('pokemon_id, card, full_art');
+
+  if(error){
+    console.error('Erro ao carregar Supabase:', error);
+    alert('ERRO SUPABASE: ' + error.message);
+    return [];
+  }
+
+  console.log('SUPABASE FUNCIONOU!', data);
+  return data || [];
+}
 function makeRow(p){
  const tr=document.createElement('tr');
  tr.dataset.name=p.name.toLowerCase();
