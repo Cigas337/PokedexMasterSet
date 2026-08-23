@@ -511,13 +511,20 @@ async function loadSupabaseData(){
 function makeRow(p){
  const tr=document.createElement('tr');
  tr.dataset.name=p.name.toLowerCase();
+
+ const supa = window.__supabaseData?.find(x => Number(x.pokemon_id) === Number(p.id));
+
+ const hasCard = supa?.card === true;
+ const hasFullArt = supa?.full_art === true;
+
  tr.innerHTML=`<td>${String(p.id).padStart(4,'0')}</td><td>${pretty(p.name)}</td>
- <td><input class="cb" type="checkbox" aria-label="Tenho carta de ${pretty(p.name)}" data-k="${key(p.id,'card')}"></td>
- <td><input class="cb" type="checkbox" aria-label="Tenho Full Art de ${pretty(p.name)}" data-k="${key(p.id,'fa')}"></td>`;
+ <td><input class="cb" type="checkbox" aria-label="Tenho carta de ${pretty(p.name)}" data-k="${key(p.id,'card')}" ${hasCard ? 'checked' : ''}></td>
+ <td><input class="cb" type="checkbox" aria-label="Tenho Full Art de ${pretty(p.name)}" data-k="${key(p.id,'fa')}" ${hasFullArt ? 'checked' : ''}></td>`;
+
  tr.querySelectorAll('.cb').forEach(c=>{
-   c.checked=localStorage.getItem(c.dataset.k)==='1';
-   c.addEventListener('change',()=>{localStorage.setItem(c.dataset.k,c.checked?'1':'0');updateCounts();});
+   c.addEventListener('change',()=>{updateCounts();});
  });
+
  return tr;
 }
 const genRanges=[
