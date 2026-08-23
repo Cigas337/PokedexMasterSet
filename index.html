@@ -597,40 +597,54 @@ const genRanges=[
 {label:'GEN 8',min:810,max:905,name:'Galar / Hisui'},
 {label:'GEN 9',min:906,max:1025,name:'Paldea'}];
 function updateCounts(){
- const all = window.__all || [];
- const supaData = window.__supabaseData || [];
+  const all = window.__all || [];
+  const supaData = window.__supabaseData || [];
 
- const owned = id => {
-   const p = supaData.find(x => Number(x.pokemon_id) === Number(id));
-   return p?.card === true;
- };
+  // Cria um mapa para encontrar os Pokémon muito mais rapidamente
+  const ownedMap = new Map(
+    supaData.map(x => [
+      Number(x.pokemon_id),
+      x.card === true
+    ])
+  );
 
- const totalOwned = all.filter(p => owned(p.id)).length;
+  // Total geral
+  const totalOwned = all.filter(p => ownedMap.get(Number(p.id)) === true).length;
 
- document.getElementById('count').textContent =
-   `${String(totalOwned).padStart(3,'0')}/1025 Pokémon`;
+  const countEl = document.getElementById('count');
 
- const box = document.getElementById('genCounts');
- if(!box) return;
+  if(countEl){
+    countEl.textContent =
+      `${String(totalOwned).padStart(3,'0')}/1025 Pokémon`;
+  }
 
- box.innerHTML = genRanges.map(g => {
-   const total = g.max - g.min + 1;
+  // Contadores das gerações
+  const box = document.getElementById('genCounts');
 
-   const have = all.filter(p =>
-     p.id >= g.min &&
-     p.id <= g.max &&
-     owned(p.id)
-   ).length;
+  if(!box) return;
 
-   const pct = ((have / total) * 100).toFixed(1);
+  box.innerHTML = genRanges.map(g => {
 
-return `
-  <div class="gen-badge">
-    <strong>${g.label} · ${String(have).padStart(3,'0')}/${total}</strong>
-    <small>${g.name} · ${pct}%</small>
-  </div>
-`;
- }).join('');
+    const total = g.max - g.min + 1;
+
+    const have = all.filter(p =>
+      Number(p.id) >= g.min &&
+      Number(p.id) <= g.max &&
+      ownedMap.get(Number(p.id)) === true
+    ).length;
+
+    const pct = total > 0
+      ? ((have / total) * 100).toFixed(1)
+      : '0.0';
+
+    return `
+      <div class="gen-badge">
+        <strong>${g.label} · ${String(have).padStart(3,'0')}/${total}</strong>
+        <small>${g.name} · ${pct}%</small>
+      </div>
+    `;
+
+  }).join('');
 }
 function render(data){
  const tbody=document.getElementById('list'); tbody.innerHTML='';
