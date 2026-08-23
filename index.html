@@ -452,7 +452,15 @@ footer:after{
 </table>
 <div class="footer">As marcações ficam guardadas neste navegador. A lista segue a Pokédex Nacional 001–1025. Os nomes são carregados uma vez e ficam guardados neste navegador para utilização offline. Para imprimir, usa A4 vertical e escala 100%.</div>
 </div>
+ </div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+const SUPABASE_URL = 'https://wdljzuqoftrontqhhatr.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_MslRW16TUUxlAEnUNiQ2sQ_3FrG4sLy';
+ const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
 const special={
 'mr-mime':'Mr. Mime','mime-jr':'Mime Jr.','mr-rime':'Mr. Rime',
 'farfetchd':"Farfetch'd",'sirfetchd':"Sirfetch'd",'ho-oh':'Ho-Oh',
