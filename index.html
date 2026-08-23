@@ -523,8 +523,7 @@ function makeRow(p){
 
 tr.querySelectorAll('.cb').forEach(c=>{
   c.addEventListener('change',async ()=>{
-   console.log('CLIQUE DETETADO', p.id, c.checked);
-    updateCounts();
+    console.log('CLIQUE DETETADO', p.id, c.checked);
 
     const type = c.dataset.k.endsWith('-fa') ? 'full_art' : 'card';
     const value = c.checked;
@@ -533,8 +532,13 @@ tr.querySelectorAll('.cb').forEach(c=>{
       x => Number(x.pokemon_id) === Number(p.id)
     );
 
-    const cardValue = type === 'card' ? value : (supa?.card ?? false);
-    const fullArtValue = type === 'full_art' ? value : (supa?.full_art ?? false);
+    const cardValue = type === 'card'
+      ? value
+      : (supa?.card ?? false);
+
+    const fullArtValue = type === 'full_art'
+      ? value
+      : (supa?.full_art ?? false);
 
     const { error } = await supabaseClient
       .from('pokemon_cards')
@@ -545,6 +549,14 @@ tr.querySelectorAll('.cb').forEach(c=>{
       }, {
         onConflict: 'pokemon_id'
       });
+
+    if(error){
+      console.error('Erro ao guardar no Supabase:', error);
+      alert('Não foi possível guardar: ' + error.message);
+      return;
+    }
+
+    // Atualizar os dados locais depois de o Supabase confirmar
     const existing = window.__supabaseData?.find(
       x => Number(x.pokemon_id) === Number(p.id)
     );
@@ -560,10 +572,15 @@ tr.querySelectorAll('.cb').forEach(c=>{
       });
     }
 
-    if(error){
-      console.error('Erro ao guardar no Supabase:', error);
-      alert('Não foi possível guardar: ' + error.message);
-    }
+    // ATUALIZA O PROGRESSO DEPOIS DA ALTERAÇÃO
+    updateCounts();
+
+    console.log(
+      'SUPABASE + CONTADORES ATUALIZADOS:',
+      p.id,
+      cardValue,
+      fullArtValue
+    );
   });
 });
 
@@ -607,12 +624,12 @@ function updateCounts(){
 
    const pct = ((have / total) * 100).toFixed(1);
 
-   return `
-     <div class="gen-count">
-       <strong>${g.label} · ${g.name}</strong>
-       <span>${have}/${total} (${pct}%)</span>
-     </div>
-   `;
+return `
+  <div class="gen-badge">
+    <strong>${g.label} · ${String(have).padStart(3,'0')}/${total}</strong>
+    <small>${g.name} · ${pct}%</small>
+  </div>
+`;
  }).join('');
 }
 function render(data){
