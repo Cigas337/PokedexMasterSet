@@ -522,29 +522,37 @@ function makeRow(p){
  <td><input class="cb" type="checkbox" aria-label="Tenho Full Art de ${pretty(p.name)}" data-k="${key(p.id,'fa')}" ${hasFullArt ? 'checked' : ''}></td>`;
 
 tr.querySelectorAll('.cb').forEach(c=>{
-   c.addEventListener('change',async ()=>{
-     updateCounts();
+  c.addEventListener('change',async ()=>{
+    updateCounts();
 
-     const type = c.dataset.k.endsWith('-fa') ? 'full_art' : 'card';
-     const value = c.checked;
+    const type = c.dataset.k.endsWith('-fa') ? 'full_art' : 'card';
+    const value = c.checked;
 
-     const { error } = await supabaseClient
-  .from('pokemon_cards')
-  .upsert({
-    pokemon_id: p.id,
-    [type]: value
-  }, {
-    onConflict: 'pokemon_id'
+    const supa = window.__supabaseData?.find(
+      x => Number(x.pokemon_id) === Number(p.id)
+    );
+
+    const cardValue = type === 'card' ? value : (supa?.card ?? false);
+    const fullArtValue = type === 'full_art' ? value : (supa?.full_art ?? false);
+
+    const { error } = await supabaseClient
+      .from('pokemon_cards')
+      .upsert({
+        pokemon_id: p.id,
+        card: cardValue,
+        full_art: fullArtValue
+      }, {
+        onConflict: 'pokemon_id'
+      });
+
+    if(error){
+      console.error('Erro ao guardar no Supabase:', error);
+      alert('Não foi possível guardar: ' + error.message);
+    }
   });
-
-     if(error){
-       console.error('Erro ao guardar no Supabase:', error);
-       alert('Não foi possível guardar: ' + error.message);
-     }
-   });
 });
 
- return tr;
+return tr;
 }
 const genRanges=[
 {label:'GEN 1',min:1,max:151,name:'Kanto'},
