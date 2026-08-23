@@ -3,7 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Pokédex XL — Checklist 1–1025</title>
+<meta name="theme-color" content="#080f17">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Pokédex XL">
+<link rel="manifest" href="manifest.webmanifest">
+<title>Pokédex XL — National Dex Master Set</title>
 <link rel="apple-touch-icon" href="icon-180.png">
 <style>
 :root{
@@ -21,10 +26,7 @@
   --green2:#0d9346;
   --gold:#f6c13f;
   --gold2:#d79a00;
-  --blue:#1a2a39;
-  --chip:#111d2b;
   --shadow:0 20px 44px rgba(0,0,0,.42);
-  --radius:22px;
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -40,9 +42,10 @@ body{
 .hidden{display:none!important}
 .wrap{max-width:1440px;margin:0 auto;padding:18px}
 button,input,select{font:inherit}
+select{color-scheme:dark}
+select option{background:#111b26;color:#eef4fb}
 button{cursor:pointer}
 
-/* top shell */
 .hero-shell{
   background:linear-gradient(180deg,#08111a,#060c13);
   border:1px solid rgba(225,46,39,.38);
@@ -57,133 +60,305 @@ button{cursor:pointer}
 }
 .hero-shell:before{left:-58px;top:-58px;transform:rotate(45deg);border-right:none;border-bottom:none}
 .hero-shell:after{right:-58px;top:-58px;transform:rotate(45deg);border-left:none;border-bottom:none}
-.hero{
-  display:grid;
-  grid-template-columns:1.1fr 1.95fr 145px;
-  gap:16px;
-  align-items:stretch;
-}
+.hero{display:grid;grid-template-columns:minmax(410px,1.28fr) minmax(0,1.9fr) 145px;gap:16px;align-items:stretch}
 .brand-panel,.stats-panel,.ball-panel{border-radius:24px;position:relative;overflow:hidden}
-.brand-panel{
-  background:linear-gradient(135deg,#0a1320,#03070d 72%);
-  border:1px solid rgba(255,255,255,.06);
-  padding:22px 24px;
-}
-.brand-row{display:flex;align-items:center;gap:16px}
-.pokeball-mini{
-  width:54px;height:54px;border-radius:50%;flex:0 0 auto;
-  background:linear-gradient(180deg,#ff463d 0 46%,#141c24 46% 54%,#f7fbff 54% 100%);
-  border:2px solid rgba(0,0,0,.6);position:relative;box-shadow:inset 0 8px 12px rgba(255,255,255,.2),0 10px 18px rgba(0,0,0,.45)
-}
+.brand-panel{background:linear-gradient(135deg,#0a1320,#03070d 72%);border:1px solid rgba(255,255,255,.06);padding:22px 24px;min-width:0}
+.brand-row{display:grid;grid-template-columns:54px minmax(0,1fr) auto;align-items:center;gap:16px;min-width:0}.brand-row>div:nth-child(2){min-width:0}.brand-signature{justify-self:end;padding:5px 2px 3px;color:#f3d4d1;font-family:Arial,Helvetica,sans-serif;font-size:17px;line-height:1;font-weight:900;white-space:nowrap;letter-spacing:1.15px;text-transform:uppercase;text-shadow:0 0 18px rgba(225,46,39,.26);opacity:.96}
+.pokeball-mini{width:54px;height:54px;border-radius:50%;flex:0 0 auto;background:linear-gradient(180deg,#ff463d 0 46%,#141c24 46% 54%,#f7fbff 54% 100%);border:2px solid rgba(0,0,0,.6);position:relative;box-shadow:inset 0 8px 12px rgba(255,255,255,.2),0 10px 18px rgba(0,0,0,.45)}
 .pokeball-mini:before{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:15px;height:15px;border-radius:50%;background:#fff;border:4px solid #131b23}
 .brand-title{margin:0;font-size:40px;line-height:.94;font-weight:900;letter-spacing:.4px}
 .brand-title .xl{color:#ff352e;text-shadow:0 0 24px rgba(255,53,46,.25)}
 .brand-sub{margin-top:8px;color:#d2d9e2;font-size:14px;font-weight:800;letter-spacing:1.6px;text-transform:uppercase;opacity:.9}
 .brand-note{margin-top:16px;color:#8f9ca9;font-size:12px;line-height:1.45}
+.sync-line{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:14px}
+.sync-indicator{display:inline-flex;align-items:center;gap:8px;padding:7px 10px;border-radius:999px;background:#0d1722;border:1px solid rgba(255,255,255,.08);color:#b8c4d1;font-size:11px;font-weight:900;letter-spacing:.25px}
+.sync-dot{width:8px;height:8px;border-radius:50%;background:#7f8b98;box-shadow:0 0 0 4px rgba(127,139,152,.08)}
+.sync-indicator.saving .sync-dot{background:#f3b436;box-shadow:0 0 0 4px rgba(243,180,54,.10)}
+.sync-indicator.synced .sync-dot{background:#20c96b;box-shadow:0 0 0 4px rgba(32,201,107,.10)}
+.sync-indicator.offline .sync-dot,.sync-indicator.error .sync-dot{background:#ef4d45;box-shadow:0 0 0 4px rgba(239,77,69,.10)}
+.db-note{color:#748393;font-size:10px;font-weight:700}
 
-.stats-panel{
-  background:linear-gradient(135deg,#6b0a09,#9a1612 34%,#640807 80%);
-  border:1px solid rgba(255,255,255,.06);
-  padding:18px 22px;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.06);
-}
-.stats-grid{display:grid;grid-template-columns:235px 1fr;gap:18px;align-items:start}
+.stats-panel{background:linear-gradient(135deg,#6b0a09,#9a1612 34%,#640807 80%);border:1px solid rgba(255,255,255,.06);padding:18px 22px;box-shadow:inset 0 1px 0 rgba(255,255,255,.06);min-width:0}
+.stats-grid{display:grid;grid-template-columns:minmax(300px,.82fr) minmax(0,1.18fr);grid-template-areas:'count progress' 'mini mini';column-gap:18px;row-gap:14px;align-items:start}.stats-count{grid-area:count}.stats-progress{grid-area:progress}
 .kicker{display:block;color:#ffd8d5;font-size:12px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase}
-.big-count{margin:8px 0 6px;font-size:62px;line-height:.95;font-weight:900}
+.big-count{margin:8px 0 6px;font-size:clamp(46px,3.6vw,58px);line-height:.95;font-weight:900;white-space:nowrap;letter-spacing:-1px}
 .big-percent{font-size:17px;font-weight:800;color:#ffd9d6}
 .progress-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px}
 .progress-head .value{font-size:34px;font-weight:900}
 .progress-track{height:28px;border-radius:999px;background:rgba(0,0,0,.42);padding:3px;border:1px solid rgba(255,255,255,.08);box-shadow:inset 0 8px 14px rgba(0,0,0,.26)}
 .progress-fill{height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,#ff5d53,#f0281f);box-shadow:0 0 18px rgba(255,95,84,.36)}
-.mini-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
-.mini-stat{display:flex;align-items:center;gap:12px;padding:12px 13px;border-radius:16px;background:linear-gradient(180deg,rgba(0,0,0,.22),rgba(0,0,0,.36));border:1px solid rgba(255,255,255,.08)}
-.mini-ico{width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:22px}
-.mini-meta strong{display:block;font-size:12px;letter-spacing:.8px;text-transform:uppercase;color:#ffd8d5}
-.mini-meta span{display:block;font-size:22px;font-weight:900;margin-top:2px}
-
+.mini-stats{grid-area:mini;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:0}
+.mini-stat{display:flex;align-items:center;gap:8px;padding:11px 9px;border-radius:16px;background:linear-gradient(180deg,rgba(0,0,0,.22),rgba(0,0,0,.36));border:1px solid rgba(255,255,255,.08);min-width:0;overflow:hidden}
+.mini-ico{width:36px;height:36px;flex:0 0 36px;border-radius:11px;background:rgba(255,255,255,.08);display:flex;align-items:center;justify-content:center;font-size:20px}
+.mini-meta{min-width:0}.mini-meta strong{display:block;font-size:11px;letter-spacing:.65px;text-transform:uppercase;color:#ffd8d5;white-space:normal;line-height:1.12}
+.mini-meta span{display:block;font-size:20px;font-weight:900;margin-top:2px;white-space:nowrap}.mini-meta #artCount{white-space:nowrap;word-break:keep-all;min-width:0}
+.mini-meta em{display:block;margin-top:2px;font-size:10px;color:#ffd8d5;font-style:normal;opacity:.8}
 .ball-panel{display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#110709,#080c12);border:1px solid rgba(255,255,255,.06)}
 .pokeball-big{width:116px;height:116px;border-radius:50%;background:linear-gradient(180deg,#ff463c 0 46%,#131b22 46% 54%,#f8fbff 54% 100%);border:4px solid rgba(0,0,0,.65);position:relative;box-shadow:inset 0 12px 18px rgba(255,255,255,.18),0 16px 32px rgba(0,0,0,.46)}
 .pokeball-big:before{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:28px;height:28px;border-radius:50%;background:#fff;border:8px solid #151b22}
 
 .gen-tabs{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:10px;margin-top:18px}
-.gen-tab{background:linear-gradient(180deg,#121d2a,#0a121b);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:14px 12px;box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center;text-align:center;min-height:74px}
+.gen-tab{background:linear-gradient(180deg,#121d2a,#0a121b);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:14px 12px;box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center;text-align:center;min-height:88px;transition:.16s ease}
 .gen-tab button{all:unset;cursor:pointer;display:block;width:100%}
 .gen-tab strong{display:block;font-size:14px;letter-spacing:.2px}
-.gen-tab small{display:block;color:#a0acba;margin-top:5px;font-size:12px;font-weight:700}
-.gen-tab.active{box-shadow:0 0 0 1px rgba(255,81,74,.25),0 10px 24px rgba(0,0,0,.36);background:linear-gradient(180deg,#201118,#100d14)}
+.gen-tab small{display:block;color:#a0acba;margin-top:5px;font-size:11px;font-weight:700;line-height:1.35}
+.gen-tab.active{box-shadow:0 0 0 1px rgba(255,81,74,.25),0 10px 24px rgba(0,0,0,.36),0 0 22px rgba(225,46,39,.12);background:linear-gradient(180deg,#201118,#100d14)}
 .gen-tab.active strong{color:#ff6f68}
+.gen-bars{display:grid;gap:4px;margin-top:8px}
+.gen-bar-row{display:grid;grid-template-columns:28px 1fr;gap:6px;align-items:center;color:#778493;font-size:8px;font-weight:900;text-transform:uppercase}
+.gen-bar{height:5px;border-radius:999px;background:#05090e;overflow:hidden;border:1px solid rgba(255,255,255,.05)}
+.gen-bar span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#28cd70,#15944d)}
+.gen-bar.art span{background:linear-gradient(90deg,#ffe36b,#d99b00)}
 
-.controls{margin-top:18px;background:linear-gradient(180deg,#0b131d,#070e16);border:1px solid var(--line);border-radius:24px;padding:18px;box-shadow:var(--shadow);display:grid;grid-template-columns:minmax(0,1.2fr) 250px 250px auto;gap:14px;align-items:center}
+.controls{margin-top:18px;background:linear-gradient(180deg,#0b131d,#070e16);border:1px solid var(--line);border-radius:24px;padding:18px;box-shadow:var(--shadow);display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.controls .search-wrap{flex:1 1 300px}.controls .select-wrap{flex:1 1 205px;max-width:260px}
 .search-wrap,.select-wrap{position:relative}
 .search-wrap:before{content:"⌕";position:absolute;left:18px;top:50%;transform:translateY(-50%);font-size:26px;color:#9ca8b6;pointer-events:none}
 .select-wrap:after{content:"▾";position:absolute;right:16px;top:50%;transform:translateY(-50%);color:#c4cfdb;pointer-events:none}
-#search,#genJump,#sortBy{
-  width:100%;min-height:56px;background:linear-gradient(180deg,#0c1118,#070b10);border:1px solid rgba(255,255,255,.08);color:var(--text);border-radius:16px;outline:none
-}
+#search,#genJump,#sortBy,#filterBy{width:100%;min-height:56px;background:linear-gradient(180deg,#0c1118,#070b10);border:1px solid rgba(255,255,255,.08);color:var(--text);border-radius:16px;outline:none}
 #search{padding:0 16px 0 54px;font-size:18px}
-#genJump,#sortBy{padding:0 42px 0 14px;appearance:none}
-.action-btn{min-height:56px;padding:0 18px;border:none;border-radius:16px;background:linear-gradient(180deg,#1a2431,#0d151e);color:#fff;font-weight:800;border:1px solid rgba(255,255,255,.08)}
+#genJump,#sortBy,#filterBy{padding:0 42px 0 14px;appearance:none}
+.action-btn{min-height:56px;padding:0 16px;border:none;border-radius:16px;background:linear-gradient(180deg,#1a2431,#0d151e);color:#fff;font-weight:800;border:1px solid rgba(255,255,255,.08);white-space:nowrap}
 .action-btn:hover{filter:brightness(1.08)}
+.action-btn.red{background:linear-gradient(180deg,#8b1714,#4f0908);border-color:rgba(225,46,39,.32)}
 
 .stage{margin-top:18px;background:linear-gradient(180deg,rgba(10,17,26,.9),rgba(7,12,18,.95));border:1px solid var(--line);border-radius:28px;padding:22px;box-shadow:var(--shadow)}
 .stage-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.stage-title-wrap{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .stage-head h2{margin:0;font-size:22px;letter-spacing:.5px}
 .stage-head .meta{color:var(--muted);font-size:14px;font-weight:700}
+.reset-gen{border:1px solid rgba(255,255,255,.08);background:#101925;color:#dbe4ee;border-radius:999px;padding:8px 12px;font-weight:800;font-size:12px}
 #list{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:18px}
-.gen-section{grid-column:1/-1;display:flex;align-items:center;gap:14px;padding:12px 16px;border-radius:18px;background:linear-gradient(90deg,rgba(225,46,39,.18),rgba(17,31,45,.9));border:1px solid rgba(255,255,255,.06);margin:6px 0 -2px}
-.gen-section strong{font-size:18px;letter-spacing:.6px;text-transform:uppercase}
-.gen-section span{font-size:13px;color:#d3dbe6}
-.gen-line{flex:1;height:2px;background:linear-gradient(90deg,rgba(255,255,255,.18),transparent)}
 
-.dex-card{position:relative;overflow:hidden;border-radius:22px;padding:14px;background:linear-gradient(180deg,#eef2f7,#dfe5ee 85%);color:#0d1117;border:1px solid rgba(255,255,255,.55);box-shadow:0 16px 34px rgba(0,0,0,.38);min-height:346px}
+.dex-card{position:relative;overflow:hidden;border-radius:22px;padding:14px;background:linear-gradient(180deg,#eef2f7,#dfe5ee 85%);color:#0d1117;border:1px solid rgba(255,255,255,.55);box-shadow:0 16px 34px rgba(0,0,0,.38);min-height:366px;transition:.16s ease}
 .dex-card:before{content:"";position:absolute;right:-34px;top:46px;width:170px;height:170px;border-radius:50%;background:radial-gradient(circle at center, rgba(255,255,255,.32) 0 58%, rgba(25,31,37,.05) 58% 63%, rgba(255,255,255,.24) 63% 64%, transparent 64%)}
-.dex-card.owned-fullart{box-shadow:0 0 0 2px rgba(246,193,63,.95),0 16px 34px rgba(0,0,0,.42)}
+.dex-card.owned-card{box-shadow:0 0 0 1px rgba(20,192,92,.55),0 16px 34px rgba(0,0,0,.38)}
+.dex-card.owned-art{box-shadow:0 0 0 2px rgba(246,193,63,.95),0 16px 34px rgba(0,0,0,.42),0 0 24px rgba(246,193,63,.12)}
+.dex-card:not(.owned-card){background:linear-gradient(180deg,#d7dce2,#c8cfd7 85%);box-shadow:0 12px 26px rgba(0,0,0,.30)}
+.dex-card .card-image img{transition:filter .3s ease,opacity .3s ease,transform .3s ease}
+.dex-card:not(.owned-card) .card-image img{filter:grayscale(1) saturate(0) brightness(.68) contrast(1.1) opacity(.58) drop-shadow(0 8px 12px rgba(0,0,0,.12))}
+.dex-card.owned-card .card-image img{filter:drop-shadow(0 10px 14px rgba(0,0,0,.18))}
+.dex-card.owned-art .card-image img{filter:drop-shadow(0 10px 16px rgba(161,111,0,.28)) saturate(1.05)}
+.completion-badge{position:absolute;z-index:4;left:50%;top:154px;transform:translateX(-50%);padding:5px 9px;border-radius:999px;background:rgba(19,27,36,.88);color:#eef3f8;border:1px solid rgba(255,255,255,.18);font-size:9px;font-weight:900;letter-spacing:.6px;text-transform:uppercase;white-space:nowrap;backdrop-filter:blur(6px)}
+.dex-card.owned-card .completion-badge{background:rgba(12,131,62,.9);color:#edfff4}
+.dex-card.owned-art .completion-badge{background:rgba(166,112,0,.92);color:#fff7d4}
+.art-star-badge{position:absolute;z-index:5;right:12px;top:42px;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#ffe36e,#e5a800);color:#442b00;font-size:22px;font-weight:900;border:2px solid rgba(255,255,255,.75);box-shadow:0 5px 14px rgba(154,101,0,.35),0 0 18px rgba(246,193,63,.2);opacity:0;transform:scale(.65) rotate(-12deg);transition:.18s ease}
+.dex-card.owned-art .art-star-badge{opacity:1;transform:scale(1) rotate(0)}
+.art-availability{position:relative;z-index:2;text-align:center;margin-top:7px;min-height:13px;color:#6e7884;font-size:9px;font-weight:800}
+.art-availability.unavailable{color:#9b4540}
+.state-pill.disabled{cursor:not-allowed;opacity:.58}
+.state-pill.disabled .state-ui{background:#252b31;color:#8d969f}
+.state-ui .art-symbol{font-size:17px;line-height:1}
+
 .card-top{position:relative;z-index:2;display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
 .dex-number{font-size:16px;font-weight:900;letter-spacing:.5px}
 .card-ball{width:20px;height:20px;border-radius:50%;background:linear-gradient(180deg,#ff4138 0 46%,#111922 46% 54%,#fff 54% 100%);border:1.5px solid rgba(0,0,0,.55);position:relative}
 .card-ball:before{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:6px;height:6px;border-radius:50%;background:#fff;border:2px solid #121820}
-.card-image{position:relative;z-index:2;height:156px;margin:8px 0 10px;display:flex;align-items:center;justify-content:center}
-.card-image img{max-width:100%;max-height:100%;object-fit:contain;filter:drop-shadow(0 10px 14px rgba(0,0,0,.18))}
+.card-image{position:relative;z-index:2;height:150px;margin:8px 0 8px;display:flex;align-items:center;justify-content:center}
+.card-image img{max-width:100%;max-height:100%;object-fit:contain}
+.type-row{position:relative;z-index:2;min-height:24px;display:flex;gap:6px;align-items:center;justify-content:center;flex-wrap:wrap;margin-bottom:7px}
+.type-chip{display:inline-flex;align-items:center;justify-content:center;min-width:54px;padding:4px 8px;border-radius:999px;color:#fff;font-size:10px;font-weight:900;letter-spacing:.45px;text-transform:uppercase;box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 2px 7px rgba(0,0,0,.18)}
 .dex-name{position:relative;z-index:2;margin:0;text-align:center;font-size:14px;font-weight:900;line-height:1.15;text-transform:uppercase;letter-spacing:.3px;min-height:34px;display:flex;align-items:center;justify-content:center}
-.dex-sub{position:relative;z-index:2;text-align:center;color:#637080;font-size:11px;font-weight:800;letter-spacing:.7px;text-transform:uppercase;margin-top:4px}
+.dex-sub{position:relative;z-index:2;text-align:center;color:#637080;font-size:10px;font-weight:800;letter-spacing:.7px;text-transform:uppercase;margin-top:4px}
 .card-actions{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
 .state-pill{position:relative;display:block;cursor:pointer}
 .state-pill input{position:absolute;opacity:0;pointer-events:none}
 .state-ui{min-height:38px;border-radius:999px;padding:0 10px;display:flex;align-items:center;justify-content:center;gap:7px;background:linear-gradient(180deg,#151d27,#0e141d);border:1px solid rgba(0,0,0,.22);color:#dde4ec;font-size:12px;font-weight:900;letter-spacing:.25px;box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
 .state-ui .dot{width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,.55);display:inline-block;position:relative}
 .state-pill input:checked + .state-ui.card-ui{background:linear-gradient(180deg,var(--green),var(--green2));color:#08150d}
-.state-pill input:checked + .state-ui.fullart-ui{background:linear-gradient(180deg,var(--gold),var(--gold2));color:#231800}
+.state-pill input:checked + .state-ui.art-ui{background:linear-gradient(180deg,var(--gold),var(--gold2));color:#231800}
 .state-pill input:checked + .state-ui .dot{border-color:currentColor;background:currentColor}
 .state-pill input:checked + .state-ui .dot:before{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.95)}
+.art-help{position:relative;z-index:2;text-align:center;color:#6e7884;font-size:9px;font-weight:700;margin-top:7px}
+
+.pagination-shell{display:flex;justify-content:center;align-items:center;gap:8px;margin-top:24px;flex-wrap:wrap}
+.page-btn{min-width:40px;height:40px;border-radius:12px;border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,#121c29,#0a1119);color:#e9eef5;font-weight:900}
+.page-btn.active{background:linear-gradient(180deg,#e33b32,#9e100c);box-shadow:0 0 16px rgba(225,46,39,.24)}
+.page-btn:disabled{opacity:.35;cursor:default}
+.page-dots{color:#7f8b99;padding:0 3px}
+
 .footer{margin-top:16px;padding:18px 20px;border-radius:20px;background:linear-gradient(180deg,#0a1119,#070d14);border:1px solid var(--line);color:#99a6b4;font-size:13px;line-height:1.5}
 
-@media(max-width:1240px){
-  .hero{grid-template-columns:1fr}
-  .stats-grid{grid-template-columns:1fr}
-  .gen-tabs{grid-template-columns:repeat(3,minmax(0,1fr))}
-  .controls{grid-template-columns:1fr 1fr}
+
+
+/* ===== ART CARD BROWSER / CARDMARKET MODAL ===== */
+.dex-card{cursor:pointer}
+.dex-card .card-actions,.dex-card .state-pill{cursor:default}
+.open-art-hint{position:relative;z-index:2;margin-top:8px;padding:7px 10px;border-radius:10px;background:rgba(8,14,22,.08);border:1px solid rgba(10,18,28,.10);color:#2e3946;text-align:center;font-size:10px;font-weight:900;letter-spacing:.45px;text-transform:uppercase}
+.dex-card:hover .open-art-hint{background:rgba(225,46,39,.10);color:#9c1611;border-color:rgba(225,46,39,.16)}
+body.modal-open{overflow:hidden}
+.art-modal{position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.76);backdrop-filter:blur(8px)}
+.art-modal.open{display:flex}
+.art-modal-panel{width:min(1420px,100%);max-height:min(92vh,980px);display:flex;flex-direction:column;overflow:hidden;border-radius:28px;background:linear-gradient(180deg,#0b141f,#060b11);border:1px solid rgba(255,255,255,.12);box-shadow:0 30px 90px rgba(0,0,0,.68),0 0 0 1px rgba(225,46,39,.18)}
+.art-modal-head{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:start;padding:20px 22px;background:linear-gradient(135deg,#48100f,#76110e 48%,#23090b);border-bottom:1px solid rgba(255,255,255,.08)}
+.art-modal-title{margin:0;font-size:28px;font-weight:900;letter-spacing:.2px}.art-modal-sub{margin-top:6px;color:#efc6c3;font-size:13px;line-height:1.45}.art-modal-close{width:46px;height:46px;border:none;border-radius:50%;background:rgba(255,255,255,.1);color:#fff;font-size:26px;line-height:1}.art-modal-close:hover{background:rgba(255,255,255,.18)}
+.art-modal-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:14px 22px;background:#09111a;border-bottom:1px solid rgba(255,255,255,.07)}
+.art-modal-summary{color:#dbe4ee;font-size:13px;font-weight:800}.art-modal-summary strong{color:#ffd05a}.art-modal-source{color:#8f9dad;font-size:11px}.art-modal-body{overflow:auto;padding:20px 22px 26px}
+.art-loading{display:flex;min-height:320px;align-items:center;justify-content:center;flex-direction:column;gap:14px;color:#9eabb9;font-weight:800}.art-spinner{width:44px;height:44px;border-radius:50%;border:4px solid rgba(255,255,255,.10);border-top-color:#ef4037;animation:artspin .85s linear infinite}@keyframes artspin{to{transform:rotate(360deg)}}
+.art-results-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:20px}
+.art-result{position:relative;overflow:hidden;border-radius:18px;background:linear-gradient(180deg,#f1f4f8,#dfe5ed);color:#10151c;border:1px solid rgba(255,255,255,.6);box-shadow:0 13px 28px rgba(0,0,0,.33)}
+.art-result.cheapest{box-shadow:0 0 0 2px rgba(247,193,63,.95),0 14px 32px rgba(0,0,0,.38)}
+.cheapest-ribbon{position:absolute;z-index:3;top:10px;left:10px;padding:6px 9px;border-radius:999px;background:linear-gradient(180deg,#ffd65c,#d99d00);color:#2b1a00;font-size:9px;font-weight:1000;letter-spacing:.6px;text-transform:uppercase;box-shadow:0 4px 12px rgba(0,0,0,.22)}
+.art-result-img{height:320px;padding:14px 14px 7px;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 45%,rgba(255,255,255,.75),rgba(255,255,255,.12) 67%,transparent 68%)}
+.art-result-img img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 9px 12px rgba(0,0,0,.18))}
+.art-result-info{padding:12px 13px 14px}.art-result-name{font-size:14px;font-weight:900;line-height:1.2}.art-result-set{margin-top:4px;color:#66717f;font-size:11px;font-weight:700;line-height:1.35}.art-result-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:9px}.art-result-tag{padding:4px 7px;border-radius:999px;background:#15202c;color:#eef3f8;font-size:9px;font-weight:900;letter-spacing:.3px}.art-result-tag.gold{background:#6f5100;color:#ffdf7d}
+.art-price-box{display:flex;align-items:end;justify-content:space-between;gap:8px;margin-top:12px;padding-top:11px;border-top:1px solid rgba(0,0,0,.10)}.art-price-label{font-size:9px;text-transform:uppercase;color:#6f7a87;font-weight:900;letter-spacing:.6px}.art-price{font-size:21px;font-weight:1000;color:#111820}.art-price.na{font-size:13px;color:#777f89}.art-price-updated{margin-top:3px;color:#828b96;font-size:9px}
+.cardmarket-btn{display:inline-flex;align-items:center;justify-content:center;min-height:34px;padding:0 10px;border-radius:10px;text-decoration:none;background:#0e7d4d;color:#fff;font-size:10px;font-weight:900;white-space:nowrap}.cardmarket-btn:hover{filter:brightness(1.08)}
+.art-empty{max-width:700px;margin:45px auto;padding:26px;border-radius:20px;background:#101a25;border:1px solid rgba(255,255,255,.08);text-align:center;color:#d7e0ea}.art-empty strong{display:block;font-size:20px;color:#fff;margin-bottom:8px}.art-empty p{margin:0;color:#95a3b1;line-height:1.55;font-size:13px}
+.art-modal-note{margin-top:18px;padding:12px 14px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);color:#8f9ead;font-size:11px;line-height:1.5}
+@media(max-width:700px){.art-modal{padding:0}.art-modal-panel{height:100%;max-height:none;border-radius:0}.art-modal-head{padding:17px 16px}.art-modal-title{font-size:23px}.art-modal-toolbar{padding:12px 16px}.art-modal-body{padding:16px}.art-results-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.art-result-img{height:250px}.art-price-box{display:block}.cardmarket-btn{margin-top:9px;width:100%}}
+@media(max-width:420px){.art-results-grid{grid-template-columns:1fr 1fr}.art-result-img{height:215px}.art-result-info{padding:10px}.art-result-name{font-size:12px}.art-price{font-size:17px}}
+
+/* ===== COLEÇÃO DE CARTAS ESPECÍFICAS / CAPA DA POKÉDEX ===== */
+.specific-card-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}
+.specific-own-btn,.specific-feature-btn{min-height:35px;border:1px solid rgba(13,25,36,.14);border-radius:10px;background:#f3f6f8;color:#17202a;font-size:10px;font-weight:950;cursor:pointer;padding:7px 8px;line-height:1.15}
+.specific-own-btn:hover,.specific-feature-btn:hover{filter:brightness(.98)}
+.specific-own-btn.active{background:#0e7d4d;color:#fff;border-color:#0e7d4d}
+.specific-feature-btn.active{background:#a87300;color:#fff;border-color:#a87300}
+.art-result.my-card{box-shadow:0 0 0 2px rgba(14,125,77,.60),0 18px 40px rgba(0,0,0,.28)}
+.art-result.featured-card{box-shadow:0 0 0 3px rgba(246,193,63,.95),0 18px 46px rgba(0,0,0,.34)}
+.featured-ribbon{position:absolute;top:10px;left:10px;z-index:4;padding:6px 8px;border-radius:9px;background:rgba(166,112,0,.95);color:#fff8da;font-size:9px;font-weight:1000;letter-spacing:.4px;box-shadow:0 5px 14px rgba(0,0,0,.22)}
+.dex-card.has-featured-tcg .card-image{height:168px;margin:0 0 5px}
+.dex-card.has-featured-tcg .card-image img{max-height:164px;border-radius:9px;box-shadow:0 10px 20px rgba(0,0,0,.23)}
+.dex-card.has-featured-tcg:before{opacity:.36}
+.featured-card-label{position:absolute;z-index:4;right:12px;top:44px;background:rgba(10,17,24,.83);color:#fff3c3;border:1px solid rgba(246,193,63,.42);border-radius:8px;padding:4px 6px;font-size:8px;font-weight:950;letter-spacing:.35px}
+.cardmarket-btn.fallback{background:#52606d}
+.card-source-note{margin-top:4px;color:#87939e;font-size:9px;font-weight:800}
+@media(max-width:700px){.specific-card-actions{grid-template-columns:1fr}.dex-card.has-featured-tcg .card-image{height:150px}.dex-card.has-featured-tcg .card-image img{max-height:146px}}
+
+
+/* ===== ALL CARDS BROWSER ===== */
+.card-browser-controls{display:grid;grid-template-columns:minmax(220px,1.4fr) minmax(150px,.7fr) minmax(170px,.8fr);gap:10px;margin-bottom:16px;position:sticky;top:0;z-index:4;padding:10px;border-radius:14px;background:rgba(7,13,20,.94);border:1px solid rgba(255,255,255,.08);backdrop-filter:blur(12px)}
+.card-browser-controls input,.card-browser-controls select{width:100%;height:42px;border-radius:10px;border:1px solid rgba(255,255,255,.10);background:#111b26;color:#eef4fb;padding:0 12px;outline:none;color-scheme:dark}.card-browser-controls select option{background:#111b26!important;color:#eef4fb!important}
+.card-browser-controls input:focus,.card-browser-controls select:focus{border-color:rgba(238,64,55,.75);box-shadow:0 0 0 3px rgba(238,64,55,.10)}
+.card-browser-count{grid-column:1/-1;color:#8f9dad;font-size:11px;font-weight:800;padding:0 2px 2px}
+.art-result-tag.neutral{background:#17222e;color:#c7d2de;border-color:rgba(255,255,255,.08)}
+.art-result-tag.special{background:rgba(246,193,63,.13);color:#ffd86c;border-color:rgba(246,193,63,.24)}
+.art-result-tag.anniversary{background:linear-gradient(180deg,#8b1613,#5d0b09);color:#ffe0dc;border:1px solid rgba(255,107,98,.35)}
+.art-result-tag.upcoming{background:linear-gradient(180deg,#17375e,#0b1d36);color:#d9ecff;border:1px solid rgba(91,174,255,.38)}
+.reverse-price{margin-top:5px;color:#b6c1cc;font-size:10px;font-weight:800}
+.card-release{margin-top:5px;color:#768392;font-size:9px;font-weight:800}
+.load-more-wrap{display:flex;justify-content:center;padding:20px 0 4px}
+.load-more-btn{min-width:210px;min-height:42px;border:1px solid rgba(255,255,255,.10);border-radius:12px;background:#14202c;color:#eef4fb;font-weight:900}
+.load-more-btn:hover{background:#1a2a38}
+@media(max-width:700px){.card-browser-controls{grid-template-columns:1fr 1fr;top:-1px}.card-browser-controls input{grid-column:1/-1}.card-browser-count{grid-column:1/-1}}
+@media(max-width:430px){.card-browser-controls{grid-template-columns:1fr}.card-browser-controls input,.card-browser-count{grid-column:auto}}
+
+@media(max-width:1320px){.hero{grid-template-columns:minmax(350px,1fr) minmax(0,2fr) 118px;gap:12px}.stats-panel{padding-left:16px;padding-right:16px}.stats-grid{grid-template-columns:minmax(285px,.8fr) minmax(0,1.2fr);column-gap:14px}.mini-stat{padding:10px 8px}.mini-meta span{font-size:19px}.ball-panel .pokeball-big{transform:scale(.86)}}
+@media(max-width:1120px){.hero{grid-template-columns:1fr}.stats-grid{grid-template-columns:1fr;grid-template-areas:'count' 'progress' 'mini'}.gen-tabs{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:820px){.wrap{padding:12px}.brand-title{font-size:32px}.brand-row{grid-template-columns:54px minmax(0,1fr) auto;gap:12px}.brand-signature{font-size:13px;letter-spacing:.8px}.big-count{font-size:46px}.controls>*{width:100%!important;max-width:none!important}.gen-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}#list{grid-template-columns:repeat(auto-fill,minmax(155px,1fr))}.dex-card{min-height:350px}.card-image{height:122px}.card-actions{grid-template-columns:1fr}.mini-stats{grid-template-columns:1fr}}
+@media print{body{background:#fff;color:#000}.wrap{padding:0;max-width:none}.hero-shell,.controls,.stage,.footer{box-shadow:none;border:1px solid #ddd}.hero{grid-template-columns:1fr}.ball-panel,.action-btn,.pagination-shell{display:none!important}.gen-tabs{grid-template-columns:repeat(3,1fr)}#list{grid-template-columns:repeat(3,1fr);gap:10px}.dex-card{box-shadow:none;border:1px solid #ccc;background:#fff;min-height:250px}}
+
+
+/* ======================================================================
+   POKÉDEX XL v7 — DARK RED POLISH
+   Visual v5 preservado; cabeçalho compactado e sem painel Poké Ball gigante.
+   ====================================================================== */
+
+/* Cabeçalho: duas áreas úteis. A Poké Ball grande era decorativa e criava
+   altura/espaço vazio desnecessário. A mini Poké Ball do logótipo permanece. */
+.hero{
+  grid-template-columns:minmax(360px,.92fr) minmax(600px,1.78fr) !important;
+  gap:14px !important;
+  align-items:stretch !important;
+}
+.ball-panel{display:none !important}
+.brand-panel,.stats-panel{min-height:0 !important}
+
+/* Brand compacto, sem perder identidade v5 */
+.brand-panel{
+  padding:20px 22px !important;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+.brand-row{grid-template-columns:54px minmax(0,1fr) auto !important;gap:14px !important}
+.brand-title{font-size:clamp(34px,3vw,42px) !important;white-space:nowrap}
+.brand-signature{
+  font-family:inherit !important;
+  font-size:14px !important;
+  font-weight:900 !important;
+  letter-spacing:1px !important;
+  text-transform:uppercase !important;
+  white-space:nowrap !important;
+  max-width:none !important;
+  overflow:visible !important;
+}
+.brand-note{margin-top:13px !important}
+.sync-line{margin-top:11px !important}
+
+/* Estatísticas: tudo cabe na altura real do conteúdo, sem faixa vazia */
+.stats-panel{
+  padding:17px 20px !important;
+  overflow:visible !important;
+}
+.stats-grid{
+  grid-template-columns:minmax(355px,.86fr) minmax(300px,1.14fr) !important;
+  grid-template-areas:'count progress' 'mini mini' !important;
+  column-gap:20px !important;
+  row-gap:12px !important;
+  align-items:center !important;
+}
+.big-count{
+  font-size:clamp(46px,4vw,62px) !important;
+  line-height:.98 !important;
+  white-space:nowrap !important;
+  letter-spacing:-1.5px !important;
+}
+.big-percent{margin-top:4px !important}
+.progress-head{margin-bottom:8px !important}
+.progress-head .value{font-size:30px !important;white-space:nowrap !important}
+.progress-track{height:25px !important}
+.mini-stats{
+  grid-template-columns:repeat(3,minmax(0,1fr)) !important;
+  gap:10px !important;
+  margin-top:0 !important;
+}
+.mini-stat{
+  min-width:0 !important;
+  padding:10px 12px !important;
+  overflow:visible !important;
+}
+.mini-meta{min-width:0 !important}
+.mini-meta span{
+  white-space:nowrap !important;
+  display:block !important;
+  font-size:clamp(18px,1.7vw,24px) !important;
+}
+.mini-meta strong,.mini-meta em{white-space:nowrap !important}
+
+/* Pequeno ajuste de largura geral para aproveitar desktop sem encostar */
+.wrap{max-width:1520px !important}
+
+/* Responsive robusto: mantém os contadores visíveis e nunca cria a antiga
+   coluna amarela da Poké Ball. */
+@media(max-width:1180px){
+  .hero{grid-template-columns:1fr !important}
+  .brand-panel,.stats-panel{width:100% !important}
+  .stats-grid{
+    grid-template-columns:minmax(340px,.82fr) minmax(300px,1.18fr) !important;
+    grid-template-areas:'count progress' 'mini mini' !important;
+  }
 }
 @media(max-width:760px){
-  .wrap{padding:12px}
-  .brand-title{font-size:32px}
-  .big-count{font-size:48px}
-  .controls{grid-template-columns:1fr}
-  .gen-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}
-  #list{grid-template-columns:repeat(auto-fill,minmax(155px,1fr))}
-  .dex-card{min-height:315px}
-  .card-image{height:126px}
-  .card-actions{grid-template-columns:1fr}
+  .hero{grid-template-columns:1fr !important}
+  .brand-panel{padding:18px !important}
+  .brand-row{grid-template-columns:48px minmax(0,1fr) !important}
+  .brand-signature{grid-column:2 !important;justify-self:start !important;margin-top:4px !important;font-size:12px !important}
+  .brand-title{font-size:32px !important}
+  .stats-grid{grid-template-columns:1fr !important;grid-template-areas:'count' 'progress' 'mini' !important;gap:11px !important}
+  .stats-count{text-align:center !important}
+  .mini-stats{grid-template-columns:repeat(3,minmax(0,1fr)) !important;gap:6px !important}
+  .mini-stat{padding:8px 5px !important;text-align:center !important;display:block !important}
+  .mini-ico{margin:0 auto 5px !important}
+  .mini-meta span{font-size:16px !important}
+  .mini-meta em{display:none !important}
 }
-@media print{
-  body{background:#fff;color:#000}
-  .wrap{padding:0;max-width:none}
-  .hero-shell,.controls,.stage,.footer{box-shadow:none;border:1px solid #ddd}
-  .hero{grid-template-columns:1fr}
-  .ball-panel,.action-btn{display:none!important}
-  .gen-tabs{grid-template-columns:repeat(3,1fr)}
-  #list{grid-template-columns:repeat(3,1fr);gap:10px}
-  .dex-card{box-shadow:none;border:1px solid #ccc;background:#fff;min-height:250px}
+@media(max-width:430px){
+  .mini-meta strong{font-size:8px !important}
+  .mini-meta span{font-size:14px !important}
 }
+
 </style>
 </head>
 <body>
@@ -197,30 +372,34 @@ button{cursor:pointer}
             <h1 class="brand-title">POKÉDEX <span class="xl">XL</span></h1>
             <div class="brand-sub">National Dex • Master Set</div>
           </div>
+          <div class="brand-signature">By: Cigas</div>
         </div>
-        <div class="brand-note">Checklist nacional com 1025 Pokémon, sincronização Supabase e progresso por geração.</div>
+        <div class="brand-note">O teu binder digital: uma carta de qualquer coleção para cada Pokémon e, como objetivo premium, uma versão com arte especial.</div>
+        <div class="sync-line">
+          <span class="sync-indicator" id="syncIndicator"><span class="sync-dot"></span><span id="syncText">A ligar…</span></span>
+          <span class="db-note" id="artDbNote">Base ART antiga: 751 conhecidos · restantes por verificar</span>
+        </div>
       </div>
+
       <div class="stats-panel">
         <div class="stats-grid">
-          <div>
+          <div class="stats-count">
             <span class="kicker">Coleção Nacional</span>
             <div class="big-count" id="count">000 / 1025</div>
             <div class="big-percent"><span id="percentComplete">0.0%</span> completo</div>
           </div>
-          <div>
-            <div class="progress-head">
-              <span class="kicker">Progresso Geral</span>
-              <span class="value" id="progressLabel">0.0%</span>
-            </div>
+          <div class="stats-progress">
+            <div class="progress-head"><span class="kicker">Progresso Geral</span><span class="value" id="progressLabel">0.0%</span></div>
             <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
-            <div class="mini-stats">
-              <div class="mini-stat"><div class="mini-ico">🧾</div><div class="mini-meta"><strong>Cartas</strong><span id="cardsCount">0</span></div></div>
-              <div class="mini-stat"><div class="mini-ico">⭐</div><div class="mini-meta"><strong>Full Art</strong><span id="fullArtCount">0</span></div></div>
-              <div class="mini-stat"><div class="mini-ico">🗃️</div><div class="mini-meta"><strong>Em Falta</strong><span id="missingCount">1025</span></div></div>
-            </div>
+          </div>
+          <div class="mini-stats">
+            <div class="mini-stat"><div class="mini-ico">🧾</div><div class="mini-meta"><strong>Cartas</strong><span id="cardsCount">0</span><em>National Dex</em></div></div>
+            <div class="mini-stat"><div class="mini-ico">⭐</div><div class="mini-meta"><strong>ART</strong><span id="artCount">0 / —</span><em id="artPercent">base por verificar</em></div></div>
+            <div class="mini-stat"><div class="mini-ico">🗃️</div><div class="mini-meta"><strong>Em Falta</strong><span id="missingCount">1025</span><em>para a Dex</em></div></div>
           </div>
         </div>
       </div>
+
       <div class="ball-panel"><div class="pokeball-big"></div></div>
     </section>
     <div class="gen-tabs" id="genCounts"></div>
@@ -229,39 +408,62 @@ button{cursor:pointer}
   <div class="controls">
     <div class="search-wrap"><input id="search" placeholder="Pesquisar Pokémon…"></div>
     <div class="select-wrap">
-      <select id="genJump" aria-label="Ir diretamente para uma geração">
-        <option value="">Ir para geração…</option>
-        <option value="1">GEN I · Kanto (#001–151)</option>
-        <option value="2">GEN II · Johto (#152–251)</option>
-        <option value="3">GEN III · Hoenn (#252–386)</option>
-        <option value="4">GEN IV · Sinnoh (#387–493)</option>
-        <option value="5">GEN V · Unova (#494–649)</option>
-        <option value="6">GEN VI · Kalos (#650–721)</option>
-        <option value="7">GEN VII · Alola (#722–809)</option>
-        <option value="8">GEN VIII · Galar / Hisui (#810–905)</option>
-        <option value="9">GEN IX · Paldea (#906–1025)</option>
+      <select id="filterBy" aria-label="Filtrar coleção">
+        <option value="all">Filtros: Todos</option>
+        <option value="missing">Em falta</option>
+        <option value="have-card">Tenho carta</option>
+        <option value="missing-art">Falta ART</option>
+        <option value="complete">Completo: Carta + ART</option>
+        <option value="no-art">ART por verificar</option>
       </select>
     </div>
     <div class="select-wrap">
       <select id="sortBy" aria-label="Ordenar por">
-        <option value="number-asc">Ordenar: Número (Menor → Maior)</option>
-        <option value="number-desc">Ordenar: Número (Maior → Menor)</option>
-        <option value="name-asc">Ordenar: Nome (A → Z)</option>
-        <option value="name-desc">Ordenar: Nome (Z → A)</option>
+        <option value="number-asc">Número (Menor → Maior)</option>
+        <option value="number-desc">Número (Maior → Menor)</option>
+        <option value="name-asc">Nome (A → Z)</option>
+        <option value="name-desc">Nome (Z → A)</option>
       </select>
     </div>
-    <button class="action-btn" onclick="window.print()">🖨 Imprimir</button>
+    <button class="action-btn" id="exportBtn">⬇ Backup</button>
+    <button class="action-btn" id="importBtn">⬆ Restaurar</button>
+    <input type="file" id="importFile" accept="application/json,.json" hidden>
+    <button class="action-btn hidden" id="installBtn">📱 Instalar App</button>
+    <button class="action-btn red" onclick="window.print()">🖨 Imprimir</button>
   </div>
 
   <section class="stage">
     <div class="stage-head">
-      <h2>Checklist Nacional</h2>
-      <div class="meta" id="statusText">Mostrando 1025 de 1025 Pokémon</div>
+      <div class="stage-title-wrap">
+        <h2>A tua Pokédex</h2>
+        <button class="reset-gen hidden" id="resetGenBtn">Todas as gerações</button>
+      </div>
+      <div class="meta" id="statusText">Mostrando 0 de 1025 Pokémon</div>
     </div>
     <div id="list"></div>
+    <div class="pagination-shell" id="pagination"></div>
   </section>
 
-  <div class="footer">As marcações ficam guardadas no Supabase e sincronizam entre dispositivos. Os nomes são carregados da PokéAPI e guardados em cache para uso offline. O design foi aproximado ao mockup Pokédex XL, mantendo a tua lógica principal.</div>
+  <div class="footer">O controlo <strong>ART</strong> continua independente e mantém as tuas marcações atuais. Ao abrir um Pokémon, a pesquisa combina <strong>número da Pokédex + nome</strong> para encontrar mais cartas. Podes marcar cartas específicas como tuas e escolher uma para aparecer como imagem principal na Pokédex. Os preços são Cardmarket: quando a fonte principal não devolve valor, o site tenta automaticamente uma segunda fonte (TCGdex). A galeria inclui também cartas 30C já reveladas mesmo antes de as APIs as indexarem; nessas cartas o preço só aparece quando o mercado correto estiver ativo.</div>
+</div>
+
+
+
+<div class="art-modal" id="artModal" aria-hidden="true">
+  <div class="art-modal-panel" role="dialog" aria-modal="true" aria-labelledby="artModalTitle">
+    <div class="art-modal-head">
+      <div>
+        <h2 class="art-modal-title" id="artModalTitle">Todas as cartas</h2>
+        <div class="art-modal-sub" id="artModalSub">A procurar todas as cartas deste Pokémon…</div>
+      </div>
+      <button class="art-modal-close" id="artModalClose" aria-label="Fechar">×</button>
+    </div>
+    <div class="art-modal-toolbar">
+      <div class="art-modal-summary" id="artModalSummary">A carregar…</div>
+      <div class="art-modal-source">Pokémon TCG API + TCGdex · Cardmarket · inclui 30C revelada/pré-lançamento</div>
+    </div>
+    <div class="art-modal-body" id="artModalBody"></div>
+  </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -269,10 +471,22 @@ button{cursor:pointer}
 const SUPABASE_URL = 'https://wdljzuqoftrontqhhatr.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_MslRW16TUUxlAEnUNiQ2sQ_3FrG4sLy';
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
 const CACHE_KEY='pokedexxl-names-1025-v1';
+const TYPE_CACHE_KEY='pokedexxl-types-v1';
 const API='https://pokeapi.co/api/v2/pokemon-species?limit=1025&offset=0';
 
+const state={
+  generation:null,
+  filter:'all',
+  sort:'number-asc',
+  search:'',
+  page:1,
+  pageSize:24
+};
+
 const special={
+'nidoran-f':'Nidoran ♀','nidoran-m':'Nidoran ♂','flabebe':'Flabébé',
 'mr-mime':'Mr. Mime','mime-jr':'Mime Jr.','mr-rime':'Mr. Rime',
 'farfetchd':"Farfetch'd",'sirfetchd':"Sirfetch'd",'ho-oh':'Ho-Oh',
 'type-null':'Type: Null','porygon-z':'Porygon-Z','great-tusk':'Great Tusk',
@@ -302,239 +516,1351 @@ const genRanges=[
 {label:'GEN IX',min:906,max:1025,name:'Paldea'}
 ];
 
+// Base ART provisória v1 (23/08/2026).
+// Critério largo do projeto: Full Art, IR/SIR, AR/SAR, Alt Art, galleries,
+// promos ilustrativas e ex/V/GX/Ancient Trait equivalentes. Esta classificação
+// é deliberadamente provisória e será corrigida à medida que auditarmos cartas.
+const ART_DATABASE={
+  version:'provisional-751-v1',
+  verified_at:'23/08/2026',
+  complete:true,
+  provisional:true,
+  available:[
+    1,2,3,4,5,6,7,8,9,10,11,15,16,17,18,19,20,21,22,24,25,26,31,34,35,36,37,38,39,40,44,45,46,47,49,51,52,53,54,58,59,61,63,
+    65,67,68,72,74,76,77,78,79,80,81,82,84,87,88,89,92,93,94,95,96,99,100,101,102,103,104,108,110,113,114,115,116,118,121,
+    122,124,127,128,129,130,131,132,133,134,135,136,138,142,143,144,145,146,148,149,150,151,152,154,155,157,158,162,163,164,
+    166,168,169,174,175,177,179,180,181,184,185,187,190,194,195,196,197,198,199,200,201,202,203,204,205,206,208,209,210,212,
+    214,217,220,221,224,225,227,228,229,230,231,234,235,237,239,240,241,242,244,245,246,249,250,251,252,255,257,260,261,262,
+    263,264,267,268,269,270,272,275,277,280,282,285,286,290,291,292,297,300,301,302,303,304,307,319,320,321,322,323,330,333,
+    334,337,338,339,340,342,343,344,345,347,349,350,354,355,356,357,358,359,365,367,368,371,372,373,374,375,376,377,378,379,
+    380,381,382,383,384,385,386,387,389,393,400,405,411,415,417,418,419,422,423,425,426,428,429,433,434,435,436,437,440,441,
+    442,445,447,449,452,453,455,456,457,459,460,461,462,463,464,465,466,467,469,471,472,473,474,475,476,477,478,479,480,481,
+    483,484,485,486,487,488,489,490,491,492,493,494,495,496,497,498,499,500,501,502,503,504,505,506,507,508,509,510,511,512,
+    513,514,515,516,517,518,519,520,521,522,523,524,525,526,527,528,529,530,531,532,533,534,535,536,537,538,539,540,541,542,
+    543,544,545,546,547,548,549,550,551,552,553,554,555,556,557,558,559,560,561,562,563,564,565,566,567,568,569,570,571,572,
+    573,574,575,576,577,578,579,580,581,582,583,584,585,586,587,588,589,590,591,592,593,594,595,596,597,598,599,600,601,602,
+    603,604,605,606,607,608,609,610,611,612,613,614,615,616,617,618,619,620,621,622,623,624,625,626,627,628,629,630,631,632,
+    633,634,635,636,637,638,639,640,641,642,643,644,645,646,647,648,649,650,652,653,654,655,656,657,658,659,661,662,663,664,
+    665,666,667,668,670,671,677,678,680,681,684,685,686,687,691,692,693,694,695,697,699,700,701,702,703,705,706,708,709,712,
+    713,714,715,716,717,718,719,720,721,722,724,725,727,728,730,733,735,737,738,740,741,742,743,744,745,746,750,753,754,756,
+    758,759,760,763,764,765,766,767,768,769,773,774,776,777,778,779,780,781,784,785,786,787,788,791,792,793,794,795,796,797,
+    798,799,800,802,804,805,806,807,808,809,812,813,814,815,818,819,820,821,822,823,825,826,828,829,830,831,832,834,835,836,
+    838,839,840,841,842,844,845,847,849,850,851,852,853,854,855,857,858,860,861,862,863,864,865,866,867,868,869,870,871,872,
+    873,874,875,877,878,882,884,885,886,887,888,889,890,891,892,893,894,895,896,897,898,899,900,901,902,903,904,905,906,907,
+    908,909,910,911,912,913,914,915,916,917,918,919,921,923,925,926,927,929,931,932,934,935,936,937,939,940,941,943,944,945,
+    946,948,949,950,952,954,956,957,958,959,960,961,962,964,965,966,967,968,970,971,972,973,975,976,977,978,979,980,981,982,
+    983,984,985,986,987,988,989,990,991,992,993,994,995,996,997,998,999,1000,1001,1002,1003,1004,1005,1006,1007,1008,1009,
+    1010,1011,1012,1013,1014,1015,1016,1017,1018,1019,1020,1021,1022,1023,1024,1025
+  ],
+  unavailable:[
+    12,13,14,23,27,28,29,30,32,33,41,42,43,48,50,55,56,57,60,62,64,66,69,70,71,73,75,83,85,86,90,91,97,98,105,106,107,109,
+    111,112,117,119,120,123,125,126,137,139,140,141,147,153,156,159,160,161,165,167,170,171,172,173,176,178,182,183,186,188,
+    189,191,192,193,207,211,213,215,216,218,219,222,223,226,232,233,236,238,243,247,248,253,254,256,258,259,265,266,271,273,
+    274,276,278,279,281,283,284,287,288,289,293,294,295,296,298,299,305,306,308,309,310,311,312,313,314,315,316,317,318,324,
+    325,326,327,328,329,331,332,335,336,341,346,348,351,352,353,360,361,362,363,364,366,369,370,388,390,391,392,394,395,396,
+    397,398,399,401,402,403,404,406,407,408,409,410,412,413,414,416,420,421,424,427,430,431,432,438,439,443,444,446,448,450,
+    451,454,458,468,470,482,651,660,669,672,673,674,675,676,679,682,683,688,689,690,696,698,704,707,710,711,723,726,729,731,
+    732,734,736,739,747,748,749,751,752,755,757,761,762,770,771,772,775,782,783,789,790,801,803,810,811,816,817,824,827,833,
+    837,843,846,848,856,859,876,879,880,881,883,920,922,924,928,930,933,938,942,947,951,953,955,963,969,974
+  ]
+};
+const ART_AVAILABLE_SET=new Set(ART_DATABASE.available.map(Number));
+const ART_UNAVAILABLE_SET=new Set(ART_DATABASE.unavailable.map(Number));
+
+const DYNAMIC_ART_AVAILABLE_SET=new Set();
+function artAvailability(id){
+  // A antiga lista "sem ART" era provisória e já não bloqueia nada.
+  // Uma ART marcada pelo utilizador, encontrada dinamicamente ou já conhecida fica disponível;
+  // todos os restantes casos ficam apenas "por verificar".
+  if(supaFor(id)?.full_art===true) return 'available';
+  if(DYNAMIC_ART_AVAILABLE_SET.has(Number(id))) return 'available';
+  if(ART_AVAILABLE_SET.has(Number(id))) return 'available';
+  return 'unknown';
+}
+function artEligibleIds(all){ return all.filter(p=>artAvailability(p.id)==='available').map(p=>p.id); }
+
+const typeColors={
+  normal:'#7f8790',fire:'#d94a2f',water:'#2c75d6',electric:'#caa514',grass:'#4f9b45',ice:'#4eaeb7',
+  fighting:'#b63a34',poison:'#8750a0',ground:'#b67a3b',flying:'#6f83c1',psychic:'#d5487d',bug:'#7f961f',
+  rock:'#927640',ghost:'#5d5784',dragon:'#6a55c3',dark:'#4b4650',steel:'#718995',fairy:'#d16f9b'
+};
+
 function pretty(n){ return special[n] || n.split('-').map(x=>x?x[0].toUpperCase()+x.slice(1):x).join(' '); }
 function key(id,type){ return 'pokedexxl-'+id+'-'+type; }
-function genFor(id){
-  if(id<=151)return 'Geração I · Kanto';
-  if(id<=251)return 'Geração II · Johto';
-  if(id<=386)return 'Geração III · Hoenn';
-  if(id<=493)return 'Geração IV · Sinnoh';
-  if(id<=649)return 'Geração V · Unova';
-  if(id<=721)return 'Geração VI · Kalos';
-  if(id<=809)return 'Geração VII · Alola';
-  if(id<=905)return 'Geração VIII · Galar / Hisui';
-  return 'Geração IX · Paldea';
+function artworkUrl(id){ return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`; }
+function fallbackArtworkUrl(id){ return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`; }
+function supaFor(id){ return (window.__supabaseData||[]).find(x=>Number(x.pokemon_id)===Number(id)); }
+function genIndexFor(id){ return genRanges.findIndex(g=>id>=g.min&&id<=g.max)+1; }
+
+function setSyncStatus(mode,text){
+  const el=document.getElementById('syncIndicator');
+  const tx=document.getElementById('syncText');
+  if(!el||!tx)return;
+  el.className='sync-indicator '+mode;
+  tx.textContent=text;
 }
-function artworkUrl(id){
-  return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`;
+
+window.addEventListener('offline',()=>setSyncStatus('offline','Sem ligação'));
+window.addEventListener('online',()=>setSyncStatus('saving','A sincronizar…'));
+
+
+function getTypeCache(){
+  try{return JSON.parse(localStorage.getItem(TYPE_CACHE_KEY)||'{}')||{}}catch(e){return {}}
 }
-function fallbackArtworkUrl(id){
-  return `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
+function saveTypeCache(){
+  try{localStorage.setItem(TYPE_CACHE_KEY,JSON.stringify(window.__typeCache||{}))}catch(e){}
+}
+window.__typeCache=getTypeCache();
+
+async function ensureTypes(ids){
+  const missing=[...new Set(ids)].filter(id=>!window.__typeCache[id]);
+  if(!missing.length){ refreshTypeRows(ids); return; }
+  await Promise.allSettled(missing.map(async id=>{
+    const r=await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    const d=await r.json();
+    window.__typeCache[id]=(d.types||[]).map(x=>x.type.name);
+  }));
+  saveTypeCache();
+  refreshTypeRows(ids);
+}
+
+function typeMarkup(id){
+  const types=window.__typeCache[id]||[];
+  if(!types.length) return '<span class="type-chip" style="background:#87919d">TYPE</span>';
+  return types.map(t=>`<span class="type-chip" style="background:${typeColors[t]||'#66717c'}">${t}</span>`).join('');
+}
+function refreshTypeRows(ids){
+  ids.forEach(id=>{
+    const el=document.querySelector(`.type-row[data-id="${id}"]`);
+    if(el) el.innerHTML=typeMarkup(id);
+  });
 }
 
 async function loadSupabaseData(){
-  const { data, error } = await supabaseClient.from('pokemon_cards').select('pokemon_id, card, full_art');
+  setSyncStatus('saving','A sincronizar…');
+  const {data,error}=await supabaseClient.from('pokemon_cards').select('pokemon_id, card, full_art');
   if(error){
-    console.error('Erro ao carregar Supabase:', error);
-    alert('ERRO SUPABASE: ' + error.message);
+    console.error('Erro ao carregar Supabase:',error);
+    setSyncStatus('error','Erro de sincronização');
+    alert('ERRO SUPABASE: '+error.message);
     return [];
   }
-  return data || [];
+  setSyncStatus('synced','Sincronizado');
+  return data||[];
+}
+
+
+const CARD_BROWSER_CACHE=new Map();
+const CARD_BROWSER_INFLIGHT=new Map();
+const CARD_REQUEST_RETRIES=4;
+const TCGDEX_PRICE_CACHE=new Map();
+const TCGDEX_NAME_SEARCH_CACHE=new Map();
+const TCGDEX_PRICE_CONCURRENCY=5;
+let currentModalPokemon=null;
+let currentModalCards=[];
+let currentModalVisibleLimit=120;
+const MODAL_PAGE_STEP=120;
+
+
+// 30.º ANIVERSÁRIO — First Partner Illustration Collection (MEP 037–063)
+// Estas 27 promos exclusivas podem chegar mais tarde às bases generalistas; por isso
+// ficam garantidas aqui e recebem preço Cardmarket através do fallback TCGdex já existente.
+const FIRST_PARTNER_30TH_PROMOS={
+  1:{mep:'037',name:'Bulbasaur',releaseDate:'2026-03-20'},
+  4:{mep:'038',name:'Charmander',releaseDate:'2026-03-20'},
+  7:{mep:'039',name:'Squirtle',releaseDate:'2026-03-20'},
+  387:{mep:'040',name:'Turtwig',releaseDate:'2026-03-20'},
+  390:{mep:'041',name:'Chimchar',releaseDate:'2026-03-20'},
+  393:{mep:'042',name:'Piplup',releaseDate:'2026-03-20'},
+  722:{mep:'043',name:'Rowlet',releaseDate:'2026-03-20'},
+  725:{mep:'044',name:'Litten',releaseDate:'2026-03-20'},
+  728:{mep:'045',name:'Popplio',releaseDate:'2026-03-20'},
+  152:{mep:'046',name:'Chikorita',releaseDate:'2026-06-19'},
+  155:{mep:'047',name:'Cyndaquil',releaseDate:'2026-06-19'},
+  158:{mep:'048',name:'Totodile',releaseDate:'2026-06-19'},
+  495:{mep:'049',name:'Snivy',releaseDate:'2026-06-19'},
+  498:{mep:'050',name:'Tepig',releaseDate:'2026-06-19'},
+  501:{mep:'051',name:'Oshawott',releaseDate:'2026-06-19'},
+  810:{mep:'052',name:'Grookey',releaseDate:'2026-06-19'},
+  813:{mep:'053',name:'Scorbunny',releaseDate:'2026-06-19'},
+  816:{mep:'054',name:'Sobble',releaseDate:'2026-06-19'},
+  252:{mep:'055',name:'Treecko',releaseDate:'2026-08-07'},
+  255:{mep:'056',name:'Torchic',releaseDate:'2026-08-07'},
+  258:{mep:'057',name:'Mudkip',releaseDate:'2026-08-07'},
+  650:{mep:'058',name:'Chespin',releaseDate:'2026-08-07'},
+  653:{mep:'059',name:'Fennekin',releaseDate:'2026-08-07'},
+  656:{mep:'060',name:'Froakie',releaseDate:'2026-08-07'},
+  906:{mep:'061',name:'Sprigatito',releaseDate:'2026-08-07'},
+  909:{mep:'062',name:'Fuecoco',releaseDate:'2026-08-07'},
+  912:{mep:'063',name:'Quaxly',releaseDate:'2026-08-07'}
+};
+
+
+
+// 30TH CELEBRATION — CARTAS REVELADAS / PRÉ-LANÇAMENTO
+// Snapshot preparado em 23-08-2026. O set principal é 30C (lançamento 16-09-2026).
+// As imagens das cartas ainda não indexadas nas APIs vêm das scans públicas compiladas
+// a partir de opening livestreams; quando as APIs oficiais/indexadores apanharem estas
+// cartas, a lógica abaixo funde os dados em vez de criar duplicados.
+const THIRTIETH_PRE_RELEASE_CARDS=[{"id":"30c-001","name":"Exeggcute","number":"001","pokemonIds":[102],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/3/c/2/3c20f4138b6c2d9ba9bf9cd334c0380ec5336b50.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-002","name":"Alolan Exeggutor","number":"002","pokemonIds":[103],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/0/0/4/004ebb55c7d20d632bed516aeee024d8955055a4.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-003","name":"Volbeat","number":"003","pokemonIds":[313],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/6/4/6/64613d139b2095707aa091ad972e4f177ca8b39c.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-004","name":"Illumise","number":"004","pokemonIds":[314],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/1/9/2/192b4f65876bd90651c232328a1b4ddb4822f6f8.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-005","name":"Tropius","number":"005","pokemonIds":[357],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/7/c/d/7cdf0966eb6c7d75ad7ac949f360eb9f6ce5dcfd.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-006","name":"Cherubi","number":"006","pokemonIds":[420],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/6/0/5/60574b8d151723d38aac5bdef56e67bfc610d9d2.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-007","name":"Cherrim","number":"007","pokemonIds":[421],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/0/7/7/077f9dc0e550b951b7af1e388ab7e2b2071998e5.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-008","name":"Vivillon","number":"008","pokemonIds":[666],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/8/2/f/82fca98236d9a44e7681ef1a5aca87568919bf22.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-009","name":"Vulpix","number":"009","pokemonIds":[37],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/9/9/5/995c0f0a22fcb10370b833b4e9b5aaad9ebb299b.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-010","name":"Ninetales","number":"010","pokemonIds":[38],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/0/d/5/0d58e540aa4aa425d26e655e634904c8a3fd6f4a.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-011","name":"Moltres","number":"011","pokemonIds":[146],"rarity":"Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/a/e/8/ae8c949909f196cd0618411443cff276d666d922.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-012","name":"Ho-Oh","number":"012","pokemonIds":[250],"rarity":"Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/d/3/a/d3a23d38ad04ba7e2fd30010715fa9ebd5413ba7.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-013","name":"Victini","number":"013","pokemonIds":[494],"rarity":"Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/9/8/4/984503393f8a106721c365c7e06790985ce70db1.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-014","name":"Reshiram","number":"014","pokemonIds":[643],"rarity":"Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/3/e/5/3e5d120d4c522d275dbac80be91cb1fa40de3c7f.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-015","name":"Fuecoco ex","number":"015","pokemonIds":[909],"rarity":"Double Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/5/b/4/5b4d71a79a6633174a506828b28dc1a1878d2c31.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-016","name":"Slowpoke","number":"016","pokemonIds":[79],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/e/9/7/e97ceab7706036ca6cb4f8549dc5d55073037471.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-017","name":"Lapras","number":"017","pokemonIds":[131],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/d/4/d/d4dc7fda91d003cff02ea7610fffd2d6ccb28733.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-018","name":"Articuno","number":"018","pokemonIds":[144],"rarity":"Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/3/7/f/37ff50a6d4ac5945d7825da9a05a3d2881080dd5.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-019","name":"Kyogre","number":"019","pokemonIds":[382],"rarity":"Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/c/5/9/c599e886c70f522c067f3e9e16fe4550ff33ad45.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-020","name":"Palkia","number":"020","pokemonIds":[484],"rarity":"Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/1/9/f/19faa63edf1c50c7e7333487b536c3630085ec16.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-021","name":"Greninja ex","number":"021","pokemonIds":[658],"rarity":"Double Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/8/d/6/8d669f5c04520bf6bfae3b238a7aba759460dc6f.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-022","name":"Wishiwashi","number":"022","pokemonIds":[746],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/3/b/a/3baec0bdc5967adba8e9e80f7a0f6dac42383281.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-023","name":"Pikachu","number":"023","pokemonIds":[25],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/8/0/a/80ab06cefffb357921953bc429ecc2b9dc0bc5de.jpeg","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-024","name":"Pikachu","number":"024","pokemonIds":[25],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/a/4/e/a4ebd2fa77be49e4f5611405e38a9268d63c81ee.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-025","name":"Pikachu","number":"025","pokemonIds":[25],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/a/9/2/a92c1d2b22f6307d54b4b61589f7b56d0d7bd38e.jpeg","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-026","name":"Pikachu","number":"026","pokemonIds":[25],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/c/5/8/c5866bb805f873626d24ef06f43ec79bbcae57d6.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-027","name":"Pikachu","number":"027","pokemonIds":[25],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/6/6/7/6674c2a899f8a9260c83b0ff74158b15c453ad3f.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-028","name":"Pikachu","number":"028","pokemonIds":[25],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/8/1/2/812eab2ec152dcc2b20cb6b942f02b955d7e6af7.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-029","name":"Pikachu","number":"029","pokemonIds":[25],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/6/4/2/6424f26204c0e46a1731681234b9e5d4181111ca.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-030","name":"Pikachu","number":"030","pokemonIds":[25],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/0/a/5/0a5b516a56385a233a5651d23bce46cce69b5d05.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-031","name":"Pikachu","number":"031","pokemonIds":[25],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/e/a/7/ea75247a813368a38d05f3625cc10da07a1c2cde.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-032","name":"Pikachu","number":"032","pokemonIds":[25],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/8/d/2/8d20e1d4f47493190457651f1e82b10931062900.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-033","name":"Pikachu","number":"033","pokemonIds":[25],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/a/5/2/a5218f6bc12f8a9dec707e1acf757717e7c23be6.jpeg","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-034","name":"Pikachu","number":"034","pokemonIds":[25],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/2/a/8/2a87d1a5851cd7dc44769798316e428334523fcc.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-035","name":"Pikachu","number":"035","pokemonIds":[25],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/2/8/1/2818945877f3027a18c406af7ba55cc3279ea1af.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-036","name":"Pikachu","number":"036","pokemonIds":[25],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/8/e/e/8ee98a0fba88baff0efd616f27a1628b24fb140e.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-037","name":"Pikachu","number":"037","pokemonIds":[25],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/5/e/9/5e9230aeb024934839907350eafeb3449c8cf12f.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-038","name":"Pikachu","number":"038","pokemonIds":[25],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/7/b/d/7bd59bcfcd38cb6a1913d2f636c051bf2e952510.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-039","name":"Pikachu","number":"039","pokemonIds":[25],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/6/f/3/6f34f249fb7b9086de539f9174fb6515efc3e9b1.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-040","name":"Pikachu","number":"040","pokemonIds":[25],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/e/7/9/e7903f3888c8e3ea292920be5c2be3604f025842.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-041","name":"Pikachu","number":"041","pokemonIds":[25],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/3/8/2/3823f772a38f0d3c853c4c2076514faf5e222179.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-042","name":"Pikachu","number":"042","pokemonIds":[25],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/7/4/8/748b0bf91171bafb5b50f0c97fa7c6ef1ea8db05.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-043","name":"Pikachu","number":"043","pokemonIds":[25],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/d/8/2/d823cce1ac7500a7e1a6dd9e5fd9883a92255be2.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-044","name":"Pikachu","number":"044","pokemonIds":[25],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/5/7/d/57d2ef7459ae18a11913c1d31d3d94c7d2db8adc.jpeg","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-045","name":"Pikachu","number":"045","pokemonIds":[25],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/4/3/c/43c0da3c9bd9f09d571d00a7ff705a7b029b4d86.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-046","name":"Pikachu","number":"046","pokemonIds":[25],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/1/9/d/19db1cddbf971084b1e8a7f39b008d5642f93ec6.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-047","name":"Pikachu","number":"047","pokemonIds":[25],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/2/a/f/2af48c3c645d8b46e283b1cd1cf523d56bee906a.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-048","name":"Pikachu","number":"048","pokemonIds":[25],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/5/c/5/5c5d1ad6686efb6b59582cbf08be4011227efdb9.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-049","name":"Pikachu","number":"049","pokemonIds":[25],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/d/0/f/d0f4e41f6e7ed34c9eabeb845b2f2e6a5bdfdf7d.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-050","name":"Pikachu","number":"050","pokemonIds":[25],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/7/0/6/7064a1db840810298a35d41ff0fe4caa34f78c87.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-051","name":"Pikachu","number":"051","pokemonIds":[25],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/d/5/8/d584c14f614b50e484867d4a5ad741f11759d24e.jpeg","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-052","name":"Pikachu","number":"052","pokemonIds":[25],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/b/a/9/ba93e80c65e100843f5a29536b4c339656e7df75.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-053","name":"Pikachu ex","number":"053","pokemonIds":[25],"rarity":"Double Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/7/b/6/7b6a465f9021ce1c70d7db8ef7ad4c8620376bfd.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-054","name":"Pikachu ex","number":"054","pokemonIds":[25],"rarity":"Double Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/1/f/9/1f90c97352950c0155b529a2c3666e8b4d47aeef.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-055","name":"Zapdos","number":"055","pokemonIds":[145],"rarity":"Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/8/9/3/893e207454bcc836fbc1a1d8ef214c69fe0ce7d7.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-056","name":"Zekrom","number":"056","pokemonIds":[644],"rarity":"Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/2/7/f/27f39ace677e89d80f4669687efc61ac2e0113b1.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-057","name":"Zeraora","number":"057","pokemonIds":[807],"rarity":"Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/8/2/a/82a29e3685db072bd135dccc5d2e689d2dedeb7c.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-058","name":"Toxel","number":"058","pokemonIds":[848],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/e/a/5/ea5660e484afca3c0620135ae1451d2042c3ae84.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-059","name":"Toxtricity","number":"059","pokemonIds":[849],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/0/b/8/0b8d79cf9de7e1c31c5a02dc41d754faa0e46f26.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-060","name":"Toxtricity","number":"060","pokemonIds":[849],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/6/f/e/6fed37f919faed42735cacaa714816f598ab4c62.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-061","name":"Morpeko","number":"061","pokemonIds":[877],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/0/8/4/0848416f2e6037d55576b6f1c59965ab9db93586.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-062","name":"Miraidon","number":"062","pokemonIds":[1008],"rarity":"Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/6/5/f/65ff52a8d828d9b0a315ec0f81ea405939de51d9.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-063","name":"Mewtwo","number":"063","pokemonIds":[150],"rarity":"Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/f/c/e/fce0b96bb13ef9adca21c348b0c28b02572032de.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-064","name":"Mewtwo ex","number":"064","pokemonIds":[150],"rarity":"Double Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/d/c/9/dc9245a79e596d8cfcdd7d6c5a5d4ae90888adfc.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-065","name":"Mew","number":"065","pokemonIds":[151],"rarity":"Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/2/5/4/2541eab2cf4e4cc9af4acd8609e9d372c8b0f7f2.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-066","name":"Mew ex","number":"066","pokemonIds":[151],"rarity":"Double Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/1/d/8/1d833d79c46157c809d5c6f5c0c16f96120502fe.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-067","name":"Marill","number":"067","pokemonIds":[183],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/5/b/a/5ba0670a6edbc449938c1fa375cf5f33fdcd6675.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-068","name":"Azumarill","number":"068","pokemonIds":[184],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/d/f/b/dfb55e8a2c86b0fdd7e68ca5116c182178965612.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-069","name":"Espeon","number":"069","pokemonIds":[196],"rarity":"Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/5/7/4/574415e509f0196f65650ad847a4416691d7a71f.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-070","name":"Espeon ex","number":"070","pokemonIds":[196],"rarity":"Double Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/1/b/f/1bfc49986398d8af26cc862626f31f677b981d8a.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-071","name":"Sylveon ex","number":"071","pokemonIds":[700],"rarity":"Double Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/2/c/c/2cccd353a4864b3e3ebfca9d5b696ca85e609e01.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-072","name":"Unown","number":"072","pokemonIds":[201],"rarity":"Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/3/8/a/38a53a8ba6f9513968ba28597c4eba5b84bcde6c.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-073","name":"Drifloon","number":"073","pokemonIds":[425],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/f/2/d/f2d484a03bd10a8d1178fd36262897da421e5bc3.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-074","name":"Cresselia","number":"074","pokemonIds":[488],"rarity":"Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/7/2/6/7265a66d22f599444a3c13233e0f3c6879369ca9.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-075","name":"Chandelure","number":"075","pokemonIds":[609],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/a/b/7/ab7ff4eb5a62e5f7347b3157e0c7bce3338e2e82.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-076","name":"Xerneas","number":"076","pokemonIds":[716],"rarity":"Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/c/8/1/c811a48f2e456e787a9e3357cbc4ad8f18a6f166.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-077","name":"Comfey","number":"077","pokemonIds":[764],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/0/d/9/0d9f3b73e35aeb9fc322aec2847cf221c730d527.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-078","name":"Cosmog","number":"078","pokemonIds":[789],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/9/e/f/9ef245f440ce1d1590eb7ee97a0db61c19e271cc.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-079","name":"Cosmoem","number":"079","pokemonIds":[790],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/2/3/d/23da974ae6a11bdc5d3788398e993acf6fac0360.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-080","name":"Lunala","number":"080","pokemonIds":[792],"rarity":"Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/f/f/e/ffe87291cdc19032d1f2a6e58f1d20e6cd971245.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-081","name":"Gimmighoul","number":"081","pokemonIds":[999],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/c/f/3/cf31d278a05f69cc50e657b4c47e6fd644e4936b.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-082","name":"Groudon","number":"082","pokemonIds":[383],"rarity":"Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/0/c/e/0ce48fc9caf2e69d6ceef20eb5c7ea2370d941bb.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-083","name":"Lucario","number":"083","pokemonIds":[448],"rarity":"Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/9/b/c/9bcf96531a32bba6209a8e1060b3c97abeeea07a.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-084","name":"Seismitoad","number":"084","pokemonIds":[537],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/b/f/e/bfe5b5ae5aa12574f3ca2e50de1a638ca545f9e1.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-085","name":"Lycanroc","number":"085","pokemonIds":[745],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/8/c/0/8c06aa22fc36ef0ae1ffa9942f03be3c240880b7.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-086","name":"Koraidon","number":"086","pokemonIds":[1007],"rarity":"Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/d/8/d/d8dbc9a8ba716efee17a136af55192ecc8aac057.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-087","name":"Nidoran F","number":"087","pokemonIds":[29],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/6/6/6/666c4b6fc68a6d3b9d87f1024dcc34afcddd75b8.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-088","name":"Nidorina","number":"088","pokemonIds":[30],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/0/f/6/0f6ed131c95bf35a81501c24f28d5cf42ee4caac.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-089","name":"Alolan Meowth","number":"089","pokemonIds":[52],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/d/7/6/d76f29e9f5fe50a4efdcd6b66aee482e6db27e5d.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-090","name":"Gengar ex","number":"090","pokemonIds":[94],"rarity":"Double Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/d/b/b/dbbfc91c63b48c5aa17e83eacfcd8ea38cf3031c.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-091","name":"Umbreon","number":"091","pokemonIds":[197],"rarity":"Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/8/d/3/8d35f8f81439cab8fbdff02653756b1ab907373f.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-092","name":"Umbreon ex","number":"092","pokemonIds":[197],"rarity":"Double Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/2/a/a/2aad9befc67b6b0778ae3b98cb5e932f68179b3c.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-093","name":"Murkrow","number":"093","pokemonIds":[198],"rarity":"Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/3/e/4/3e44fd2592c84dfdb482e08e47451e25a6c1df21.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-094","name":"Scraggy","number":"094","pokemonIds":[559],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/1/6/6/1668d87584637883ebcd203c6b2dfb1d3f0f5ce5.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-095","name":"Zorua","number":"095","pokemonIds":[570],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/9/a/8/9a865030f8fa58d965c06443e4a0c3834c3c5ec4.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-096","name":"Zoroark","number":"096","pokemonIds":[571],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/8/5/9/8598ae101da38390dd5eb0daf5a35a62dd41d1e5.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-097","name":"Deino","number":"097","pokemonIds":[633],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/b/f/2/bf20415ca36d30af66c1a0b756d87d30bd137ed9.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-098","name":"Zweilous","number":"098","pokemonIds":[634],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/4/3/6/436914b0316354da377e22bcd792c9fe7863c1a6.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-099","name":"Hydreigon","number":"099","pokemonIds":[635],"rarity":"Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/3/c/a/3ca0b218c509458deb4458df5e817d08968a07ee.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-100","name":"Yveltal","number":"100","pokemonIds":[717],"rarity":"Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/7/9/4/7948f897b9c3166a438af946dd168d309b459c6d.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-101","name":"Galarian Meowth","number":"101","pokemonIds":[52],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/6/3/6/6369d831ee9212159d7a067f167999b34f2a3618.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-102","name":"Jirachi ex","number":"102","pokemonIds":[385],"rarity":"Double Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/6/d/e/6de27f188e1ec4ec4097c0aff3346b05bf3e0444.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-103","name":"Dialga","number":"103","pokemonIds":[483],"rarity":"Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/a/6/e/a6eca1a3a95d6a1d6b5c2330b5477cf5af0b99c8.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-104","name":"Ferrothorn","number":"104","pokemonIds":[598],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/3/2/4/324c56482434094cb6bf283115ac8471b1228db0.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-105","name":"Solgaleo","number":"105","pokemonIds":[791],"rarity":"Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/2/d/c/2dc6ced178200864aafe7049ec2f73494e1e3695.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-106","name":"Zacian","number":"106","pokemonIds":[888],"rarity":"Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/f/3/f/f3f629e03c9fd367cba5b907ab815f3e4ba53957.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-107","name":"Zamazenta","number":"107","pokemonIds":[889],"rarity":"Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/5/9/6/596910ff20b22adb6d27099267768dc0546fb60b.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-108","name":"Gholdengo","number":"108","pokemonIds":[1000],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/4/6/0/460a14ab8da3dfce72074fc937d6681d3cd2a677.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-109","name":"Salamence ex","number":"109","pokemonIds":[373],"rarity":"Double Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/7/f/0/7f099bedc9230d94f45df1009a3d1ba19c327d71.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-110","name":"Jangmo-o","number":"110","pokemonIds":[782],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/0/2/c/02cdc863a44482e19afdaa968074c4ada4c2e59a.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-111","name":"Hakamo-o","number":"111","pokemonIds":[783],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/5/e/7/5e7a51f1b67e3d208c559c41d663868d5ac67f4f.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-112","name":"Kommo-o","number":"112","pokemonIds":[784],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/3/a/8/3a828a1b1834c75240f89d9376d1f37e8135358f.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-113","name":"Meowth","number":"113","pokemonIds":[52],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/c/a/c/cacaffdcff8bf28b0cdfa6b29783b428744e1248.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-114","name":"Kangaskhan","number":"114","pokemonIds":[115],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/3/8/7/387932904fb9ce2ca92d8c1a994230b45d32b30a.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-115","name":"Ditto","number":"115","pokemonIds":[132],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/e/9/4/e943a8446d1cdfe6fff8d525804406954975a3f4.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-116","name":"Eevee","number":"116","pokemonIds":[133],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/a/8/0/a80834a9b46aa4e416145cdd9af58f33e85a56f5.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-117","name":"Eevee","number":"117","pokemonIds":[133],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/0/2/9/029b358e8ac8b03b7d39b513769598987d7b15d3.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-118","name":"Eevee","number":"118","pokemonIds":[133],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/2/e/3/2e367f1848cd441210fa8c8c651ddef5fc57482e.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-119","name":"Snorlax","number":"119","pokemonIds":[143],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/9/7/e/97e362b7097efb01c62ecce27f26f729080a97dd.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-120","name":"Igglybuff","number":"120","pokemonIds":[174],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/7/a/2/7a2f2a04787e4e04cbc488b7d33b888b4560be83.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-121","name":"Lugia","number":"121","pokemonIds":[249],"rarity":"Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/1/9/8/19865307a5d9bab3ae0b4afac8288570499cf273.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-122","name":"Hisuian Zorua","number":"122","pokemonIds":[570],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/d/b/a/dbadb43273c4b7d21dc7b4b4b66a1fa6432f5292.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-123","name":"Hisuian Zoroark","number":"123","pokemonIds":[571],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/9/8/0/98088d69d93453c49e37c2914423e1883582d911.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-124","name":"Minior","number":"124","pokemonIds":[774],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/c/8/0/c80c6c5ba68eb14dfec69f25138e0be8ec45ac53.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-125","name":"Maushold","number":"125","pokemonIds":[925],"rarity":"Pokémon","image":"https://efour.b-cdn.net/uploads/default/original/4X/0/7/a/07aa0c052471fd03acc5595cc8b8599f57f87219.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-129","name":"Alolan Exeggutor","number":"129","pokemonIds":[103],"rarity":"Illustration Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/a/a/6/aa6879c6cb7a0db223fdf828de04da5bc38a4ca0.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-130","name":"Moltres","number":"130","pokemonIds":[146],"rarity":"Illustration Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/c/0/7/c07b46aaa2c3076daa27f5c4de94ce07dcf89601.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-131","name":"Lapras","number":"131","pokemonIds":[131],"rarity":"Illustration Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/1/e/3/1e35bbea5b578e49f8f16ab118d0282457dfdb6e.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-132","name":"Articuno","number":"132","pokemonIds":[144],"rarity":"Illustration Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/7/4/1/7414f4d6a555d195d68f9eca18e7789fcac90ff7.jpeg","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-133","name":"Zapdos","number":"133","pokemonIds":[145],"rarity":"Illustration Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/8/3/b/83b88e230a537d1149323a9f368340d5727f27a9.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-134","name":"Toxtricity","number":"134","pokemonIds":[849],"rarity":"Illustration Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/e/d/8/ed833bac29c8de214b3b5856a078c8807d9d08ad.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-135","name":"Morpeko","number":"135","pokemonIds":[877],"rarity":"Illustration Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/e/d/f/edfe98241dd20799f77b7ba3d069e4ae35487275.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-136","name":"Drifloon","number":"136","pokemonIds":[425],"rarity":"Illustration Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/5/0/c/50c9a8b449ff8e697be9df816658100d31dcd9ce.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-137","name":"Chandelure","number":"137","pokemonIds":[609],"rarity":"Illustration Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/5/a/d/5ad9aadb5e14d73b58d1c8bf9ed061406ec0b353.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-138","name":"Lycanroc","number":"138","pokemonIds":[745],"rarity":"Illustration Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/2/b/a/2ba72d333e4bd4003ca3d5f0a929be27ddf61620.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-139","name":"Alolan Meowth","number":"139","pokemonIds":[52],"rarity":"Illustration Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/b/8/8/b882f91e8494b84421120de20abf20393ca02df0.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-140","name":"Scraggy","number":"140","pokemonIds":[559],"rarity":"Illustration Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/0/6/a/06a2cdac36a8b65ca6871c8a8f934144107c268f.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-141","name":"Galarian Meowth","number":"141","pokemonIds":[52],"rarity":"Illustration Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/a/2/3/a23d40d6910305d34dd4db51c0e4e84cbe47843d.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-142","name":"Gholdengo","number":"142","pokemonIds":[1000],"rarity":"Illustration Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/d/f/e/dfeb0c4ad85890f8d15418aeabe4feaa46d7ab74.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-143","name":"Kommo-o","number":"143","pokemonIds":[784],"rarity":"Illustration Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/d/9/6/d96ab93b105789d4d224ba6e975d605e1559f867.jpeg","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-144","name":"Meowth","number":"144","pokemonIds":[52],"rarity":"Illustration Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/b/c/7/bc7e0340dbd5f2eaed38b3241fe5ccac48d18352.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-145","name":"Hisuian Zorua","number":"145","pokemonIds":[570],"rarity":"Illustration Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/8/b/e/8bebd5fa9137e6f7749a5ceda754b52b5d159544.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-146","name":"Maushold","number":"146","pokemonIds":[925],"rarity":"Illustration Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/0/7/5/07526223e637cc6c363bac999e06cd36af3ac505.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-147","name":"Fuecoco ex","number":"147","pokemonIds":[909],"rarity":"Special Illustration Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/9/6/a/96a1c9c9d8550649be9af241cd03196acd2d8be2.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-148","name":"Greninja ex","number":"148","pokemonIds":[658],"rarity":"Special Illustration Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/9/a/e/9ae679240fc4bfb66b919703bb12973d5b88fd56.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-149","name":"Pikachu ex","number":"149","pokemonIds":[25],"rarity":"Special Illustration Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/e/9/e/e9e2daa76dbf1085618a6a065bc094e31673888d.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-150","name":"Pikachu ex","number":"150","pokemonIds":[25],"rarity":"Special Illustration Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/6/5/6/6569365c0029388623ccdbc05d84b5544fa46e76.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-151","name":"Mewtwo ex","number":"151","pokemonIds":[150],"rarity":"Special Illustration Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/f/0/4/f044baad3103a6267da8e9f1ab10e19d6981e5e7.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-152","name":"Mew ex","number":"152","pokemonIds":[151],"rarity":"Special Illustration Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/2/0/a/20a2fae39d98c2605c9b2b75e5ca519e04b6fdf0.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-153","name":"Sylveon ex","number":"153","pokemonIds":[700],"rarity":"Special Illustration Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/8/8/d/88dae031d64503f84428e507945705662f54e0bd.jpeg","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-154","name":"Gengar ex","number":"154","pokemonIds":[94],"rarity":"Special Illustration Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/a/2/6/a269786f24485a5fa3d4e581b536b446a11a4c63.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-155","name":"Jirachi ex","number":"155","pokemonIds":[385],"rarity":"Special Illustration Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/9/c/5/9c521189f288644ec014a8c61d3e2afb9a6bd51d.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-156","name":"Salamence ex","number":"156","pokemonIds":[373],"rarity":"Special Illustration Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/c/7/3/c73e137cbd44fc2aa1cf51af505de36b521a5b2e.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-157","name":"Mewtwo ex","number":"157","pokemonIds":[150],"rarity":"Futuristic Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/0/5/0/05091cdb45c5e464ea16c28c1c58db8f0e412d2c.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-158","name":"Mew ex","number":"158","pokemonIds":[151],"rarity":"Futuristic Rare","image":"https://efour.b-cdn.net/uploads/default/original/4X/8/5/9/8598baafadc14895fc9d795e22bb86c48a277653.png","releaseDate":"2026-09-16","kind":"30C"},{"id":"30c-cc-01","name":"Pikachu","number":"CC-01","pokemonIds":[25],"rarity":"Classic Collection","image":"https://efour.b-cdn.net/uploads/default/original/4X/8/7/4/874690cfd5efdfec177b5e49441edde0c61db41a.png","releaseDate":"2026-11-06","kind":"30C Classic"},{"id":"30c-cc-02","name":"Charizard","number":"CC-02","pokemonIds":[6],"rarity":"Classic Collection","image":"https://efour.b-cdn.net/uploads/default/original/4X/a/2/8/a28ce23110729440ac5c4128751ceee37f0114f1.png","releaseDate":"2026-11-06","kind":"30C Classic"},{"id":"30c-cc-03","name":"Erika's Jigglypuff","number":"CC-03","pokemonIds":[39],"rarity":"Classic Collection","image":"https://efour.b-cdn.net/uploads/default/original/4X/f/4/d/f4d300c3c820bf52495c0f87aa0fbcd7e13bf062.png","releaseDate":"2026-11-06","kind":"30C Classic"},{"id":"30c-cc-04","name":"Sneasel","number":"CC-04","pokemonIds":[215],"rarity":"Classic Collection","image":"https://efour.b-cdn.net/uploads/default/original/4X/f/c/b/fcb80f48c6129da87f53405491f4cbb857000742.png","releaseDate":"2026-11-06","kind":"30C Classic"},{"id":"30c-cc-05","name":"Shining Celebi","number":"CC-05","pokemonIds":[251],"rarity":"Shining · Classic Collection","image":"https://efour.b-cdn.net/uploads/default/original/4X/d/6/c/d6cba50cb00592a24e2c2c258423f08d4e4f8d24.png","releaseDate":"2026-11-06","kind":"30C Classic"},{"id":"30c-cc-06","name":"Lugia","number":"CC-06","pokemonIds":[249],"rarity":"Classic Collection","image":"https://efour.b-cdn.net/uploads/default/original/4X/f/3/6/f36a449bddce8cf1006f07e7b1917f0ed841dfd1.jpeg","releaseDate":"2026-11-06","kind":"30C Classic"},{"id":"30c-cc-07","name":"Delcatty","number":"CC-07","pokemonIds":[301],"rarity":"Classic Collection","image":"https://efour.b-cdn.net/uploads/default/original/4X/e/8/5/e859a8de616d414faf92cf89aeda995eff329180.png","releaseDate":"2026-11-06","kind":"30C Classic"},{"id":"30c-cc-08","name":"Dark Tyranitar","number":"CC-08","pokemonIds":[248],"rarity":"Classic Collection","image":"https://efour.b-cdn.net/uploads/default/original/4X/6/8/4/68401fe0f48d55565b3c01a2afbfbcd8173ff6d5.png","releaseDate":"2026-11-06","kind":"30C Classic"},{"id":"30c-cc-09","name":"Scizor ex","number":"CC-09","pokemonIds":[212],"rarity":"Classic Collection","image":"https://efour.b-cdn.net/uploads/default/original/4X/9/d/5/9d5f8898a5cf1608a398c9ba632357cd862887f6.png","releaseDate":"2026-11-06","kind":"30C Classic"},{"id":"30c-cc-10","name":"Metagross δ","number":"CC-10","pokemonIds":[376],"rarity":"Classic Collection","image":"https://efour.b-cdn.net/uploads/default/original/4X/9/7/5/975e9089fe9d6ed6051aaadba161ea6c11106fb3.png","releaseDate":"2026-11-06","kind":"30C Classic"},{"id":"30c-cc-11","name":"Palkia Lv.X","number":"CC-11","pokemonIds":[484],"rarity":"Classic Collection","image":"https://efour.b-cdn.net/uploads/default/original/4X/7/1/3/7133e21038c03a4b2fee0bfb7fc83d5bdeb5cddc.png","releaseDate":"2026-11-06","kind":"30C Classic"},{"id":"30c-cc-12","name":"Uxie","number":"CC-12","pokemonIds":[480],"rarity":"Classic Collection","image":"https://efour.b-cdn.net/uploads/default/original/4X/e/0/9/e091556933f979a72b273cfe9e04e04bc4e2b0c6.png","releaseDate":"2026-11-06","kind":"30C Classic"},{"id":"30c-cc-13","name":"Crobat G","number":"CC-13","pokemonIds":[169],"rarity":"Classic Collection","image":"https://efour.b-cdn.net/uploads/default/original/4X/b/2/0/b2044687e4fd19e30e1fc8adc0d5ee2616e4e1f1.png","releaseDate":"2026-11-06","kind":"30C Classic"},{"id":"30c-cc-14","name":"Gengar Prime","number":"CC-14","pokemonIds":[94],"rarity":"Classic Collection","image":"https://efour.b-cdn.net/uploads/default/original/4X/9/6/c/96c1cd6d54b72d1fe91c52ad84669233bb7cce95.png","releaseDate":"2026-11-06","kind":"30C Classic"},{"id":"30c-cc-15","name":"Darkrai & Cresselia LEGEND — Top","number":"CC-15","pokemonIds":[491,488],"rarity":"Classic Collection","image":"https://efour.b-cdn.net/uploads/default/original/4X/6/c/c/6ccab0abb81ce4d06923661d1eedffe3737edc3d.jpeg","releaseDate":"2026-11-06","kind":"30C Classic"},{"id":"30c-cc-16","name":"Darkrai & Cresselia LEGEND — Bottom","number":"CC-16","pokemonIds":[491,488],"rarity":"Classic Collection","image":"https://efour.b-cdn.net/uploads/default/original/4X/8/0/6/8060922dec34c8e8459c5415deaace2a924097a4.png","releaseDate":"2026-11-06","kind":"30C Classic"},{"id":"30c-cc-17","name":"Rayquaza EX","number":"CC-17","pokemonIds":[384],"rarity":"Classic Collection","image":"https://efour.b-cdn.net/uploads/default/original/4X/8/7/e/87e7b8ea04ac7b144028fc65ace6252bfdffc47e.png","releaseDate":"2026-11-06","kind":"30C Classic"},{"id":"30c-cc-18","name":"Genesect EX","number":"CC-18","pokemonIds":[649],"rarity":"Classic Collection","image":"https://efour.b-cdn.net/uploads/default/original/4X/6/c/4/6c46c32e5212bbae545aeb4e9e28e428d2e5023a.png","releaseDate":"2026-11-06","kind":"30C Classic"},{"id":"30c-cc-19","name":"M Gardevoir EX","number":"CC-19","pokemonIds":[282],"rarity":"Classic Collection","image":"https://efour.b-cdn.net/uploads/default/original/4X/7/b/5/7b516e208a3eb67ec04e31fa0b1e2e01d1c8096c.png","releaseDate":"2026-11-06","kind":"30C Classic"},{"id":"30c-cc-20","name":"Greninja BREAK","number":"CC-20","pokemonIds":[658],"rarity":"Classic Collection","image":"https://efour.b-cdn.net/uploads/default/original/4X/5/9/4/594a146c4b90818a0f93b70e8919b1e2e478b6f8.png","releaseDate":"2026-11-06","kind":"30C Classic"},{"id":"30c-cc-21","name":"Solgaleo GX","number":"CC-21","pokemonIds":[791],"rarity":"Classic Collection","image":"https://efour.b-cdn.net/uploads/default/original/4X/b/8/a/b8ab6bc7f40b3123a3c6baaab08a54f7cf591257.png","releaseDate":"2026-11-06","kind":"30C Classic"},{"id":"30c-cc-22","name":"Buzzwole GX","number":"CC-22","pokemonIds":[794],"rarity":"Classic Collection","image":"https://efour.b-cdn.net/uploads/default/original/4X/f/e/d/fed3519422c7a30d97fbdc75a21067ce0d9a507d.png","releaseDate":"2026-11-06","kind":"30C Classic"},{"id":"30c-cc-23","name":"Pikachu & Zekrom GX","number":"CC-23","pokemonIds":[25,644],"rarity":"Classic Collection","image":"https://efour.b-cdn.net/uploads/default/original/4X/9/8/5/9850f0bd8eb19afda847ab8a647541cb5eb8c2b9.png","releaseDate":"2026-11-06","kind":"30C Classic"},{"id":"30c-cc-24","name":"Zacian V","number":"CC-24","pokemonIds":[888],"rarity":"Classic Collection","image":"https://efour.b-cdn.net/uploads/default/original/4X/4/6/c/46caf7560f84a979c26a4c9b10dc45f6cb1c2a4c.png","releaseDate":"2026-11-06","kind":"30C Classic"},{"id":"30c-cc-25","name":"Raikou","number":"CC-25","pokemonIds":[243],"rarity":"Classic Collection","image":"https://efour.b-cdn.net/uploads/default/original/4X/0/5/8/0580beb41db9d05f918b46f550ba5190ff3be2a5.png","releaseDate":"2026-11-06","kind":"30C Classic"},{"id":"30c-cc-26","name":"Mew VMAX","number":"CC-26","pokemonIds":[151],"rarity":"Classic Collection","image":"https://efour.b-cdn.net/uploads/default/original/4X/9/2/b/92b9cb9a828e38f0a6af125a59e0534378334bd2.png","releaseDate":"2026-11-06","kind":"30C Classic"},{"id":"30c-cc-27","name":"Arceus VSTAR","number":"CC-27","pokemonIds":[493],"rarity":"Classic Collection","image":"https://efour.b-cdn.net/uploads/default/original/4X/2/3/7/2377067d85a3c712559d9782f4021216fd6fd6aa.png","releaseDate":"2026-11-06","kind":"30C Classic"},{"id":"30c-cc-28","name":"Magikarp IR","number":"CC-28","pokemonIds":[129],"rarity":"Illustration Rare · Classic Collection","image":"https://efour.b-cdn.net/uploads/default/original/4X/8/4/c/84c641ef439f1c6ebdf8eab9c214bb04af5919c1.png","releaseDate":"2026-11-06","kind":"30C Classic"},{"id":"mep-094","name":"Alolan Exeggutor","number":"094","pokemonIds":[103],"rarity":"Promo","image":"https://efour.b-cdn.net/uploads/default/original/4X/f/e/2/fe23a5425715fdcc6fc81c19d0b296350acca588.png","releaseDate":"2026-09-16","kind":"30C Promo"},{"id":"mep-095","name":"Lucario","number":"095","pokemonIds":[448],"rarity":"Promo","image":"https://efour.b-cdn.net/uploads/default/original/4X/4/f/8/4f82e450cd7ce5252a0b998d7b3de6ebe59c6ec6.png","releaseDate":"2026-09-16","kind":"30C Promo"},{"id":"mep-096","name":"Moltres","number":"096","pokemonIds":[146],"rarity":"Promo","image":"https://efour.b-cdn.net/uploads/default/original/4X/8/e/9/8e9b31ca4d777c8c9d5a35d641270081b9f9491b.png","releaseDate":"2026-09-16","kind":"30C Promo"},{"id":"mep-097","name":"Articuno","number":"097","pokemonIds":[144],"rarity":"Promo","image":"https://efour.b-cdn.net/uploads/default/original/4X/7/f/2/7f29b7a5ff4e8d6dae9a47d110b67fdfd2e7820f.png","releaseDate":"2026-09-16","kind":"30C Promo"},{"id":"mep-098","name":"Zapdos","number":"098","pokemonIds":[145],"rarity":"Promo","image":"https://efour.b-cdn.net/uploads/default/original/4X/a/3/b/a3b9554febcb2c87608741ec58691f12feac8b6d.png","releaseDate":"2026-09-16","kind":"30C Promo"},{"id":"mep-099","name":"Greninja ex","number":"099","pokemonIds":[658],"rarity":"Promo especial","image":"https://efour.b-cdn.net/uploads/default/original/4X/4/9/6/496d9a1162c7eb94016878565199ac9793e922e3.png","releaseDate":"2026-09-16","kind":"30C Promo"},{"id":"mep-100","name":"Sylveon ex","number":"100","pokemonIds":[700],"rarity":"Promo especial","image":"https://efour.b-cdn.net/uploads/default/original/4X/7/1/4/7141b763719cf599cb5eba803e1fd43591670b7f.png","releaseDate":"2026-09-16","kind":"30C Promo"},{"id":"mep-101","name":"Nidorina","number":"101","pokemonIds":[30],"rarity":"Illustration Rare Promo","image":"https://efour.b-cdn.net/uploads/default/original/4X/a/2/4/a24b174b1306e9c04672b5154e0b6052c4e15732.png","releaseDate":"2026-09-16","kind":"30C Promo"},{"id":"mep-102","name":"Victini","number":"102","pokemonIds":[494],"rarity":"Illustration Rare Promo","image":"https://efour.b-cdn.net/uploads/default/original/4X/c/e/2/ce2ecd29233f053475d8ded2dc224c89caa9edb4.png","releaseDate":"2026-10-30","kind":"30C Promo"},{"id":"mep-103","name":"Zeraora","number":"103","pokemonIds":[807],"rarity":"Illustration Rare Promo","image":"https://efour.b-cdn.net/uploads/default/original/4X/8/d/e/8de22633cdcc424c745670651c4f76cee01054b4.png","releaseDate":"2026-10-30","kind":"30C Promo"},{"id":"mep-104","name":"Mewtwo","number":"104","pokemonIds":[150],"rarity":"Promo","image":"https://efour.b-cdn.net/uploads/default/original/4X/a/f/6/af6c4c082fcf88920cec35bdc87789fd7587ff18.png","releaseDate":"2026-11-06","kind":"30C Promo"},{"id":"mep-105","name":"Mew","number":"105","pokemonIds":[151],"rarity":"Promo","image":"https://efour.b-cdn.net/uploads/default/original/4X/4/2/e/42e05a2130a7f47e9c4c2b21f8a663c5c9fa4381.png","releaseDate":"2026-11-06","kind":"30C Promo"},{"id":"mep-106","name":"Ditto","number":"106","pokemonIds":[132],"rarity":"Illustration Rare Promo","image":"https://efour.b-cdn.net/uploads/default/original/4X/3/3/2/332ca26e03deffa2282d6ea73ba77692d79eabc2.png","releaseDate":"2026-11-06","kind":"30C Promo"},{"id":"mep-107","name":"Pikachu ex","number":"107","pokemonIds":[25],"rarity":"Futuristic Rare Promo","image":"https://efour.b-cdn.net/uploads/default/original/4X/2/4/b/24b2e0c218f4ba067770fc575f455a840747a2c0.png","releaseDate":"2026-11-06","kind":"30C Promo"},{"id":"mep-108","name":"Espeon ex","number":"108","pokemonIds":[196],"rarity":"Special Illustration Rare Promo","image":"https://efour.b-cdn.net/uploads/default/original/4X/8/b/7/8b7599147e346930ff11d1e27061aeba39ab226e.png","releaseDate":"2026-11-06","kind":"30C Promo"},{"id":"mep-109","name":"Pikachu ex","number":"109","pokemonIds":[25],"rarity":"Futuristic Rare Promo","image":"https://efour.b-cdn.net/uploads/default/original/4X/b/f/b/bfb977ef6c45ad06bf7da3b4b093fe3ddb275398.png","releaseDate":"2026-11-06","kind":"30C Promo"},{"id":"mep-110","name":"Umbreon ex","number":"110","pokemonIds":[197],"rarity":"Special Illustration Rare Promo","image":"https://efour.b-cdn.net/uploads/default/original/4X/5/e/f/5efd2396ffc7c6bb087fd62fa4773dd8056ebb2d.png","releaseDate":"2026-11-06","kind":"30C Promo"}];
+const THIRTIETH_BY_POKEMON=new Map();
+THIRTIETH_PRE_RELEASE_CARDS.forEach(raw=>{
+  (raw.pokemonIds||[]).forEach(pid=>{
+    if(!THIRTIETH_BY_POKEMON.has(Number(pid))) THIRTIETH_BY_POKEMON.set(Number(pid),[]);
+    THIRTIETH_BY_POKEMON.get(Number(pid)).push(raw);
+  });
+});
+function isCardUpcoming(card){
+  const d=card?.set?.releaseDate||card?.releaseDate;
+  if(!d) return false;
+  const end=new Date(`${d}T23:59:59Z`).getTime();
+  return Number.isFinite(end) && Date.now()<end;
+}
+function preRelease30CardsForPokemon(pokemonId){
+  return (THIRTIETH_BY_POKEMON.get(Number(pokemonId))||[]).map(raw=>{
+    const isPromo=raw.kind==='30C Promo';
+    const isClassic=raw.kind==='30C Classic';
+    const setName=isPromo?'MEP Black Star Promos':(isClassic?'30th Celebration — Classic Collection':'30th Celebration');
+    const setCode=isPromo?'MEP':(isClassic?'30C-CC':'30C');
+    return {
+      id:raw.id, name:raw.name, number:raw.number, supertype:'Pokémon',
+      subtypes:/\b(ex|EX|GX|V|VMAX|VSTAR|BREAK|Lv\.X)\b/.test(raw.name)?[raw.name.match(/(ex|EX|GX|V|VMAX|VSTAR|BREAK|Lv\.X)/)?.[1]||'Pokémon']:['Pokémon'],
+      rarity:raw.rarity, nationalPokedexNumbers:raw.pokemonIds,
+      set:{id:isPromo?'mep':(isClassic?'30c-cc':'30c'),name:setName,ptcgoCode:setCode,series:'Mega Evolution',releaseDate:raw.releaseDate,total:isClassic?30:158},
+      images:{small:raw.image,large:raw.image},
+      cardmarket:null,
+      __preRelease30:true,
+      __classic30:isClassic, __promo30:isPromo,
+      __upcoming30:isCardUpcoming({releaseDate:raw.releaseDate}),
+      __source:isPromo?'30.º aniversário · promo revelada':(isClassic?'30th Celebration · Classic Collection revelada':'30th Celebration · checklist pré-lançamento'),
+      __tcgdexPriceChecked:false, __tcgdexCardmarket:null, __tcgdexPriceUpdated:null
+    };
+  });
+}
+function sameThirtyCard(a,b){
+  if(!a||!b) return false;
+  const an=normalizeLocalCardNumber(a.number), bn=normalizeLocalCardNumber(b.number);
+  const names=String(a.name||'').toLowerCase()===String(b.name||'').toLowerCase();
+  const ar=String(a.set?.releaseDate||''), br=String(b.set?.releaseDate||'');
+  const aId=String(a.set?.id||'').toLowerCase(), bId=String(b.set?.id||'').toLowerCase();
+  const aCode=String(a.set?.ptcgoCode||'').toLowerCase(), bCode=String(b.set?.ptcgoCode||'').toLowerCase();
+  const sameSet=(aId&&bId&&aId===bId)||(aCode&&bCode&&aCode===bCode);
+  const thirtyA=/30th celebration|30c/i.test(`${a.set?.name||''} ${a.set?.ptcgoCode||''} ${a.set?.id||''}`) || a.__preRelease30;
+  const thirtyB=/30th celebration|30c/i.test(`${b.set?.name||''} ${b.set?.ptcgoCode||''} ${b.set?.id||''}`) || b.__preRelease30;
+  return names && an===bn && (sameSet||(thirtyA&&thirtyB)) && (!ar||!br||ar===br);
+}
+function firstPartner30thCardFor(pokemonId){
+  const promo=FIRST_PARTNER_30TH_PROMOS[Number(pokemonId)];
+  if(!promo) return null;
+  const num=promo.mep;
+  const imageBase=`https://assets.tcgdex.net/en/me/mep/${num}`;
+  const marketName=promo.name.replace(/[^A-Za-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+  return {
+    id:`mep-${num}`,
+    name:promo.name,
+    supertype:'Pokémon',
+    subtypes:['Basic'],
+    rarity:'Illustration Rare Promo',
+    number:num,
+    artist:'Saboteri',
+    set:{id:'mep',name:'MEP Black Star Promos',series:'Mega Evolution',ptcgoCode:'MEP',releaseDate:promo.releaseDate,printedTotal:0},
+    images:{small:`${imageBase}/low.webp`,large:`${imageBase}/high.webp`},
+    cardmarket:null,
+    nationalPokedexNumbers:[Number(pokemonId)],
+    __source:'TCGdex · First Partner Illustration Collection · 30.º aniversário',
+    __marketUrl:`https://www.cardmarket.com/en/Pokemon/Products/Singles/MEP-Black-Star-Promos/${marketName}-MEP${num}`,
+    __anniversary30:true,
+    __tcgdexPriceChecked:false,
+    __tcgdexCardmarket:null,
+    __tcgdexPriceUpdated:null
+  };
+}
+
+const CARD_DETAIL_STORE_KEY='pokedexxl-specific-card-collection-v2'; // mantém os dados da v2
+let CARD_DETAIL_STORE=null;
+
+function loadCardDetailStore(){
+  if(CARD_DETAIL_STORE) return CARD_DETAIL_STORE;
+  try{
+    const raw=localStorage.getItem(CARD_DETAIL_STORE_KEY);
+    const parsed=raw?JSON.parse(raw):{};
+    CARD_DETAIL_STORE=(parsed&&typeof parsed==='object')?parsed:{};
+  }catch(e){ CARD_DETAIL_STORE={}; }
+  return CARD_DETAIL_STORE;
+}
+function saveCardDetailStore(){
+  try{localStorage.setItem(CARD_DETAIL_STORE_KEY,JSON.stringify(loadCardDetailStore()))}catch(e){console.warn('Não foi possível guardar cartas específicas:',e)}
+}
+function pokemonCardDetail(id,create=false){
+  const store=loadCardDetailStore();
+  const k=String(Number(id));
+  if(!store[k]&&create) store[k]={owned:{},featured:null};
+  if(store[k]&&(!store[k].owned||typeof store[k].owned!=='object')) store[k].owned={};
+  return store[k]||null;
+}
+function cardSnapshot(card){
+  return {
+    id:String(card.id||''),
+    name:String(card.name||''),
+    imageSmall:String(card.images?.small||card.images?.large||''),
+    imageLarge:String(card.images?.large||card.images?.small||''),
+    setName:String(card.set?.name||''),
+    setCode:String(card.set?.ptcgoCode||card.set?.id||''),
+    number:String(card.number||''),
+    marketUrl:String(card.cardmarket?.url||card.__marketUrl||''),
+    rarity:String(card.rarity||''),
+    source:String(card.__source||'Pokemon TCG API')
+  };
+}
+function isSpecificCardOwned(pokemonId,cardId){
+  return !!pokemonCardDetail(pokemonId)?.owned?.[String(cardId)];
+}
+function featuredCardFor(pokemonId){
+  const d=pokemonCardDetail(pokemonId);
+  return d?.featured ? (d.owned?.[d.featured]||null) : null;
+}
+function ownedSpecificCount(pokemonId){ return Object.keys(pokemonCardDetail(pokemonId)?.owned||{}).length; }
+function setSpecificCardOwned(pokemonId,card,owned,{makeFeatured=true}={}){
+  const d=pokemonCardDetail(pokemonId,true);
+  const id=String(card.id);
+  if(owned){
+    d.owned[id]=cardSnapshot(card);
+    if(makeFeatured||!d.featured) d.featured=id;
+  }else{
+    delete d.owned[id];
+    if(d.featured===id) d.featured=null;
+  }
+  saveCardDetailStore();
+}
+function setFeaturedSpecificCard(pokemonId,card){
+  const d=pokemonCardDetail(pokemonId,true);
+  const id=String(card.id);
+  d.owned[id]=cardSnapshot(card);
+  d.featured=id;
+  saveCardDetailStore();
+}
+function clearSpecificCardsForPokemon(pokemonId){
+  const store=loadCardDetailStore();
+  delete store[String(Number(pokemonId))];
+  saveCardDetailStore();
+}
+
+function escapeHtml(v){
+  return String(v??'').replace(/[&<>'"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
+}
+
+function numericCardNumber(value){
+  const m=String(value||'').match(/\d+/);
+  return m?Number(m[0]):null;
+}
+
+function isSecretNumber(card){
+  const n=numericCardNumber(card.number);
+  const total=Number(card.set?.printedTotal);
+  return Number.isFinite(n)&&Number.isFinite(total)&&n>total;
+}
+
+// Apenas para identificar visualmente cartas especiais. NÃO é usado para excluir resultados.
+function artCategory(card){
+  const rarity=String(card.rarity||'').toLowerCase();
+  const num=String(card.number||'').toUpperCase();
+  const sub=(card.subtypes||[]).map(x=>String(x).toLowerCase());
+  const specialSub=sub.some(x=>['ex','gx','v','vmax','vstar','lv.x'].includes(x));
+
+  if(rarity.includes('special illustration')) return 'SIR';
+  if(rarity.includes('futuristic')) return 'Futuristic Rare';
+  if(rarity.includes('illustration rare')) return 'IR';
+  if(num.startsWith('TG') || rarity.includes('trainer gallery')) return 'Trainer Gallery';
+  if(num.startsWith('GG')) return 'Galarian Gallery';
+  if(rarity.includes('shiny ultra')) return 'Shiny Ultra Rare';
+  if(rarity.includes('rare ultra') || rarity.includes('ultra rare')) return 'Full Art / Ultra Rare';
+  if(rarity.includes('rainbow')) return 'Rainbow Rare';
+  if(rarity.includes('secret')) return 'Secret / Special Art';
+  if(rarity.includes('radiant')) return 'Radiant';
+  if(rarity.includes('amazing')) return 'Amazing Rare';
+  if(rarity.includes('shining')) return 'Shining';
+  if(rarity.includes('prism star')) return 'Prism Star';
+  if(isSecretNumber(card)&&specialSub) return 'ex / V / GX especial';
+  if(rarity.includes('promo')&&specialSub) return 'Promo especial';
+  return null;
+}
+
+function bestPriceFromPairs(pairs){
+  for(const [key,value,label] of pairs){
+    const n=Number(value);
+    if(Number.isFinite(n)&&n>0) return {value:n,label,key};
+  }
+  return {value:Infinity,label:'sem preço',key:null};
+}
+
+function primaryCardmarketPrice(card){
+  const p=card.cardmarket?.prices||{};
+  return bestPriceFromPairs([
+    ['lowPrice',p.lowPrice,'desde'],
+    ['lowPriceExPlus',p.lowPriceExPlus,'desde EX+'],
+    ['trendPrice',p.trendPrice,'tendência'],
+    ['avg7',p.avg7,'média 7d'],
+    ['averageSellPrice',p.averageSellPrice,'média venda'],
+    ['avg30',p.avg30,'média 30d']
+  ]);
+}
+
+function tcgdexCardmarketPrice(card){
+  const p=card.__tcgdexCardmarket||{};
+  return bestPriceFromPairs([
+    ['low',p.low,'desde'],
+    ['trend',p.trend,'tendência'],
+    ['avg7',p.avg7,'média 7d'],
+    ['avg',p.avg,'média venda'],
+    ['avg1',p.avg1,'média 24h'],
+    ['avg30',p.avg30,'média 30d'],
+    ['low-holo',p['low-holo'],'holo desde'],
+    ['trend-holo',p['trend-holo'],'holo tendência']
+  ]);
+}
+
+function cardmarketPrice(card){
+  const primary=primaryCardmarketPrice(card);
+  if(Number.isFinite(primary.value)) return {...primary,source:'Pokémon TCG API'};
+  const fallback=tcgdexCardmarketPrice(card);
+  if(Number.isFinite(fallback.value)) return {...fallback,source:'TCGdex'};
+  return {...primary,source:null};
+}
+
+function cardmarketReversePrice(card){
+  const p=card.cardmarket?.prices||{};
+  const primary=bestPriceFromPairs([
+    ['reverseHoloLow',p.reverseHoloLow,'reverse desde'],
+    ['reverseHoloTrend',p.reverseHoloTrend,'reverse tendência'],
+    ['reverseHoloAvg7',p.reverseHoloAvg7,'reverse média 7d'],
+    ['reverseHoloAvg30',p.reverseHoloAvg30,'reverse média 30d'],
+    ['reverseHoloAvg1',p.reverseHoloAvg1,'reverse média 1d']
+  ]);
+  if(Number.isFinite(primary.value)) return primary;
+  const t=card.__tcgdexCardmarket||{};
+  return bestPriceFromPairs([
+    ['low-holo',t['low-holo'],'holo desde'],
+    ['trend-holo',t['trend-holo'],'holo tendência'],
+    ['avg7-holo',t['avg7-holo'],'holo média 7d'],
+    ['avg30-holo',t['avg30-holo'],'holo média 30d'],
+    ['avg1-holo',t['avg1-holo'],'holo média 24h']
+  ]);
+}
+
+function euro(value){
+  return Number.isFinite(value)?`${value.toFixed(2).replace('.',',')} €`:'Preço indisponível';
+}
+
+function wait(ms){ return new Promise(resolve=>setTimeout(resolve,ms)); }
+
+async function fetchJsonWithRetry(url,onRetry){
+  let lastError=null;
+  for(let attempt=1;attempt<=CARD_REQUEST_RETRIES;attempt++){
+    const controller=new AbortController();
+    const timeout=setTimeout(()=>controller.abort(),15000);
+    try{
+      const r=await fetch(url,{signal:controller.signal,headers:{Accept:'application/json'}});
+      clearTimeout(timeout);
+      if(r.ok) return await r.json();
+
+      const retryable=r.status===429 || (r.status>=500 && r.status<=504);
+      if(!retryable) throw new Error(`Pokémon TCG API: HTTP ${r.status}`);
+
+      const retryAfter=Number(r.headers.get('Retry-After'));
+      const delay=Number.isFinite(retryAfter)&&retryAfter>0
+        ? Math.min(retryAfter*1000,8000)
+        : Math.min(650*Math.pow(2,attempt-1),5000);
+      lastError=new Error(`Pokémon TCG API: HTTP ${r.status}`);
+      if(attempt<CARD_REQUEST_RETRIES){
+        onRetry?.(attempt+1,CARD_REQUEST_RETRIES,r.status,delay);
+        await wait(delay);
+        continue;
+      }
+      throw lastError;
+    }catch(err){
+      clearTimeout(timeout);
+      if(err?.name==='AbortError') lastError=new Error('A ligação à base de cartas demorou demasiado');
+      else lastError=err;
+
+      const networkLike=err?.name==='AbortError' || err instanceof TypeError;
+      if(attempt<CARD_REQUEST_RETRIES && networkLike){
+        const delay=Math.min(650*Math.pow(2,attempt-1),5000);
+        onRetry?.(attempt+1,CARD_REQUEST_RETRIES,'rede',delay);
+        await wait(delay);
+        continue;
+      }
+      throw lastError;
+    }
+  }
+  throw lastError||new Error('Falha ao consultar a base de cartas');
+}
+
+function normalizeLocalCardNumber(v){
+  return String(v??'').trim().toLowerCase().replace(/^0+(?=\d)/,'').replace(/[^a-z0-9]/g,'');
+}
+function normalizeMarketSetName(v){
+  return String(v||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'');
+}
+function tcgdexSetCandidates(setId){
+  const raw=String(setId||'').trim();
+  const out=[raw];
+  let m=raw.match(/^sv(\d+)pt5$/i);
+  if(m){ const n=Number(m[1]); out.push(`sv${n<10?'0':''}${n}.5`); }
+  m=raw.match(/^sv(\d+)$/i);
+  if(m){ const n=Number(m[1]); out.push(`sv${n<10?'0':''}${n}`); }
+  return [...new Set(out.filter(Boolean))];
+}
+function tcgdexCardIdCandidates(card){
+  const out=[String(card.id||'')];
+  const setId=String(card.set?.id||'');
+  const num=String(card.number||'');
+  tcgdexSetCandidates(setId).forEach(s=>out.push(`${s}-${num}`));
+  return [...new Set(out.filter(Boolean))];
+}
+async function fetchTcgdexJson(url){
+  let last=null;
+  for(let attempt=1;attempt<=3;attempt++){
+    const controller=new AbortController();
+    const timer=setTimeout(()=>controller.abort(),12000);
+    try{
+      const r=await fetch(url,{signal:controller.signal,headers:{Accept:'application/json'}});
+      clearTimeout(timer);
+      if(r.status===404) return null;
+      if(!r.ok) throw new Error(`TCGdex HTTP ${r.status}`);
+      return await r.json();
+    }catch(e){
+      clearTimeout(timer);last=e;
+      if(attempt<3) await wait(350*attempt);
+    }
+  }
+  throw last||new Error('TCGdex indisponível');
+}
+function scoreTcgdexMatch(card,detail){
+  if(!detail) return -1;
+  let score=0;
+  if(String(detail.name||'').toLowerCase()===String(card.name||'').toLowerCase()) score+=20;
+  if(normalizeLocalCardNumber(detail.localId)===normalizeLocalCardNumber(card.number)) score+=30;
+  const a=normalizeMarketSetName(detail.set?.name), b=normalizeMarketSetName(card.set?.name);
+  // Para cartas 30C pré-lançamento, nunca aceitar por engano uma carta antiga
+  // que tenha o mesmo nome/número. Só há preço quando o set correto for indexado.
+  if(card.__preRelease30 && !a.includes('30thcelebration') && !a.includes('30c') && !a.includes('mepblackstarpromos')) return -1;
+  if(a&&b&&a===b) score+=50;
+  else if(a&&b&&(a.includes(b)||b.includes(a))) score+=30;
+  return score;
+}
+async function tcgdexNameCandidates(card){
+  const key=String(card.name||'').toLowerCase();
+  if(TCGDEX_NAME_SEARCH_CACHE.has(key)) return TCGDEX_NAME_SEARCH_CACHE.get(key);
+  const promise=fetchTcgdexJson(`https://api.tcgdex.net/v2/en/cards?name=${encodeURIComponent(card.name||'')}`).then(x=>Array.isArray(x)?x:[]).catch(()=>[]);
+  TCGDEX_NAME_SEARCH_CACHE.set(key,promise);
+  return promise;
+}
+async function enrichCardmarketPriceFromTcgdex(card){
+  if(card.__tcgdexPriceChecked) return card;
+  if(TCGDEX_PRICE_CACHE.has(card.id)){
+    const saved=TCGDEX_PRICE_CACHE.get(card.id);
+    Object.assign(card,saved);
+    card.__tcgdexPriceChecked=true;
+    return card;
+  }
+  let best=null;
+  try{
+    for(const id of tcgdexCardIdCandidates(card)){
+      const d=await fetchTcgdexJson(`https://api.tcgdex.net/v2/en/cards/${encodeURIComponent(id)}`);
+      if(d && scoreTcgdexMatch(card,d)>=40){ best=d; break; }
+    }
+    if(!best){
+      const briefs=await tcgdexNameCandidates(card);
+      const sameNumber=briefs.filter(b=>String(b.name||'').toLowerCase()===String(card.name||'').toLowerCase() && normalizeLocalCardNumber(b.localId)===normalizeLocalCardNumber(card.number)).slice(0,8);
+      const details=await Promise.all(sameNumber.map(b=>fetchTcgdexJson(`https://api.tcgdex.net/v2/en/cards/${encodeURIComponent(b.id)}`).catch(()=>null)));
+      best=details.filter(Boolean).sort((a,b)=>scoreTcgdexMatch(card,b)-scoreTcgdexMatch(card,a))[0]||null;
+      if(best && scoreTcgdexMatch(card,best)<40) best=null;
+    }
+  }catch(e){ console.warn('Fallback TCGdex falhou para',card.id,e); }
+  const payload={
+    __tcgdexPriceChecked:true,
+    __tcgdexCardmarket:best?.pricing?.cardmarket||null,
+    __tcgdexPriceUpdated:best?.pricing?.cardmarket?.updated||null,
+    __tcgdexMatchedId:best?.id||null
+  };
+  Object.assign(card,payload);
+  TCGDEX_PRICE_CACHE.set(card.id,payload);
+  return card;
+}
+async function enrichMissingVisiblePrices(cards){
+  const pokemonId=currentModalPokemon?.id;
+  const targets=cards.filter(c=>!Number.isFinite(primaryCardmarketPrice(c).value) && !c.__tcgdexPriceChecked);
+  if(!targets.length) return;
+  const countEl=document.getElementById('cardBrowserCount');
+  if(countEl) countEl.textContent+=` · a confirmar ${targets.length} preço${targets.length===1?'':'s'}…`;
+  let index=0;
+  const workers=Array.from({length:Math.min(TCGDEX_PRICE_CONCURRENCY,targets.length)},async()=>{
+    while(index<targets.length){
+      const card=targets[index++];
+      await enrichCardmarketPriceFromTcgdex(card);
+    }
+  });
+  await Promise.all(workers);
+  if(currentModalPokemon?.id===pokemonId) renderModalCards(false,true);
+}
+
+function lucenePhrase(value){
+  return String(value||'').replace(/\\/g,'\\\\').replace(/"/g,'\\"');
+}
+function pokemonSearchAliases(p){
+  const main=pretty(p.name);
+  const aliases=[main];
+  const raw=String(p.name||'').replace(/-/g,' ');
+  if(raw&&raw.toLowerCase()!==main.toLowerCase()) aliases.push(raw);
+  if(p.name==='nidoran-f') aliases.push('Nidoran F','Nidoran Female');
+  if(p.name==='nidoran-m') aliases.push('Nidoran M','Nidoran Male');
+  if(p.name==='flabebe') aliases.push('Flabebe');
+  return [...new Set(aliases.filter(Boolean))].slice(0,4);
+}
+function pokemonCardSearchQuery(p){
+  const clauses=[`nationalPokedexNumbers:${Number(p.id)}`];
+  pokemonSearchAliases(p).forEach(name=>clauses.push(`name:"${lucenePhrase(name)}"`));
+  return `(${clauses.join(' OR ')})`;
+}
+
+async function fetchAllCardsForPokemon(p,onRetry){
+  const id=Number(p.id);
+  if(CARD_BROWSER_CACHE.has(id)) return CARD_BROWSER_CACHE.get(id);
+  if(CARD_BROWSER_INFLIGHT.has(id)) return CARD_BROWSER_INFLIGHT.get(id);
+
+  const request=(async()=>{
+    let page=1;
+    let all=[];
+    const pageSize=250;
+    const maxPages=24; // até 6.000 resultados de segurança
+    const query=pokemonCardSearchQuery(p);
+
+    while(page<=maxPages){
+      const q=encodeURIComponent(query);
+      const select=encodeURIComponent('id,name,supertype,subtypes,rarity,number,artist,set,images,cardmarket,nationalPokedexNumbers');
+      const url=`https://api.pokemontcg.io/v2/cards?q=${q}&page=${page}&pageSize=${pageSize}&orderBy=-set.releaseDate&select=${select}`;
+      const payload=await fetchJsonWithRetry(url,onRetry);
+      const rows=(payload.data||[]).filter(card=>{
+        const nums=(card.nationalPokedexNumbers||[]).map(Number);
+        return String(card.supertype||'').toLowerCase()==='pokémon' || nums.includes(id);
+      });
+      rows.forEach(c=>c.__source='Pokémon TCG API · nº + nome');
+      all=all.concat(rows);
+      if((page*pageSize)>=Number(payload.totalCount||0) || !(payload.data||[]).length) break;
+      page++;
+    }
+
+    // Garante as 27 promos Illustration Rare do 30.º aniversário (MEP 037–063),
+    // mesmo enquanto a Pokémon TCG API ainda não as tiver indexadas.
+    const anniversaryCard=firstPartner30thCardFor(id);
+    if(anniversaryCard){
+      const existingIndex=all.findIndex(c=>String(c?.id||'').toLowerCase()===anniversaryCard.id.toLowerCase());
+      if(existingIndex>=0){
+        const existing=all[existingIndex];
+        all[existingIndex]={...anniversaryCard,...existing,
+          images:existing.images?.small||existing.images?.large?existing.images:anniversaryCard.images,
+          __marketUrl:existing.cardmarket?.url||anniversaryCard.__marketUrl,
+          __anniversary30:true,
+          __source:`${existing.__source||'Pokémon TCG API'} · 30.º aniversário`
+        };
+      }else{
+        all.unshift(anniversaryCard);
+      }
+    }
+
+    // Junta cartas 30C reveladas que ainda podem faltar nas APIs. Se a API já tiver
+    // a mesma carta, aproveita os dados dela (incluindo Cardmarket) e mantém a scan/metadata.
+    for(const manual of preRelease30CardsForPokemon(id)){
+      const idx=all.findIndex(existing=>sameThirtyCard(existing,manual));
+      if(idx>=0){
+        const existing=all[idx];
+        all[idx]={...manual,...existing,
+          images:(existing.images?.small||existing.images?.large)?existing.images:manual.images,
+          __preRelease30:true,
+          __upcoming30:isCardUpcoming(manual),
+          __source:`${existing.__source||'Pokémon TCG API'} · 30C revelada`
+        };
+      }else{
+        all.unshift(manual);
+      }
+    }
+
+    const seen=new Set();
+    all=all.filter(card=>{
+      if(!card?.id || seen.has(String(card.id).toLowerCase())) return false;
+      seen.add(String(card.id).toLowerCase());
+      return true;
+    });
+
+    if(all.some(card=>!!artCategory(card) && !isCardUpcoming(card))) DYNAMIC_ART_AVAILABLE_SET.add(id);
+    CARD_BROWSER_CACHE.set(id,all);
+    return all;
+  })();
+
+  CARD_BROWSER_INFLIGHT.set(id,request);
+  try{return await request}
+  finally{CARD_BROWSER_INFLIGHT.delete(id)}
+}
+
+function cardmarketFallbackUrl(card){
+  let terms;
+  if(card.__classic30) terms=[card.name,'30th Celebration'];
+  else if(card.__promo30) terms=[card.name,'MEP',card.number];
+  else terms=[card.name,card.set?.ptcgoCode||card.set?.id,card.number];
+  return `https://www.cardmarket.com/en/Pokemon/Products/Singles?searchString=${encodeURIComponent(terms.filter(Boolean).join(' '))}`;
+}
+function renderPokemonCardResult(card, cheapestId){
+  const price=cardmarketPrice(card);
+  const reverse=cardmarketReversePrice(card);
+  const priceText=Number.isFinite(price.value)?euro(price.value):(card.__tcgdexPriceChecked?'Consultar Cardmarket':'A confirmar…');
+  const priceSource=price.source||null;
+  const tcgdexUpdated=card.__tcgdexPriceUpdated?String(card.__tcgdexPriceUpdated):'';
+  const updated=priceSource==='TCGdex'
+    ? `Cardmarket via TCGdex · ${escapeHtml(tcgdexUpdated?tcgdexUpdated.slice(0,10):'atualização diária')}`
+    : (card.cardmarket?.updatedAt?`Cardmarket · ${escapeHtml(card.cardmarket.updatedAt)}`:(card.__tcgdexPriceChecked?'Cardmarket · sem preço no feed':'A confirmar preço Cardmarket…'));
+  const directMarketUrl=card.cardmarket?.url || card.__marketUrl || '';
+  const marketUrl=directMarketUrl || cardmarketFallbackUrl(card);
+  const special=artCategory(card);
+  const setName=card.set?.name||'Set desconhecido';
+  const setCode=card.set?.ptcgoCode||card.set?.id||'';
+  const release=card.set?.releaseDate||'';
+  const cheapest=card.id===cheapestId&&Number.isFinite(price.value);
+  const pokemonId=currentModalPokemon?.id;
+  const owned=isSpecificCardOwned(pokemonId,card.id);
+  const featured=featuredCardFor(pokemonId)?.id===String(card.id);
+
+  return `
+    <article class="art-result ${cheapest?'cheapest':''} ${owned?'my-card':''} ${featured?'featured-card':''}" data-result-card-id="${escapeHtml(card.id)}">
+      ${featured?'<div class="featured-ribbon">★ NA TUA POKÉDEX</div>':(cheapest?'<div class="cheapest-ribbon">★ Mais barata encontrada</div>':'')}
+      <div class="art-result-img"><img loading="lazy" src="${escapeHtml(card.images?.small||card.images?.large||'')}" alt="${escapeHtml(card.name)}"></div>
+      <div class="art-result-info">
+        <div class="art-result-name">${escapeHtml(card.name)}</div>
+        <div class="art-result-set">${escapeHtml(setName)} · ${escapeHtml(setCode)} #${escapeHtml(card.number||'—')}</div>
+        ${release?`<div class="card-release">Lançamento: ${escapeHtml(release)}</div>`:''}
+        <div class="art-result-tags">
+          ${special?`<span class="art-result-tag special">${escapeHtml(special)}</span>`:'<span class="art-result-tag neutral">Carta Pokémon</span>'}
+          ${card.__anniversary30?'<span class="art-result-tag anniversary">30.º ANIVERSÁRIO</span>':''}
+          ${card.__preRelease30?`<span class="art-result-tag anniversary">30.º ANIVERSÁRIO</span><span class="art-result-tag upcoming">${isCardUpcoming(card)?'BREVEMENTE · 30C':'30C'}</span>`:''}
+          ${card.rarity?`<span class="art-result-tag">${escapeHtml(card.rarity)}</span>`:''}
+        </div>
+        <div class="art-price-box">
+          <div>
+            <div class="art-price-label">${Number.isFinite(price.value)?escapeHtml(price.label):'Cardmarket'}</div>
+            <div class="art-price ${Number.isFinite(price.value)?'':'na'}">${priceText}</div>
+            ${Number.isFinite(reverse.value)?`<div class="reverse-price">Reverse Holo: ${euro(reverse.value)}</div>`:''}
+            <div class="art-price-updated">${updated}</div>
+          </div>
+          <a class="cardmarket-btn ${directMarketUrl?'':'fallback'}" href="${escapeHtml(marketUrl)}" target="_blank" rel="noopener noreferrer">${directMarketUrl?'Cardmarket ↗':'Procurar Cardmarket ↗'}</a>
+        </div>
+        <div class="specific-card-actions">
+          <button type="button" class="specific-own-btn ${owned?'active':''}" data-own-card="${escapeHtml(card.id)}">${owned?'✓ TENHO ESTA':'＋ TENHO ESTA'}</button>
+          <button type="button" class="specific-feature-btn ${featured?'active':''}" data-feature-card="${escapeHtml(card.id)}">${featured?'★ NA POKÉDEX':'☆ USAR NA POKÉDEX'}</button>
+        </div>
+        <div class="card-source-note">${escapeHtml(card.__source||'Pokémon TCG API')}</div>
+      </div>
+    </article>`;
+}
+
+function modalFilteredCards(){
+  const search=(document.getElementById('cardBrowserSearch')?.value||'').trim().toLowerCase();
+  const filter=document.getElementById('cardBrowserFilter')?.value||'all';
+  const sort=document.getElementById('cardBrowserSort')?.value||'newest';
+
+  let cards=currentModalCards.filter(card=>{
+    if(filter==='art' && !artCategory(card)) return false;
+    if(filter==='priced' && !Number.isFinite(cardmarketPrice(card).value)) return false;
+    if(filter==='promo' && !String(card.rarity||'').toLowerCase().includes('promo') && !String(card.set?.name||'').toLowerCase().includes('promo')) return false;
+    if(filter==='owned' && !isSpecificCardOwned(currentModalPokemon?.id,card.id)) return false;
+    if(!search) return true;
+    const hay=[card.name,card.rarity,card.number,card.artist,card.set?.name,card.set?.series,card.set?.ptcgoCode,artCategory(card)].filter(Boolean).join(' ').toLowerCase();
+    return hay.includes(search);
+  });
+
+  cards=cards.slice().sort((a,b)=>{
+    if(sort==='oldest') return String(a.set?.releaseDate||'9999').localeCompare(String(b.set?.releaseDate||'9999'));
+    if(sort==='price-asc') return cardmarketPrice(a).value-cardmarketPrice(b).value || String(b.set?.releaseDate||'').localeCompare(String(a.set?.releaseDate||''));
+    if(sort==='price-desc') {
+      const pa=cardmarketPrice(a).value,pb=cardmarketPrice(b).value;
+      const aa=Number.isFinite(pa)?pa:-1, bb=Number.isFinite(pb)?pb:-1;
+      return bb-aa || String(b.set?.releaseDate||'').localeCompare(String(a.set?.releaseDate||''));
+    }
+    if(sort==='name') return String(a.name||'').localeCompare(String(b.name||''),'en',{numeric:true}) || String(a.number||'').localeCompare(String(b.number||''),'en',{numeric:true});
+    return String(b.set?.releaseDate||'').localeCompare(String(a.set?.releaseDate||''));
+  });
+  return cards;
+}
+
+function renderModalCards(resetLimit=false,skipEnrich=false){
+  const body=document.getElementById('artModalBody');
+  const summary=document.getElementById('artModalSummary');
+  if(resetLimit) currentModalVisibleLimit=MODAL_PAGE_STEP;
+
+  const filtered=modalFilteredCards();
+  const pricedAll=currentModalCards.filter(c=>Number.isFinite(cardmarketPrice(c).value));
+  const cheapest=pricedAll.slice().sort((a,b)=>cardmarketPrice(a).value-cardmarketPrice(b).value)[0];
+  const cheapestPrice=cheapest?cardmarketPrice(cheapest).value:null;
+  const specialCount=currentModalCards.filter(c=>!!artCategory(c)).length;
+  const mineCount=ownedSpecificCount(currentModalPokemon?.id);
+
+  summary.innerHTML=`<strong>${currentModalCards.length}</strong> cartas encontradas · <strong>${specialCount}</strong> especiais/ART · <strong>${mineCount}</strong> marcadas como minhas${cheapest?` · preço mínimo: <strong>${euro(cheapestPrice)}</strong>`:''}`;
+
+  const controls=`
+    <div class="card-browser-controls">
+      <input id="cardBrowserSearch" type="search" placeholder="Pesquisar set, raridade, nº, artista…" autocomplete="off">
+      <select id="cardBrowserFilter" aria-label="Filtrar cartas">
+        <option value="all">Todas as cartas</option>
+        <option value="art">Só especiais / ART</option>
+        <option value="priced">Só com preço Cardmarket</option>
+        <option value="promo">Promos</option>
+        <option value="owned">Só as minhas cartas</option>
+      </select>
+      <select id="cardBrowserSort" aria-label="Ordenar cartas">
+        <option value="newest">Mais recentes primeiro</option>
+        <option value="oldest">Mais antigas primeiro</option>
+        <option value="price-asc">Preço: menor → maior</option>
+        <option value="price-desc">Preço: maior → menor</option>
+        <option value="name">Nome / número</option>
+      </select>
+      <div class="card-browser-count" id="cardBrowserCount"></div>
+    </div>`;
+
+  const shown=filtered.slice(0,currentModalVisibleLimit);
+  const cardsHtml=shown.length
+    ? `<div class="art-results-grid">${shown.map(card=>renderPokemonCardResult(card,cheapest?.id)).join('')}</div>`
+    : `<div class="art-empty"><strong>Nenhuma carta corresponde ao filtro.</strong><p>Experimenta limpar a pesquisa ou escolher “Todas as cartas”.</p></div>`;
+  const more=filtered.length>shown.length
+    ? `<div class="load-more-wrap"><button class="load-more-btn" id="loadMoreCards">Mostrar mais ${Math.min(MODAL_PAGE_STEP,filtered.length-shown.length)} cartas</button></div>`:'';
+
+  body.innerHTML=controls+cardsHtml+more+`<div class="art-modal-note">A pesquisa combina <strong>número da Pokédex + nome do Pokémon</strong> e inclui de forma garantida as <strong>27 promos First Partner do 30.º aniversário (MEP 037–063)</strong>. O botão Cardmarket aparece sempre. Podes marcar várias cartas em <strong>TENHO ESTA</strong>; a última marcada passa automaticamente para a Pokédex e podes trocar a principal com <strong>USAR NA POKÉDEX</strong>.</div>`;
+
+  // restore UI values after rerender
+  const searchEl=document.getElementById('cardBrowserSearch');
+  const filterEl=document.getElementById('cardBrowserFilter');
+  const sortEl=document.getElementById('cardBrowserSort');
+  if(window.__modalSearchValue!==undefined) searchEl.value=window.__modalSearchValue;
+  if(window.__modalFilterValue) filterEl.value=window.__modalFilterValue;
+  if(window.__modalSortValue) sortEl.value=window.__modalSortValue;
+  document.getElementById('cardBrowserCount').textContent=`A mostrar ${shown.length} de ${filtered.length} cartas deste filtro`;
+
+  const rerender=()=>{
+    window.__modalSearchValue=searchEl.value;
+    window.__modalFilterValue=filterEl.value;
+    window.__modalSortValue=sortEl.value;
+    renderModalCards(true);
+  };
+  searchEl.addEventListener('input',rerender);
+  filterEl.addEventListener('change',rerender);
+  sortEl.addEventListener('change',rerender);
+  document.getElementById('loadMoreCards')?.addEventListener('click',()=>{
+    window.__modalSearchValue=searchEl.value;
+    window.__modalFilterValue=filterEl.value;
+    window.__modalSortValue=sortEl.value;
+    currentModalVisibleLimit+=MODAL_PAGE_STEP;
+    renderModalCards(false);
+  });
+
+  body.querySelectorAll('[data-own-card]').forEach(btn=>{
+    btn.addEventListener('click',async()=>{
+      const card=currentModalCards.find(c=>String(c.id)===String(btn.dataset.ownCard));
+      if(!card||!currentModalPokemon) return;
+      const nowOwned=isSpecificCardOwned(currentModalPokemon.id,card.id);
+      setSpecificCardOwned(currentModalPokemon.id,card,!nowOwned,{makeFeatured:!nowOwned});
+      if(!nowOwned) await ensurePokemonOwnedFromSpecificCard(currentModalPokemon.id);
+      renderCurrentPage(false);
+      renderModalCards(false);
+    });
+  });
+  body.querySelectorAll('[data-feature-card]').forEach(btn=>{
+    btn.addEventListener('click',async()=>{
+      const card=currentModalCards.find(c=>String(c.id)===String(btn.dataset.featureCard));
+      if(!card||!currentModalPokemon) return;
+      setFeaturedSpecificCard(currentModalPokemon.id,card);
+      await ensurePokemonOwnedFromSpecificCard(currentModalPokemon.id);
+      renderCurrentPage(false);
+      renderModalCards(false);
+    });
+  });
+
+  if(!skipEnrich) enrichMissingVisiblePrices(shown).catch(err=>console.warn('Não foi possível confirmar preços em falta:',err));
+}
+
+async function openArtModal(p){
+  currentModalPokemon=p;
+  currentModalCards=[];
+  currentModalVisibleLimit=MODAL_PAGE_STEP;
+  window.__modalSearchValue='';
+  window.__modalFilterValue='all';
+  window.__modalSortValue='newest';
+
+  const modal=document.getElementById('artModal');
+  const body=document.getElementById('artModalBody');
+  const title=document.getElementById('artModalTitle');
+  const sub=document.getElementById('artModalSub');
+  const summary=document.getElementById('artModalSummary');
+  title.textContent=`#${String(p.id).padStart(3,'0')} ${pretty(p.name)} · Todas as cartas`;
+  sub.textContent='Pesquisa alargada por nº da Pokédex + nome, sem filtro de raridade ou estilo.';
+  summary.textContent='A carregar todas as cartas e preços…';
+  body.innerHTML='<div class="art-loading"><div class="art-spinner"></div><div>A consultar o catálogo e os preços Cardmarket…</div></div>';
+  modal.classList.add('open');
+  modal.setAttribute('aria-hidden','false');
+  document.body.classList.add('modal-open');
+
+  try{
+    const all=await fetchAllCardsForPokemon(p,(attempt,max,status)=>{
+      if(currentModalPokemon?.id!==p.id) return;
+      summary.textContent=`Ligação instável · tentativa ${attempt}/${max}`;
+      body.innerHTML=`<div class="art-loading"><div class="art-spinner"></div><div>A API respondeu ${escapeHtml(String(status))}. A tentar novamente automaticamente…</div></div>`;
+    });
+    if(currentModalPokemon?.id!==p.id) return;
+    currentModalCards=all;
+    if(all.some(c=>!!artCategory(c))) DYNAMIC_ART_AVAILABLE_SET.add(Number(p.id));
+    renderCurrentPage(false);
+
+    if(!all.length){
+      summary.textContent='Nenhuma carta encontrada';
+      body.innerHTML='<div class="art-empty"><strong>Nenhuma carta encontrada na base.</strong><p>Este resultado pode indicar uma lacuna temporária no catálogo externo. O teu registo CARTA / ART continua intacto.</p></div>';
+      return;
+    }
+    renderModalCards(true);
+  }catch(err){
+    console.error('Erro ao carregar todas as cartas:',err);
+    summary.textContent='Erro ao carregar';
+    body.innerHTML=`<div class="art-empty"><strong>Não foi possível carregar as cartas.</strong><p>${escapeHtml(err.message||'Erro desconhecido')}.</p><button class="load-more-btn" id="retryCardLoad">Tentar novamente</button></div>`;
+    document.getElementById('retryCardLoad')?.addEventListener('click',()=>openArtModal(p));
+  }
+}
+
+function closeArtModal(){
+  const modal=document.getElementById('artModal');
+  modal.classList.remove('open');
+  modal.setAttribute('aria-hidden','true');
+  document.body.classList.remove('modal-open');
+  currentModalPokemon=null;
+}
+
+async function ensurePokemonOwnedFromSpecificCard(pokemonId){
+  const before=supaFor(pokemonId)||{card:false,full_art:false};
+  if(before.card===true) return true;
+  setSyncStatus('saving','A guardar carta…');
+  const {error}=await supabaseClient.from('pokemon_cards').upsert({
+    pokemon_id:Number(pokemonId),card:true,full_art:before.full_art===true
+  },{onConflict:'pokemon_id'});
+  if(error){
+    console.error('Erro ao sincronizar CARTA:',error);
+    setSyncStatus('error','Carta guardada só neste dispositivo');
+    return false;
+  }
+  const existing=supaFor(pokemonId);
+  if(existing) existing.card=true;
+  else window.__supabaseData.push({pokemon_id:Number(pokemonId),card:true,full_art:before.full_art===true});
+  setSyncStatus('synced','Sincronizado');
+  updateCounts();
+  return true;
+}
+
+function setCardVisual(cardEl, cardValue, artValue){
+  cardEl.classList.toggle('owned-card',!!cardValue);
+  cardEl.classList.toggle('owned-art',!!artValue);
+  const cardCheck=cardEl.querySelector('.card-check');
+  const artCheck=cardEl.querySelector('.art-check');
+  if(cardCheck) cardCheck.checked=!!cardValue;
+  if(artCheck) artCheck.checked=!!artValue;
+  const badge=cardEl.querySelector('.completion-badge');
+  if(badge){
+    const availability=cardEl.dataset.artAvailability||'unknown';
+    badge.textContent=artValue?'★ ART OBTIDA':(!cardValue?'EM FALTA':'☆ FALTA ART');
+  }
+  const symbol=cardEl.querySelector('.art-symbol');
+  if(symbol) symbol.textContent=artValue?'★':'☆';
 }
 
 function makeCard(p){
-  const card = document.createElement('div');
-  card.className='dex-card';
-  card.dataset.name = p.name.toLowerCase();
-  card.dataset.id = String(p.id);
+  const el=document.createElement('div');
+  el.className='dex-card';
+  el.dataset.name=p.name.toLowerCase();
+  el.dataset.id=String(p.id);
 
-  const supa = window.__supabaseData?.find(x => Number(x.pokemon_id) === Number(p.id));
-  const hasCard = supa?.card === true;
-  const hasFullArt = supa?.full_art === true;
-  if(hasCard && hasFullArt) card.classList.add('owned-fullart');
+  const current=supaFor(p.id);
+  const hasCard=current?.card===true;
+  const hasArt=current?.full_art===true;
+  const featured=featuredCardFor(p.id);
+  if(featured) el.classList.add('has-featured-tcg');
 
-  card.innerHTML = `
-    <div class="card-top">
-      <div class="dex-number">#${String(p.id).padStart(3,'0')}</div>
-      <div class="card-ball"></div>
-    </div>
-    <div class="card-image">
-      <img loading="lazy" src="${artworkUrl(p.id)}" alt="${pretty(p.name)}" onerror="this.onerror=null;this.src='${fallbackArtworkUrl(p.id)}'">
-    </div>
+  const availability=artAvailability(p.id);
+  el.dataset.artAvailability=availability;
+  const noArt=false;
+  const softNoArt=false;
+  const availabilityText=availability==='available'?'ART disponível / encontrada':'ART por verificar';
+
+  el.innerHTML=`
+    <div class="card-top"><div class="dex-number">#${String(p.id).padStart(3,'0')}</div><div class="card-ball"></div></div>
+    <div class="art-star-badge" title="ART obtida">★</div>
+    ${featured?'<div class="featured-card-label">★ CARTA DA COLEÇÃO</div>':''}
+    <div class="card-image ${featured?'featured-card-image':''}"><img loading="lazy" src="${featured?escapeHtml(featured.imageSmall||featured.imageLarge):artworkUrl(p.id)}" alt="${featured?escapeHtml(featured.name):pretty(p.name)}" onerror="this.onerror=null;this.src='${fallbackArtworkUrl(p.id)}'"></div>
+    <div class="completion-badge">EM FALTA</div>
+    <div class="type-row" data-id="${p.id}">${typeMarkup(p.id)}</div>
     <h3 class="dex-name">${pretty(p.name)}</h3>
     <div class="dex-sub">National Dex</div>
     <div class="card-actions">
-      <label class="state-pill">
-        <input class="cb" type="checkbox" aria-label="Tenho carta de ${pretty(p.name)}" data-k="${key(p.id,'card')}" ${hasCard ? 'checked' : ''}>
-        <span class="state-ui card-ui"><span class="dot"></span> CARTA</span>
-      </label>
-      <label class="state-pill">
-        <input class="cb" type="checkbox" aria-label="Tenho Full Art de ${pretty(p.name)}" data-k="${key(p.id,'fa')}" ${hasFullArt ? 'checked' : ''}>
-        <span class="state-ui fullart-ui"><span class="dot"></span> FULL ART</span>
-      </label>
-    </div>`;
+      <label class="state-pill"><input class="cb card-check" type="checkbox" data-k="${key(p.id,'card')}" ${hasCard?'checked':''}><span class="state-ui card-ui"><span class="dot"></span> CARTA</span></label>
+      <label class="state-pill ${noArt&&!softNoArt?'disabled':''}" title="${softNoArt?'Base provisória: se encontrares uma ART válida, podes marcá-la e a tua coleção passa a ter prioridade.':''}"><input class="cb art-check" type="checkbox" data-k="${key(p.id,'fa')}" ${hasArt?'checked':''} ${noArt&&!softNoArt?'disabled':''}><span class="state-ui art-ui"><span class="art-symbol">${hasArt?'★':'☆'}</span> ${noArt&&!hasArt?'SEM ART?':'ART'}</span></label>
+    </div>
+    <div class="art-availability ${noArt?'unavailable':''}">${availabilityText}</div>
+    <div class="art-help">Comuns · Holo · Promo · EX/GX/V · IR/SIR · Full Art · Secretas</div>`;
 
-  card.querySelectorAll('.cb').forEach(c=>{
-    c.addEventListener('change', async ()=>{
-      const type = c.dataset.k.endsWith('-fa') ? 'full_art' : 'card';
-      const value = c.checked;
-      const current = window.__supabaseData?.find(x => Number(x.pokemon_id) === Number(p.id));
-      const cardValue = type === 'card' ? value : (current?.card ?? false);
-      const fullArtValue = type === 'full_art' ? value : (current?.full_art ?? false);
+  setCardVisual(el,hasCard,hasArt);
 
-      const { error } = await supabaseClient.from('pokemon_cards').upsert({
+  el.querySelectorAll('.cb').forEach(c=>{
+    c.addEventListener('change',async()=>{
+      const before=supaFor(p.id)||{card:false,full_art:false};
+      const type=c.classList.contains('art-check')?'full_art':'card';
+      const value=c.checked;
+
+      let cardValue=before.card===true;
+      let artValue=before.full_art===true;
+
+      if(type==='full_art'){
+        artValue=value;
+        if(value) cardValue=true;
+      }else{
+        cardValue=value;
+        if(!value) artValue=false;
+      }
+
+      setCardVisual(el,cardValue,artValue);
+      setSyncStatus('saving','A guardar…');
+
+      const {error}=await supabaseClient.from('pokemon_cards').upsert({
         pokemon_id:p.id,
         card:cardValue,
-        full_art:fullArtValue
-      }, { onConflict:'pokemon_id' });
+        full_art:artValue
+      },{onConflict:'pokemon_id'});
 
       if(error){
-        console.error('Erro ao guardar no Supabase:', error);
-        alert('Não foi possível guardar: ' + error.message);
-        c.checked = !value;
+        console.error('Erro ao guardar no Supabase:',error);
+        alert('Não foi possível guardar: '+error.message);
+        setCardVisual(el,before.card===true,before.full_art===true);
+        setSyncStatus('error','Erro ao guardar');
         return;
       }
 
-      const existing = window.__supabaseData?.find(x => Number(x.pokemon_id) === Number(p.id));
-      if(existing){
-        existing.card = cardValue;
-        existing.full_art = fullArtValue;
-      } else {
-        window.__supabaseData.push({ pokemon_id:p.id, card:cardValue, full_art:fullArtValue });
-      }
+      const existing=supaFor(p.id);
+      if(existing){existing.card=cardValue;existing.full_art=artValue}
+      else window.__supabaseData.push({pokemon_id:p.id,card:cardValue,full_art:artValue});
+      if(!cardValue) clearSpecificCardsForPokemon(p.id);
 
-      card.classList.toggle('owned-fullart', cardValue && fullArtValue);
+      setSyncStatus('synced','Sincronizado');
       updateCounts();
-      applySearch();
+      renderCurrentPage(false);
     });
   });
 
-  return card;
+  el.addEventListener('click',e=>{
+    if(e.target.closest('.card-actions')) return;
+    openArtModal(p);
+  });
+
+  return el;
+}
+
+function getOwnedMaps(){
+  const data=window.__supabaseData||[];
+  return {
+    card:new Map(data.map(x=>[Number(x.pokemon_id),x.card===true])),
+    art:new Map(data.map(x=>[Number(x.pokemon_id),x.full_art===true]))
+  };
 }
 
 function updateCounts(){
-  const all = window.__all || [];
-  const supaData = window.__supabaseData || [];
-  const ownedMap = new Map(supaData.map(x=>[Number(x.pokemon_id), x.card === true]));
-  const fullArtMap = new Map(supaData.map(x=>[Number(x.pokemon_id), x.full_art === true]));
+  const all=window.__all||[];
+  const maps=getOwnedMaps();
+  const totalOwned=all.filter(p=>maps.card.get(Number(p.id))===true).length;
+  const totalArt=all.filter(p=>maps.art.get(Number(p.id))===true).length;
+  const missing=1025-totalOwned;
+  const pct=((totalOwned/1025)*100).toFixed(1);
+  const eligible=artEligibleIds(all);
+  const artDenominator=eligible?eligible.length:null;
+  const artPct=artDenominator?((totalArt/artDenominator)*100).toFixed(1):null;
 
-  const totalOwned = all.filter(p => ownedMap.get(Number(p.id)) === true).length;
-  const totalFullArt = all.filter(p => fullArtMap.get(Number(p.id)) === true).length;
-  const missing = 1025 - totalOwned;
-  const pct = ((totalOwned/1025)*100).toFixed(1);
+  document.getElementById('count').textContent=`${String(totalOwned).padStart(3,'0')} / 1025`;
+  document.getElementById('percentComplete').textContent=`${pct}%`;
+  document.getElementById('progressLabel').textContent=`${pct}%`;
+  document.getElementById('progressFill').style.width=`${pct}%`;
+  document.getElementById('cardsCount').textContent=totalOwned;
+  document.getElementById('artCount').textContent=artDenominator!==null?`${totalArt} / ${artDenominator}`:`${totalArt} / —`;
+  document.getElementById('artPercent').textContent=artPct!==null?`${artPct}% ART`:'base ART por verificar';
+  document.getElementById('artDbNote').textContent=`ART: ${ART_DATABASE.available.length + DYNAMIC_ART_AVAILABLE_SET.size} conhecidas/encontradas · restantes por verificar`;
+  document.getElementById('missingCount').textContent=missing;
 
-  document.getElementById('count').textContent = `${String(totalOwned).padStart(3,'0')} / 1025`;
-  document.getElementById('percentComplete').textContent = `${pct}%`;
-  document.getElementById('progressLabel').textContent = `${pct}%`;
-  document.getElementById('progressFill').style.width = `${pct}%`;
-  document.getElementById('cardsCount').textContent = totalOwned;
-  document.getElementById('fullArtCount').textContent = totalFullArt;
-  document.getElementById('missingCount').textContent = missing;
-
-  const box = document.getElementById('genCounts');
-  box.innerHTML = genRanges.map((g, index)=>{
-    const total = g.max - g.min + 1;
-    const have = all.filter(p => Number(p.id)>=g.min && Number(p.id)<=g.max && ownedMap.get(Number(p.id)) === true).length;
-    const gpct = total ? ((have/total)*100).toFixed(1) : '0.0';
-    return `<div class="gen-tab ${index===0?'active':''}"><button type="button" data-gen="${index+1}"><strong>${g.label}</strong><small>${g.name} · ${String(have).padStart(3,'0')}/${total} · ${gpct}%</small></button></div>`;
+  const box=document.getElementById('genCounts');
+  box.innerHTML=genRanges.map((g,index)=>{
+    const total=g.max-g.min+1;
+    const inGen=all.filter(p=>p.id>=g.min&&p.id<=g.max);
+    const have=inGen.filter(p=>maps.card.get(Number(p.id))===true).length;
+    const art=inGen.filter(p=>maps.art.get(Number(p.id))===true).length;
+    const pctGen=((have/total)*100).toFixed(1);
+    const genEligible=inGen.filter(p=>artAvailability(p.id)==='available').length;
+    const artPctGen=genEligible?((art/genEligible)*100).toFixed(1):null;
+    const artVisualPct=genEligible?Number(artPctGen):((art/total)*100);
+    const active=state.generation===index+1?'active':'';
+    return `<div class="gen-tab ${active}"><button type="button" data-gen="${index+1}"><strong>${g.label} · ${String(have).padStart(3,'0')}/${total}</strong><small>${g.name} · ${pctGen}%<br>⭐ ART ${String(art).padStart(3,'0')}/${genEligible??'—'}${artPctGen!==null?' · '+artPctGen+'%':' · por verificar'}</small><div class="gen-bars"><div class="gen-bar-row"><b>DEX</b><div class="gen-bar"><span style="width:${pctGen}%"></span></div></div><div class="gen-bar-row"><b>ART</b><div class="gen-bar art"><span style="width:${Math.min(100,artVisualPct)}%"></span></div></div></div></button></div>`;
   }).join('');
+
   box.querySelectorAll('button[data-gen]').forEach(btn=>{
     btn.addEventListener('click',()=>{
-      const target = document.querySelector(`.gen-section[data-gen="${btn.dataset.gen}"]`);
-      if(target) target.scrollIntoView({behavior:'smooth', block:'start'});
-      box.querySelectorAll('.gen-tab').forEach(t=>t.classList.remove('active'));
-      btn.parentElement.classList.add('active');
+      const g=Number(btn.dataset.gen);
+      state.generation=state.generation===g?null:g;
+      state.page=1;
+      renderCurrentPage();
     });
   });
+
+  document.getElementById('resetGenBtn').classList.toggle('hidden',!state.generation);
+}
+
+function getFilteredData(){
+  const all=[...(window.__all||[])];
+  const maps=getOwnedMaps();
+  let data=all;
+
+  if(state.generation){
+    const g=genRanges[state.generation-1];
+    data=data.filter(p=>p.id>=g.min&&p.id<=g.max);
+  }
+
+  if(state.search){
+    const q=state.search.toLowerCase();
+    data=data.filter(p=>pretty(p.name).toLowerCase().includes(q)||String(p.id).includes(q));
+  }
+
+  if(state.filter==='missing') data=data.filter(p=>maps.card.get(Number(p.id))!==true);
+  if(state.filter==='have-card') data=data.filter(p=>maps.card.get(Number(p.id))===true);
+  if(state.filter==='missing-art') data=data.filter(p=>maps.card.get(Number(p.id))===true&&maps.art.get(Number(p.id))!==true);
+  if(state.filter==='complete') data=data.filter(p=>maps.card.get(Number(p.id))===true&&maps.art.get(Number(p.id))===true);
+  if(state.filter==='no-art') data=data.filter(p=>artAvailability(p.id)==='unknown');
+
+  if(state.sort==='number-desc') data.sort((a,b)=>b.id-a.id);
+  else if(state.sort==='name-asc') data.sort((a,b)=>pretty(a.name).localeCompare(pretty(b.name),'pt'));
+  else if(state.sort==='name-desc') data.sort((a,b)=>pretty(b.name).localeCompare(pretty(a.name),'pt'));
+  else data.sort((a,b)=>a.id-b.id);
+
+  return data;
+}
+
+function renderPagination(totalPages){
+  const box=document.getElementById('pagination');
+  if(totalPages<=1){box.innerHTML='';return}
+
+  const pages=[];
+  const add=n=>{if(n>=1&&n<=totalPages&&!pages.includes(n))pages.push(n)};
+  add(1);add(2);add(state.page-1);add(state.page);add(state.page+1);add(totalPages-1);add(totalPages);
+  pages.sort((a,b)=>a-b);
+
+  let html=`<button class="page-btn" data-page="prev" ${state.page===1?'disabled':''}>‹</button>`;
+  let prev=0;
+  pages.forEach(n=>{
+    if(prev&&n-prev>1) html+='<span class="page-dots">…</span>';
+    html+=`<button class="page-btn ${n===state.page?'active':''}" data-page="${n}">${n}</button>`;
+    prev=n;
+  });
+  html+=`<button class="page-btn" data-page="next" ${state.page===totalPages?'disabled':''}>›</button>`;
+  box.innerHTML=html;
+
+  box.querySelectorAll('button[data-page]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const v=btn.dataset.page;
+      if(v==='prev') state.page=Math.max(1,state.page-1);
+      else if(v==='next') state.page=Math.min(totalPages,state.page+1);
+      else state.page=Number(v);
+      renderCurrentPage();
+      document.querySelector('.stage').scrollIntoView({behavior:'smooth',block:'start'});
+    });
+  });
+}
+
+function renderCurrentPage(refreshCounts=true){
+  const data=getFilteredData();
+  const totalPages=Math.max(1,Math.ceil(data.length/state.pageSize));
+  state.page=Math.min(state.page,totalPages);
+  const start=(state.page-1)*state.pageSize;
+  const pageData=data.slice(start,start+state.pageSize);
+
+  const list=document.getElementById('list');
+  list.innerHTML='';
+  pageData.forEach(p=>list.appendChild(makeCard(p)));
+
+  if(refreshCounts) updateCounts();
+  renderPagination(totalPages);
+  ensureTypes(pageData.map(p=>p.id));
+
+  const from=data.length?start+1:0;
+  const to=Math.min(start+state.pageSize,data.length);
+  const genLabel=state.generation?` · ${genRanges[state.generation-1].label} ${genRanges[state.generation-1].name}`:'';
+  document.getElementById('statusText').textContent=`Mostrando ${from}–${to} de ${data.length} Pokémon${genLabel}`;
 }
 
 function render(data){
-  const sortMode = document.getElementById('sortBy').value;
-  const arr = [...data];
-  if(sortMode === 'number-desc') arr.sort((a,b)=>b.id-a.id);
-  else if(sortMode === 'name-asc') arr.sort((a,b)=>pretty(a.name).localeCompare(pretty(b.name),'pt'));
-  else if(sortMode === 'name-desc') arr.sort((a,b)=>pretty(b.name).localeCompare(pretty(a.name),'pt'));
-  else arr.sort((a,b)=>a.id-b.id);
-
-  const container = document.getElementById('list');
-  container.innerHTML='';
-  let lastGen='';
-  arr.forEach(p=>{
-    const g = genFor(p.id);
-    if(g !== lastGen){
-      const range = genRanges.find(r => p.id >= r.min && p.id <= r.max);
-      const section = document.createElement('div');
-      section.className='gen-section';
-      section.dataset.gen = String(genRanges.indexOf(range)+1);
-      section.innerHTML = `<strong>${g}</strong><span>#${String(range.min).padStart(3,'0')} – #${String(range.max).padStart(3,'0')}</span><div class="gen-line"></div>`;
-      container.appendChild(section);
-      lastGen = g;
-    }
-    container.appendChild(makeCard(p));
-  });
+  window.__all=data;
   updateCounts();
-  applySearch();
+  renderCurrentPage(false);
 }
 
-function buildPlaceholderData(){ return Array.from({length:1025},(_,i)=>({id:i+1,name:'pokemon-'+String(i+1).padStart(4,'0')})); }
-function getCachedData(){
-  try{
-    const raw=localStorage.getItem(CACHE_KEY); if(!raw) return null;
-    const d=JSON.parse(raw);
-    if(Array.isArray(d) && d.length===1025 && d[0]?.id===1 && d[1024]?.id===1025) return d;
-  }catch(e){}
-  return null;
-}
-function saveCachedData(d){ try{ localStorage.setItem(CACHE_KEY, JSON.stringify(d)); }catch(e){} }
+function buildPlaceholderData(){return Array.from({length:1025},(_,i)=>({id:i+1,name:'pokemon-'+String(i+1).padStart(4,'0')}))}
+function getCachedData(){try{const raw=localStorage.getItem(CACHE_KEY);if(!raw)return null;const d=JSON.parse(raw);if(Array.isArray(d)&&d.length===1025&&d[0]?.id===1&&d[1024]?.id===1025)return d}catch(e){}return null}
+function saveCachedData(d){try{localStorage.setItem(CACHE_KEY,JSON.stringify(d))}catch(e){}}
 
 function loadNames(){
-  const cached = getCachedData();
-  if(cached){ window.__all = cached; render(cached); }
+  const cached=getCachedData();
+  if(cached) render(cached);
 
   fetch(API)
-    .then(r=>{ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
+    .then(r=>{if(!r.ok)throw new Error('HTTP '+r.status);return r.json()})
     .then(d=>{
-      const fresh = d.results.map((x,i)=>({id:i+1,name:x.name}));
-      if(fresh.length !== 1025) throw new Error('Lista incompleta');
+      const fresh=d.results.map((x,i)=>({id:i+1,name:x.name}));
+      if(fresh.length!==1025)throw new Error('Lista incompleta');
       saveCachedData(fresh);
-      window.__all = fresh;
       render(fresh);
     })
     .catch(()=>{
-      if(!cached){
-        const fallback = buildPlaceholderData();
-        window.__all = fallback;
-        render(fallback);
-      }
+      if(!cached) render(buildPlaceholderData());
     });
 }
 
-function applySearch(){
-  const q = (document.getElementById('search').value || '').toLowerCase().trim();
-  const cards = document.querySelectorAll('.dex-card');
-  cards.forEach(card=>{
-    const match = !q || card.dataset.name.includes(q) || card.dataset.id.includes(q);
-    card.classList.toggle('hidden', !match);
+function exportBackup(){
+  const all=window.__all||[];
+  const rows=all.map(p=>{
+    const s=supaFor(p.id)||{};
+    return {pokemon_id:p.id,pokemon:pretty(p.name),card:s.card===true,art:s.full_art===true};
   });
-  document.querySelectorAll('.gen-section').forEach(section=>{
-    let next = section.nextElementSibling;
-    let any = false;
-    while(next && !next.classList.contains('gen-section')){
-      if(!next.classList.contains('hidden')) any = true;
-      next = next.nextElementSibling;
-    }
-    section.classList.toggle('hidden', !!q && !any);
-  });
-  const visible = document.querySelectorAll('.dex-card:not(.hidden)').length;
-  document.getElementById('statusText').textContent = q ? `Pesquisa ativa · ${visible} resultado(s)` : `Mostrando ${visible} de 1025 Pokémon`;
+  const payload={
+    format:'pokedex-xl-backup-v2',
+    exported_at:new Date().toISOString(),
+    total_pokemon:1025,
+    art_database_version:ART_DATABASE.version,
+    art_database_verified_at:ART_DATABASE.verified_at,
+    collection:rows,
+    specific_card_collection:loadCardDetailStore()
+  };
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=`pokedex-xl-backup-${new Date().toISOString().slice(0,10)}.json`;
+  document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
 }
 
-loadSupabaseData().then(data=>{
-  window.__supabaseData = data;
-  loadNames();
+async function importBackupFile(file){
+  try{
+    const raw=await file.text();
+    const parsed=JSON.parse(raw);
+    if(!parsed || !Array.isArray(parsed.collection)) throw new Error('Backup inválido: coleção não encontrada.');
+    const rows=parsed.collection
+      .map(r=>({
+        pokemon_id:Number(r.pokemon_id),
+        card:Boolean(r.card || r.art),
+        full_art:Boolean(r.art)
+      }))
+      .filter(r=>Number.isInteger(r.pokemon_id)&&r.pokemon_id>=1&&r.pokemon_id<=1025);
+    if(!rows.length) throw new Error('O backup não contém Pokémon válidos.');
+    if(!confirm(`Restaurar ${rows.length} registos deste backup? Isto vai atualizar a tua coleção no Supabase.`)) return;
+
+    setSyncStatus('saving','A restaurar backup…');
+    for(let i=0;i<rows.length;i+=200){
+      const chunk=rows.slice(i,i+200);
+      const {error}=await supabaseClient.from('pokemon_cards').upsert(chunk,{onConflict:'pokemon_id'});
+      if(error) throw error;
+    }
+    window.__supabaseData=rows.map(r=>({pokemon_id:r.pokemon_id,card:r.card,full_art:r.full_art}));
+    if(parsed.specific_card_collection&&typeof parsed.specific_card_collection==='object'){
+      CARD_DETAIL_STORE=parsed.specific_card_collection;
+      saveCardDetailStore();
+    }
+    setSyncStatus('synced','Backup restaurado');
+    updateCounts();
+    renderCurrentPage(false);
+    alert('Backup restaurado com sucesso.');
+  }catch(err){
+    console.error(err);
+    setSyncStatus('error','Erro ao restaurar');
+    alert('Não foi possível restaurar o backup: '+err.message);
+  }
+}
+
+function startRealtime(){
+  try{
+    const channel=supabaseClient
+      .channel('pokemon_cards_live')
+      .on('postgres_changes',{event:'*',schema:'public',table:'pokemon_cards'},payload=>{
+        const row=payload.new||payload.old;
+        if(!row || !row.pokemon_id) return;
+        const id=Number(row.pokemon_id);
+        const existing=supaFor(id);
+        if(payload.eventType==='DELETE'){
+          window.__supabaseData=(window.__supabaseData||[]).filter(x=>Number(x.pokemon_id)!==id);
+        }else if(existing){
+          existing.card=row.card===true;
+          existing.full_art=row.full_art===true;
+        }else{
+          window.__supabaseData.push({pokemon_id:id,card:row.card===true,full_art:row.full_art===true});
+        }
+        setSyncStatus('synced','Sincronizado em tempo real');
+        updateCounts();
+        renderCurrentPage(false);
+      })
+      .subscribe(status=>{
+        if(status==='SUBSCRIBED') setSyncStatus('synced','Sincronizado');
+      });
+    window.__pokedexRealtime=channel;
+  }catch(err){
+    console.warn('Realtime indisponível:',err);
+  }
+}
+
+let deferredInstallPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault();
+  deferredInstallPrompt=e;
+  document.getElementById('installBtn').classList.remove('hidden');
+});
+window.addEventListener('appinstalled',()=>{
+  document.getElementById('installBtn').classList.add('hidden');
+  deferredInstallPrompt=null;
 });
 
-document.getElementById('search').addEventListener('input', applySearch);
-document.getElementById('sortBy').addEventListener('change', ()=> render(window.__all || []));
-document.getElementById('genJump').addEventListener('change', function(){
-  const gen = this.value; if(!gen) return;
-  const target = document.querySelector(`.gen-section[data-gen="${gen}"]`);
-  if(target) target.scrollIntoView({behavior:'smooth', block:'start'});
-  const tabs = document.querySelectorAll('.gen-tab');
-  tabs.forEach(t=>t.classList.remove('active'));
-  if(tabs[Number(gen)-1]) tabs[Number(gen)-1].classList.add('active');
-  this.value='';
+if('serviceWorker' in navigator && location.protocol!=='file:'){
+  window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(err=>console.warn('Service Worker:',err)));
+}
+
+
+document.getElementById('artModalClose').addEventListener('click',closeArtModal);
+document.getElementById('artModal').addEventListener('click',e=>{if(e.target.id==='artModal') closeArtModal()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElementById('artModal').classList.contains('open')) closeArtModal()});
+
+loadSupabaseData().then(data=>{
+  window.__supabaseData=data;
+  loadNames();
+  startRealtime();
 });
+
+document.getElementById('search').addEventListener('input',e=>{state.search=e.target.value.trim();state.page=1;renderCurrentPage()});
+document.getElementById('filterBy').addEventListener('change',e=>{state.filter=e.target.value;state.page=1;renderCurrentPage()});
+document.getElementById('sortBy').addEventListener('change',e=>{state.sort=e.target.value;state.page=1;renderCurrentPage()});
+document.getElementById('exportBtn').addEventListener('click',exportBackup);
+document.getElementById('importBtn').addEventListener('click',()=>document.getElementById('importFile').click());
+document.getElementById('importFile').addEventListener('change',e=>{
+  const file=e.target.files?.[0];
+  if(file) importBackupFile(file);
+  e.target.value='';
+});
+document.getElementById('installBtn').addEventListener('click',async()=>{
+  if(!deferredInstallPrompt) return;
+  deferredInstallPrompt.prompt();
+  await deferredInstallPrompt.userChoice;
+  deferredInstallPrompt=null;
+  document.getElementById('installBtn').classList.add('hidden');
+});
+document.getElementById('resetGenBtn').addEventListener('click',()=>{state.generation=null;state.page=1;renderCurrentPage()});
 </script>
 </body>
 </html>
