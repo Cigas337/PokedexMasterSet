@@ -499,7 +499,7 @@ body:not(.auth-locked) .auth-gate{opacity:0;visibility:hidden;pointer-events:non
         <button type="button" id="exportBtn">⬇ Exportar backup</button>
         <button type="button" id="importBtn">⬆ Importar backup</button>
         <div class="collection-menu-sep"></div>
-        <button type="button" class="hidden" id="installBtn">📲 Instalar Pokédex XL</button>
+        <button type="button" id="installBtn">📲 Instalar Pokédex XL</button>
         <small class="hidden" id="installHint">Instala a Pokédex como aplicação neste dispositivo.</small>
         <button type="button" id="logoutBtn">↪ Terminar sessão</button>
       </div>
@@ -2365,13 +2365,11 @@ let deferredInstallPrompt=null;
 window.addEventListener('beforeinstallprompt',e=>{
   e.preventDefault();
   deferredInstallPrompt=e;
-  document.getElementById('installBtn').classList.remove('hidden');
-  document.getElementById('installHint').classList.remove('hidden');
 });
 window.addEventListener('appinstalled',()=>{
-  document.getElementById('installBtn').classList.add('hidden');
-  document.getElementById('installHint').classList.add('hidden');
   deferredInstallPrompt=null;
+  const btn=document.getElementById('installBtn');
+  if(btn) btn.textContent='✓ Pokédex XL instalada';
 });
 
 if('serviceWorker' in navigator && location.protocol!=='file:'){
@@ -2460,12 +2458,33 @@ document.getElementById('importFile').addEventListener('change',e=>{
   e.target.value='';
 });
 document.getElementById('installBtn').addEventListener('click',async()=>{
-  if(!deferredInstallPrompt) return;
-  deferredInstallPrompt.prompt();
-  await deferredInstallPrompt.userChoice;
-  deferredInstallPrompt=null;
-  document.getElementById('installBtn').classList.add('hidden');
-  document.getElementById('installHint').classList.add('hidden');
+  const menuWrap=document.getElementById('collectionMenuWrap');
+  if(menuWrap) menuWrap.classList.remove('open');
+
+  const standalone=window.matchMedia?.('(display-mode: standalone)').matches || window.navigator.standalone===true;
+  if(standalone){
+    alert('A Pokédex XL já está aberta como aplicação neste dispositivo.');
+    return;
+  }
+
+  if(deferredInstallPrompt){
+    deferredInstallPrompt.prompt();
+    const choice=await deferredInstallPrompt.userChoice;
+    if(choice?.outcome==='accepted'){
+      const btn=document.getElementById('installBtn');
+      if(btn) btn.textContent='✓ Pokédex XL instalada';
+    }
+    deferredInstallPrompt=null;
+    return;
+  }
+
+  const ua=navigator.userAgent||'';
+  const isIOS=/iPad|iPhone|iPod/.test(ua) || (navigator.platform==='MacIntel' && navigator.maxTouchPoints>1);
+  if(isIOS){
+    alert('No iPhone/iPad: abre esta página no Safari, toca no botão Partilhar (quadrado com seta para cima) e escolhe “Adicionar ao Ecrã Principal”.');
+  }else{
+    alert('O navegador não disponibilizou o instalador automático neste momento. Procura no menu do navegador a opção “Instalar aplicação” ou “Adicionar ao ecrã principal”.');
+  }
 });
 document.getElementById('resetGenBtn').addEventListener('click',()=>{state.generation=null;state.page=1;renderCurrentPage()});
 </script>
