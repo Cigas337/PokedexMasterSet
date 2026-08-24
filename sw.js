@@ -1,4 +1,4 @@
-const CACHE_NAME='pokedex-xl-v10-4-iphone14pro';
+const CACHE_NAME='pokedex-xl-v10-6-iphone14pro';
 const SHELL=['./','./index.html','./manifest.webmanifest','./icon-180.png','./icon-192.png','./icon-512.png'];
 
 self.addEventListener('install',event=>{

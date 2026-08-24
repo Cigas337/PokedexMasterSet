@@ -4,11 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#080f17">
+<meta name="color-scheme" content="dark">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Pokédex XL">
 <link rel="manifest" href="manifest.webmanifest">
-<title>Pokédex XL — National Dex Master Set · v10.4</title>
+<title>Pokédex XL — National Dex Master Set · v10.6</title>
 <link rel="apple-touch-icon" href="icon-180.png">
 <style>
 :root{
@@ -29,9 +30,12 @@
   --shadow:0 20px 44px rgba(0,0,0,.42);
 }
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;background:#080f17;min-height:100%;color-scheme:dark}
 body{
   margin:0;
+  min-height:100vh;
+  min-height:100dvh;
+  background-color:#080f17;
   color:var(--text);
   font-family:Arial,Helvetica,sans-serif;
   background:
@@ -340,6 +344,51 @@ body.modal-open{overflow:hidden}
     grid-template-areas:'count progress' 'mini mini' !important;
   }
 }
+
+/* v10.6 — barra de estado iOS sempre coberta, inclusive no primeiro frame */
+.ios-status-fill{display:none}
+@supports (padding-top: env(safe-area-inset-top)){
+  @media(max-width:760px){
+    html{
+      background:#080f17!important;
+      overscroll-behavior-y:none;
+    }
+    body{
+      background-color:#080f17!important;
+      overscroll-behavior-y:none;
+    }
+    /* Dupla proteção: a camada fica ACIMA do conteúdo e estende 3px para fora
+       do viewport para evitar a linha branca de composição do WebKit. */
+    .ios-status-fill{
+      display:block;
+      position:fixed;
+      left:0;right:0;top:-3px;
+      height:calc(env(safe-area-inset-top) + 6px);
+      min-height:6px;
+      background:#080f17;
+      z-index:99990;
+      pointer-events:none;
+      transform:translateZ(0);
+      -webkit-transform:translateZ(0);
+    }
+    body::before{
+      content:"";
+      position:fixed;
+      left:0;right:0;top:-3px;
+      height:calc(env(safe-area-inset-top) + 6px);
+      background:#080f17;
+      z-index:99989;
+      pointer-events:none;
+      transform:translateZ(0);
+      -webkit-transform:translateZ(0);
+    }
+    body.auth-locked .ios-status-fill,
+    body.auth-locked::before{background:#03070b}
+    .wrap{position:relative;z-index:1}
+    .auth-gate,.art-modal{z-index:100000}
+  }
+}
+
 @media(max-width:760px){
   .hero{grid-template-columns:1fr !important}
   .brand-panel{padding:18px !important}
@@ -657,6 +706,7 @@ body:not(.auth-locked) .auth-gate{opacity:0;visibility:hidden;pointer-events:non
 </style>
 </head>
 <body class="auth-locked">
+<div class="ios-status-fill" aria-hidden="true"></div>
 
 <div class="auth-gate" id="authGate" aria-label="Entrada Pokédex XL">
   <div class="auth-card">
