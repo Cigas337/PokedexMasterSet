@@ -837,7 +837,7 @@ body:not(.auth-locked) .auth-gate{opacity:0;visibility:hidden;pointer-events:non
 .realfoil-card.is-active .realfoil-tilt{transition:transform .045s linear}
 .realfoil-img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block;z-index:1;pointer-events:none}
 .realfoil-gloss,.realfoil-full,.realfoil-art,.realfoil-rev{position:absolute;pointer-events:none;z-index:3;mix-blend-mode:screen;background-position:var(--mx) var(--my);will-change:background-position,opacity}
-.realfoil-gloss{inset:0;border-radius:inherit;z-index:5;opacity:.15;background:radial-gradient(circle at var(--mx) var(--my),rgba(255,255,255,.40) 0 2%,rgba(255,255,255,.13) 8%,transparent 27%);mix-blend-mode:soft-light}
+.realfoil-gloss{inset:0;border-radius:inherit;z-index:5;opacity:.22;background:radial-gradient(circle at var(--mx) var(--my),rgba(255,255,255,.58) 0 2.2%,rgba(255,255,255,.20) 8%,transparent 29%), linear-gradient(130deg,rgba(255,255,255,.08),transparent 28%,rgba(255,255,255,.05) 62%,transparent 100%);mix-blend-mode:soft-light}
 .realfoil-full{inset:0;border-radius:inherit;opacity:0}
 /* Janela de artwork aproximada das cartas standard; Holo fica apenas aqui. */
 .realfoil-art{left:7.7%;right:7.7%;top:14.3%;height:35.2%;border-radius:2.4%;opacity:0;overflow:hidden}
@@ -850,9 +850,9 @@ body:not(.auth-locked) .auth-gate{opacity:0;visibility:hidden;pointer-events:non
   radial-gradient(circle at var(--mx) var(--my),rgba(255,255,255,.98) 0 1.7%,rgba(255,255,255,.38) 7%,transparent 23%),
   conic-gradient(from 140deg at var(--mx) var(--my),rgba(255,77,77,.36),rgba(255,221,91,.42),rgba(87,255,171,.38),rgba(93,182,255,.45),rgba(185,105,255,.40),rgba(255,77,144,.36),rgba(255,77,77,.36));
   background-size:100% 100%,165% 165%;filter:saturate(1.26) contrast(1.08)}
-.realfoil-card[data-finish="holo"] .realfoil-art{opacity:.73;mix-blend-mode:color-dodge}
-.realfoil-card[data-finish="reverse"] .realfoil-rev{opacity:.66;mix-blend-mode:color-dodge}
-.realfoil-card[data-finish="normal"] .realfoil-gloss{opacity:.12}
+.realfoil-card[data-finish="holo"] .realfoil-art{opacity:.88;mix-blend-mode:color-dodge;filter:saturate(1.28) brightness(1.06)}
+.realfoil-card[data-finish="reverse"] .realfoil-rev{opacity:.82;mix-blend-mode:color-dodge;filter:saturate(1.26) brightness(1.04)}
+.realfoil-card[data-finish="normal"] .realfoil-gloss{opacity:.24}
 
 /* Foils especiais: continuam respeitando a zona física da variante. */
 .realfoil-card[data-finish="masterball"] .realfoil-rev,.realfoil-card[data-finish="masterball"] .realfoil-full{opacity:.82;background-image:
@@ -874,7 +874,7 @@ body:not(.auth-locked) .auth-gate{opacity:0;visibility:hidden;pointer-events:non
 .realfoil-card[data-finish="glitter"] .realfoil-full,.realfoil-card[data-finish="radiant"] .realfoil-full{background-size:100% 100%,14px 14px,180% 180%;background-image:radial-gradient(circle at var(--mx) var(--my),rgba(255,255,255,.95),transparent 22%),radial-gradient(circle,rgba(255,255,255,.72) 0 1px,transparent 1.8px),conic-gradient(from 120deg,rgba(255,91,154,.3),rgba(93,198,255,.38),rgba(255,228,93,.32),rgba(181,108,255,.36),rgba(255,91,154,.3))}
 
 .realfoil-card[data-finish="normal"] .realfoil-art,.realfoil-card[data-finish="normal"] .realfoil-rev,.realfoil-card[data-finish="normal"] .realfoil-full{opacity:0!important}
-.realfoil-card.compact{border-radius:9px}.realfoil-card.compact .realfoil-tilt{border-radius:9px;box-shadow:none}.realfoil-card.compact .realfoil-gloss{opacity:.07}.featured-card-image.final-variant-card{overflow:visible!important}
+.realfoil-card.compact{border-radius:9px}.realfoil-card.compact .realfoil-tilt{border-radius:9px;box-shadow:none}.realfoil-card.compact .realfoil-gloss{opacity:.11}.featured-card-image.final-variant-card{overflow:visible!important}
 
 .variant-image-badge{z-index:10}.variant-image-shell{overflow:visible!important}.variant-holo-mount{z-index:2}.variant-image-shell:after{pointer-events:none}
 .variant-data-note b{color:#d6e2ed}
@@ -902,7 +902,34 @@ body:not(.auth-locked) .auth-gate{opacity:0;visibility:hidden;pointer-events:non
 .realfoil-card[data-frame="full"][data-finish="metal"] .realfoil-full{opacity:.72!important}
 .realfoil-card[data-frame="full"][data-finish="normal"] .realfoil-full{opacity:0!important}
 
+
+
+/* ===== v11.2 · DEX-GRADE FOIL · motor externo MIT + máscaras físicas ===== */
+.profoil-host{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;perspective:950px;isolation:isolate}
+.profoil-host>.holo-card{width:100%!important;max-width:100%!important;height:auto!important;aspect-ratio:2.5/3.5!important;margin:auto;touch-action:none;-webkit-tap-highlight-color:transparent}
+.profoil-host .holo-card__image{object-fit:contain!important}
+.profoil-host .holo-card__front{border-radius:4.6%!important;overflow:hidden!important}
+.profoil-host .holo-card__rotator{filter:drop-shadow(0 18px 22px rgba(0,0,0,.28))}
+.profoil-host.compact>.holo-card{height:100%!important;width:auto!important;max-width:100%!important}
+.profoil-host.compact .holo-card__rotator{filter:none}
+.profoil-fallback{width:100%;height:100%;object-fit:contain;display:block;border-radius:4.6%}
+.variant-image-shell .profoil-host{min-height:0}
+.variant-image-shell .holo-card{cursor:grab}
+.variant-image-shell .holo-card:active{cursor:grabbing}
+@media(max-width:760px){
+ .profoil-host>.holo-card{width:min(100%,86vw)!important;max-height:100%!important}
+ .variant-image-shell .holo-card__rotator{filter:drop-shadow(0 15px 20px rgba(0,0,0,.34))}
+}
 </style>
+
+<!-- v11.2 · DEX-GRADE FOIL ENGINE (MIT) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@kongyo2/cards-css@0.5.0/dist/holo-cards.css">
+<script>
+window.__cardsCssModule=null;
+window.__cardsCssReady=import('https://cdn.jsdelivr.net/npm/@kongyo2/cards-css@0.5.0/dist/index.js')
+  .then(m=>{window.__cardsCssModule=m;return m;})
+  .catch(err=>{console.warn('Motor holográfico indisponível:',err);return null;});
+</script>
 </head>
 <body class="auth-locked">
 
@@ -1642,12 +1669,94 @@ function requestVariantMotionPermission(){
 function bindRealFoilInteraction(root){
   let dragging=false;
   const move=e=>{const r=root.getBoundingClientRect();if(!r.width||!r.height)return;setRealFoilPose(root,(e.clientX-r.left)/r.width,(e.clientY-r.top)/r.height,{tilt:true});};
-  const down=e=>{dragging=true;root.classList.add('is-active');try{root.setPointerCapture?.(e.pointerId)}catch(_){ }move(e)};
+  const down=e=>{dragging=true;root.classList.add('is-active');try{root.setPointerCapture?.(e.pointerId)}catch(_){ }try{requestVariantMotionPermission()}catch(_){} move(e)};
   const onMove=e=>{if(e.pointerType==='mouse'||dragging)move(e)};
   const up=e=>{dragging=false;root.classList.remove('is-active');try{root.releasePointerCapture?.(e.pointerId)}catch(_){ }if(VARIANT_MOTION_STATE!=='granted')setRealFoilPose(root,.5,.45,{tilt:true})};
   const leave=e=>{if(e.pointerType==='mouse'&&!dragging)setRealFoilPose(root,.5,.45,{tilt:true})};
   root.addEventListener('pointerdown',down);root.addEventListener('pointermove',onMove);root.addEventListener('pointerup',up);root.addEventListener('pointercancel',up);root.addEventListener('pointerleave',leave);
   return ()=>{root.removeEventListener('pointerdown',down);root.removeEventListener('pointermove',onMove);root.removeEventListener('pointerup',up);root.removeEventListener('pointercancel',up);root.removeEventListener('pointerleave',leave);if(ACTIVE_VARIANT_ORIENTATION_TARGET===root)ACTIVE_VARIANT_ORIENTATION_TARGET=null};
+}
+function proFoilEffect(v){
+  const eff=variantVisualEffect(v);
+  return ({normal:'none',holo:'holo',reverse:'reverse',masterball:'mosaic',pokeball:'prism',cosmos:'cosmos',crystal:'crystal',rainbow:'rainbow',gold:'gold',glitter:'glitter',metal:'metal',radiant:'radiant'})[eff]||'none';
+}
+function proFoilMaskData(kind,frame='standard'){
+  if(frame==='full'||kind==='full'||kind==='none') return null;
+  // Máscaras em percentagem da face de uma carta Pokémon standard.
+  const art={x:7.65,y:14.25,w:84.7,h:35.25};
+  let shapes='';
+  if(kind==='art') shapes=`<rect x="${art.x}" y="${art.y}" width="${art.w}" height="${art.h}" rx="1.8" fill="white"/>`;
+  else if(kind==='reverse') shapes=`<rect x="0" y="0" width="100" height="${art.y}" fill="white"/><rect x="0" y="${art.y+art.h}" width="100" height="${100-(art.y+art.h)}" fill="white"/><rect x="0" y="${art.y}" width="${art.x}" height="${art.h}" fill="white"/><rect x="${art.x+art.w}" y="${art.y}" width="${100-(art.x+art.w)}" height="${art.h}" fill="white"/>`;
+  else return null;
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none">${shapes}</svg>`;
+  return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
+}
+function proFoilMaskFor(card,v){
+  const frame=variantFrameMode(card,v),eff=variantVisualEffect(v);
+  if(frame==='full') return null;
+  if(eff==='holo'||eff==='cosmos'||eff==='crystal') return proFoilMaskData('art',frame);
+  if(eff==='reverse'||eff==='masterball'||eff==='pokeball') return proFoilMaskData('reverse',frame);
+  return null;
+}
+function proFoilVisual(v,compact=false){
+  const eff=variantVisualEffect(v);
+  const base={brightness:1.04,contrast:1.04,saturate:1.10,glareOpacity:compact?.30:.54,shineOpacity:compact?.52:.90,imageFit:'contain'};
+  if(eff==='normal') return {...base,glareOpacity:compact?.18:.34,shineOpacity:0};
+  if(eff==='holo') return {...base,brightness:1.08,saturate:1.20,glareOpacity:compact?.34:.58,shineOpacity:compact?.58:.96};
+  if(eff==='reverse') return {...base,brightness:1.06,saturate:1.18,glareOpacity:compact?.32:.55,shineOpacity:compact?.56:.93,lineSpace:4.2,lineAngle:128};
+  return base;
+}
+function proFoilPalette(v){
+  const eff=variantVisualEffect(v);
+  if(eff==='gold') return {preset:'gold'};
+  if(eff==='masterball') return {preset:'sapphire'};
+  if(eff==='pokeball') return {preset:'rainbow'};
+  if(eff==='metal') return {preset:'mono'};
+  return {preset:'rainbow'};
+}
+function proFoilGlow(v){
+  const eff=variantVisualEffect(v);
+  if(eff==='gold') return 'rgba(255,201,61,.36)';
+  if(eff==='masterball') return 'rgba(170,105,255,.34)';
+  if(eff==='pokeball') return 'rgba(105,195,255,.28)';
+  if(eff==='holo'||eff==='reverse'||eff==='cosmos') return 'rgba(105,185,255,.28)';
+  return 'rgba(255,255,255,.16)';
+}
+function requestProFoilMotionPermission(){
+  try{
+    const m=window.__cardsCssModule;
+    if(m?.requestOrientationPermission) return m.requestOrientationPermission().catch(()=>false);
+  }catch(_){}
+  return Promise.resolve(false);
+}
+async function createProFoilCard(card,v,url,{interactive=true,compact=false}={}){
+  const module=window.__cardsCssModule || await window.__cardsCssReady;
+  const host=document.createElement('div');host.className='profoil-host'+(compact?' compact':'');
+  if(!module?.createHoloCard){
+    const img=document.createElement('img');img.className='profoil-fallback';img.src=url||card?.images?.large||card?.images?.small||'';img.alt=`${card?.name||'Carta'} · ${v?.label||'variante'}`;host.appendChild(img);
+    return {element:host,destroy:()=>{}};
+  }
+  const frame=variantFrameMode(card,v);const mask=proFoilMaskFor(card,v);
+  const opts={
+    image:url||card?.images?.large||card?.images?.small||'',
+    imageAlt:`${card?.name||'Carta'} · ${v?.label||'variante'}`,
+    effect:proFoilEffect(v),interactive:!!interactive,activateOnClick:false,
+    gyroscope:interactive?{rangeX:18,rangeY:16,sensitivity:.82,invertX:false,invertY:false}:false,
+    textureSeed:variantTextureSeed(card,v),palette:proFoilPalette(v),glow:proFoilGlow(v),
+    depth:compact?false:{strength:7,perspective:980,shadow:.46,layerScale:.018},
+    physics:{maxTilt:14,parallax:7,glareRange:16,returnDelay:100},
+    visual:proFoilVisual(v,compact),
+    glare:{opacity:compact?.22:.50,blend:'soft-light'},
+    aspectRatio:2.5/3.5
+  };
+  if(mask) opts.mask={image:mask,size:'100% 100%',position:'center',repeat:'no-repeat',mode:'shine'};
+  const holo=module.createHoloCard(opts);host.appendChild(holo.element);
+  return {element:host,destroy:()=>{try{holo.destroy?.()}catch(_){}}};
+}
+async function renderProFoilInto(mount,card,v,url,{interactive=true,compact=false}={}){
+  if(!mount)return null;
+  const visual=await createProFoilCard(card,v,url,{interactive,compact});
+  mount.innerHTML='';mount.appendChild(visual.element);return visual;
 }
 function createRealFoilCard(card,v,url,{interactive=true,compact=false}={}){
   const effect=variantVisualEffect(v),frame=variantFrameMode(card,v);
@@ -1664,13 +1773,15 @@ function createRealFoilCard(card,v,url,{interactive=true,compact=false}={}){
   return {element:root,destroy:()=>{cleanup();if(ACTIVE_VARIANT_ORIENTATION_TARGET===root)ACTIVE_VARIANT_ORIENTATION_TARGET=null}};
 }
 function plainVariantHero(mount,card,v,url){
-  mount.innerHTML='';const visual=createRealFoilCard(card,v,url,{interactive:true});mount.appendChild(visual.element);ACTIVE_VARIANT_VISUAL=visual;ACTIVE_VARIANT_ORIENTATION_TARGET=visual.element;
+  try{ACTIVE_VARIANT_VISUAL?.destroy?.()}catch(e){}ACTIVE_VARIANT_VISUAL=null;
+  renderProFoilInto(mount,card,v,url,{interactive:true,compact:false}).then(visual=>{if(visual)ACTIVE_VARIANT_VISUAL=visual}).catch(()=>{});
 }
 async function renderVariantHeroVisual(card,v,imageInfo){
   const mount=document.getElementById('variantHoloMount');if(!mount)return;
-  try{ACTIVE_VARIANT_VISUAL?.destroy?.()}catch(e){} ACTIVE_VARIANT_VISUAL=null;
+  try{ACTIVE_VARIANT_VISUAL?.destroy?.()}catch(e){}ACTIVE_VARIANT_VISUAL=null;ACTIVE_VARIANT_ORIENTATION_TARGET=null;
   const url=imageInfo?.url||card?.images?.large||card?.images?.small||'';
-  const visual=createRealFoilCard(card,v,url,{interactive:true});mount.innerHTML='';mount.appendChild(visual.element);ACTIVE_VARIANT_VISUAL=visual;ACTIVE_VARIANT_ORIENTATION_TARGET=visual.element;
+  const visual=await renderProFoilInto(mount,card,v,url,{interactive:true,compact:false});
+  ACTIVE_VARIANT_VISUAL=visual;
 }
 async function enhanceVisibleBinderVariants(){
   const nodes=[...document.querySelectorAll('.featured-card-image[data-variant-effect]:not([data-variant-ready])')];if(!nodes.length)return;
@@ -1678,7 +1789,7 @@ async function enhanceVisibleBinderVariants(){
     node.dataset.variantReady='1';const url=node.dataset.variantImage||node.querySelector('img')?.src||'';if(!url)continue;
     const fakeCard={id:node.dataset.variantCardId||'',name:node.dataset.variantAlt||'Carta da coleção',rarity:node.dataset.variantRarity||'',subtypes:(node.dataset.variantSubtypes||'').split('|').filter(Boolean),images:{small:url,large:url}};
     const fakeVariant={key:node.dataset.variantKey||'default',type:node.dataset.variantType||'normal',foil:node.dataset.variantFoil||'',subtype:node.dataset.variantSubtype||'',label:node.dataset.variantLabel||'Variante'};
-    const visual=createRealFoilCard(fakeCard,fakeVariant,url,{interactive:false,compact:true});node.innerHTML='';node.appendChild(visual.element);node.classList.add('final-variant-card');
+    try{const visual=await renderProFoilInto(node,fakeCard,fakeVariant,url,{interactive:false,compact:true});node.classList.add('final-variant-card');node.__profoil=visual}catch(e){console.warn('Binder foil',e)}
   }
 }
 function bestTcgPrice(p){
@@ -2691,8 +2802,8 @@ function renderModalCards(resetLimit=false,skipEnrich=false){
     await openVariantModal(card,currentModalPokemon);
   };
   body.querySelectorAll('[data-open-variants]').forEach(el=>{
-    el.addEventListener('click',()=>{requestVariantMotionPermission();openVariantFromElement(el)});
-    el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();requestVariantMotionPermission();openVariantFromElement(el);}});
+    el.addEventListener('click',()=>{requestProFoilMotionPermission();openVariantFromElement(el)});
+    el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();requestProFoilMotionPermission();openVariantFromElement(el);}});
   });
   body.querySelectorAll('[data-wish-card]').forEach(btn=>{
     btn.addEventListener('click',async()=>{
@@ -2766,6 +2877,7 @@ function renderVariantModal(){
 async function openVariantModal(card,pokemon){
   currentVariantCard=card; currentVariantPokemon=pokemon; currentVariantSelectedKey=null;
   const modal=document.getElementById('variantModal'); modal.classList.add('open'); modal.setAttribute('aria-hidden','false');
+  try{ requestVariantMotionPermission(); }catch(_){}
   document.getElementById('variantModalTitle').textContent=card.name;
   document.getElementById('variantModalSub').textContent='A carregar variantes, imagem e mercados…';
   plainVariantHero(document.getElementById('variantHoloMount'),card,defaultVariantForCard(card),card.images?.large||card.images?.small||'');
@@ -3628,9 +3740,9 @@ async function startScannerCamera(){
     await new Promise((resolve,reject)=>{if(video.readyState>=1)return resolve();const timer=setTimeout(resolve,1800);video.onloadedmetadata=()=>{clearTimeout(timer);resolve()};video.onerror=()=>{clearTimeout(timer);reject(new Error('Falha no vídeo da câmara'))}});
     await video.play();if(mySession!==scannerSession)return;
     document.getElementById('scannerCameraShell')?.classList.add('auto-scanning');
-    setScannerStatus('A procurar uma carta…','Só tens de manter a carta direita dentro da moldura. A app abre-a automaticamente quando confirmar nome/número.','working');
+    setScannerStatus('A procurar uma carta…','Mantém a carta inteira dentro da moldura durante 1–2 segundos. Quando o nome e o número coincidirem, a app abre-a automaticamente.','working');
     // Prepara OCR em paralelo; assim o primeiro scan automático não espera por um clique extra.
-    ensureScannerOCRWorker().then(()=>{if(mySession===scannerSession)scheduleScannerAuto(120)}).catch(e=>{console.warn('OCR preload',e);setScannerStatus('Reconhecimento indisponível','Usa a fotografia de fallback.','bad')});
+    ensureScannerOCRWorker().then(()=>{if(mySession===scannerSession)scheduleScannerAuto(60)}).catch(e=>{console.warn('OCR preload',e);setScannerStatus('Reconhecimento indisponível','Usa a fotografia de fallback.','bad')});
   }catch(e){
     console.warn('Scanner camera',e);setScannerStatus('Não foi possível abrir a câmara','Confirma a permissão da câmara no Safari/PWA ou usa a fotografia de fallback.','bad');
   }
@@ -3700,6 +3812,18 @@ function cardScanScore(card,text,targetNum,setCode){
   const rarity=scanNorm(card.rarity);if(rarity&&rarity.length>4&&norm.includes(rarity))score+=5;
   return score;
 }
+function uniqueScannedCard(cards,pokemon,num,setCode){
+  if(!pokemon||!num||!Array.isArray(cards)||!cards.length)return null;
+  const n=normalizeLocalCardNumber(num);
+  let exact=cards.filter(card=>normalizeLocalCardNumber(card.number)===n);
+  if(setCode){
+    const sc=scanCompact(setCode);
+    const narrowed=exact.filter(card=>scanCompact(card.set?.ptcgoCode||card.set?.id)===sc);
+    if(narrowed.length===1) return narrowed[0];
+    if(narrowed.length>1) exact=narrowed;
+  }
+  return exact.length===1?exact[0]:null;
+}
 async function preprocessScannerBlob(blob){
   let source=null,w=0,h=0,cleanup=()=>{};
   if(typeof createImageBitmap==='function'){const bmp=await createImageBitmap(blob);source=bmp;w=bmp.width;h=bmp.height;cleanup=()=>bmp.close?.();}
@@ -3716,7 +3840,7 @@ async function preprocessScannerBlob(blob){
 function showScannerCandidates(candidates,pokemon){
   scannerCandidateContext=candidates.map(x=>({card:x.card,pokemon,score:x.score}));
   const box=document.getElementById('scannerCandidates');box.innerHTML=scannerCandidateContext.map((x,i)=>`<button type="button" class="scanner-candidate ${i===0?'best':''}" data-scan-candidate="${i}"><img src="${escapeHtml(x.card.images?.small||x.card.images?.large||'')}" alt="${escapeHtml(x.card.name)}"><div class="scanner-candidate-info"><strong>${escapeHtml(x.card.name)} #${escapeHtml(x.card.number||'—')}</strong><span>${escapeHtml(x.card.set?.name||'Set')}</span></div></button>`).join('');
-  box.querySelectorAll('[data-scan-candidate]').forEach(btn=>btn.addEventListener('click',async()=>{const x=scannerCandidateContext[Number(btn.dataset.scanCandidate)];if(!x)return;closeScanner();await openVariantModal(x.card,x.pokemon);}));
+  box.querySelectorAll('[data-scan-candidate]').forEach(btn=>btn.addEventListener('click',async()=>{const x=scannerCandidateContext[Number(btn.dataset.scanCandidate)];if(!x)return;requestProFoilMotionPermission();closeScanner();await openVariantModal(x.card,x.pokemon);}));
 }
 async function identifyScannedCard(blob,{auto=false}={}){
   const session=scannerSession;
@@ -3737,16 +3861,19 @@ async function identifyScannedCard(blob,{auto=false}={}){
     const pokemon=pokemonFromScanText(text);
     if(!pokemon){if(!auto)setScannerStatus('Não consegui identificar o Pokémon','Tenta outra foto mais direita e sem reflexos.','bad');return false;}
     if(auto)setScannerStatus(`A confirmar ${pretty(pokemon.name)}…`,num?`Número provável ${num}${setCode?` · ${setCode}`:''}`:'Mantém a carta quieta mais um instante.','working');
-    let cards=await fetchAllCardsForPokemon(pokemon);const scored=cards.map(card=>({card,score:cardScanScore(card,text,num,setCode)})).sort((a,b)=>b.score-a.score);
+    let cards=await fetchAllCardsForPokemon(pokemon);
+    const unique=uniqueScannedCard(cards,pokemon,num,setCode);
+    if(unique){setScannerStatus('Carta identificada',`${unique.set?.name||'Set'} · #${unique.number}. A abrir variantes…`,'good');closeScanner();await openVariantModal(unique,pokemon);return true;}
+    const scored=cards.map(card=>({card,score:cardScanScore(card,text,num,setCode)})).sort((a,b)=>b.score-a.score);
     let candidates=scored.filter(x=>(!num||normalizeLocalCardNumber(x.card.number)===normalizeLocalCardNumber(num))&&(!setCode||scanCompact(x.card.set?.ptcgoCode||x.card.set?.id)===scanCompact(setCode)));
     if(!candidates.length)candidates=scored.filter(x=>!num||normalizeLocalCardNumber(x.card.number)===normalizeLocalCardNumber(num));if(!candidates.length)candidates=scored;candidates=candidates.slice(0,9);
     if(!candidates.length){if(!auto)setScannerStatus('Pokémon encontrado, mas não encontrei a carta','Abre o Pokémon manualmente e escolhe a impressão.','bad');return false;}
     const top=candidates[0],second=candidates[1];const key=String(top.card.id||`${top.card.set?.id}-${top.card.number}`);
-    const unequivocal=(setCode&&num&&top.score>=240)|| (num&&top.score>=190&&(!second||top.score-second.score>=45));
+    const unequivocal=(setCode&&num&&top.score>=200)|| (num&&top.score>=150&&(!second||top.score-second.score>=16)) || (top.score>=235&&(!second||top.score-second.score>=24));
     if(unequivocal){setScannerStatus('Carta identificada',`${top.card.set?.name||'Set'} · #${top.card.number}. A abrir variantes…`,'good');closeScanner();await openVariantModal(top.card,pokemon);return true;}
     if(auto){
       if(key===scannerStableKey)scannerStableHits++;else{scannerStableKey=key;scannerStableHits=1;}
-      if(scannerStableHits>=2&&num&&top.score>=135&&(!second||top.score-second.score>=10)){
+      if(scannerStableHits>=1&&num&&top.score>=128&&(!second||top.score-second.score>=8)){
         setScannerStatus('Carta confirmada',`${top.card.set?.name||'Set'} · #${top.card.number}. A abrir variantes…`,'good');closeScanner();await openVariantModal(top.card,pokemon);return true;
       }
       return false;
@@ -3764,16 +3891,16 @@ function scannerFrameBlob(){
     const canvas=document.getElementById('scannerCanvas');const targetW=920;canvas.width=targetW;canvas.height=Math.round(targetW/targetAspect);canvas.getContext('2d',{alpha:false}).drawImage(video,sx,sy,sw,sh,0,0,canvas.width,canvas.height);canvas.toBlob(resolve,'image/jpeg',.93);
   });
 }
-function scheduleScannerAuto(delay=800){
+function scheduleScannerAuto(delay=260){
   if(scannerAutoTimer)clearTimeout(scannerAutoTimer);const session=scannerSession;
   scannerAutoTimer=setTimeout(async()=>{
     if(session!==scannerSession||!document.getElementById('scannerModal')?.classList.contains('open'))return;
     if(scannerAutoBusy){scheduleScannerAuto(400);return;}scannerAutoBusy=true;
     try{const blob=await scannerFrameBlob();if(blob)await identifyScannedCard(blob,{auto:true});}
-    finally{scannerAutoBusy=false;if(session===scannerSession&&document.getElementById('scannerModal')?.classList.contains('open'))scheduleScannerAuto(720);}
+    finally{scannerAutoBusy=false;if(session===scannerSession&&document.getElementById('scannerModal')?.classList.contains('open'))scheduleScannerAuto(300);}
   },delay);
 }
-document.getElementById('mobileScanBtn')?.addEventListener('click',()=>{requestVariantMotionPermission();openScanner()});
+document.getElementById('mobileScanBtn')?.addEventListener('click',()=>{requestProFoilMotionPermission();openScanner()});
 document.getElementById('scannerClose')?.addEventListener('click',closeScanner);
 document.getElementById('scannerModal')?.addEventListener('click',e=>{if(e.target===e.currentTarget)closeScanner()});
 document.getElementById('scannerPhotoBtn')?.addEventListener('click',()=>document.getElementById('scannerFile').click());
