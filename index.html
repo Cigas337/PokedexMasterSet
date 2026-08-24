@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="Pokédex XL">
 <link rel="manifest" href="manifest.webmanifest">
-<title>Pokédex XL — Master Set · v10.11</title>
+<title>Pokédex XL — Master Set · v10.12</title>
 <link rel="apple-touch-icon" href="icon-180.png">
 <style>
 :root{
@@ -705,6 +705,101 @@ body:not(.auth-locked) .auth-gate{opacity:0;visibility:hidden;pointer-events:non
   }
 }
 
+
+/* ===== v10.12 · VARIANTES FÍSICAS DA MESMA CARTA ===== */
+.art-result-img{cursor:pointer;position:relative}
+.art-result-img:after{content:'Ver variantes';position:absolute;right:8px;bottom:8px;padding:5px 7px;border-radius:8px;background:rgba(5,11,17,.88);color:#fff;font-size:8px;font-weight:950;letter-spacing:.25px;opacity:0;transform:translateY(4px);transition:.16s ease}
+.art-result-img:hover:after{opacity:1;transform:none}
+.card-variant-summary{margin:7px 0 0;display:flex;align-items:center;gap:6px;flex-wrap:wrap;color:#8fa0af;font-size:9px;font-weight:850}
+.card-variant-chip{display:inline-flex;align-items:center;gap:4px;padding:5px 7px;border-radius:999px;background:#15212d;border:1px solid rgba(255,255,255,.08);color:#dbe5ee}
+.card-variant-chip.mine{background:rgba(22,169,91,.14);border-color:rgba(22,169,91,.35);color:#91f0ba}
+.card-variant-chip.featured{background:rgba(246,193,63,.14);border-color:rgba(246,193,63,.35);color:#ffe18a}
+.variant-open-btn{min-height:35px;border:1px solid rgba(13,25,36,.14);border-radius:10px;background:#111d28;color:#fff;font-size:10px;font-weight:950;cursor:pointer;padding:7px 8px;line-height:1.15}.variant-open-btn:hover{filter:brightness(1.08)}
+
+.variant-modal{position:fixed;inset:0;z-index:24000;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(0,0,0,.79);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px)}
+.variant-modal.open{display:flex}
+.variant-panel{width:min(920px,100%);max-height:min(90vh,860px);display:flex;flex-direction:column;overflow:hidden;border-radius:24px;background:linear-gradient(180deg,#0c1620,#060b11);border:1px solid rgba(255,255,255,.12);box-shadow:0 30px 90px rgba(0,0,0,.72)}
+.variant-head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;padding:17px 18px;background:linear-gradient(135deg,#41100f,#75120f 55%,#23090b);border-bottom:1px solid rgba(255,255,255,.08)}
+.variant-head h3{margin:0;color:#fff;font-size:21px;font-weight:1000}.variant-head p{margin:4px 0 0;color:#efc6c3;font-size:10px;font-weight:750}
+.variant-close{width:42px;height:42px;border:0;border-radius:50%;background:rgba(255,255,255,.10);color:#fff;font-size:24px;line-height:1}
+.variant-card-summary{display:grid;grid-template-columns:118px minmax(0,1fr);gap:15px;padding:15px 18px;background:#09111a;border-bottom:1px solid rgba(255,255,255,.07)}
+.variant-card-summary img{width:118px;max-height:165px;object-fit:contain;border-radius:10px;box-shadow:0 12px 26px rgba(0,0,0,.3)}
+.variant-card-summary strong{display:block;color:#fff;font-size:17px}.variant-card-summary span{display:block;margin-top:5px;color:#8fa0af;font-size:10px;line-height:1.45}.variant-card-summary em{display:inline-flex;margin-top:9px;padding:5px 8px;border-radius:999px;background:rgba(246,193,63,.12);color:#ffd86c;font-size:9px;font-style:normal;font-weight:900}
+.variant-list{overflow:auto;padding:14px 16px calc(18px + env(safe-area-inset-bottom));display:grid;gap:9px}
+.variant-row{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(120px,.65fr) auto;gap:10px;align-items:center;padding:12px;border-radius:15px;background:#101a24;border:1px solid rgba(255,255,255,.08)}
+.variant-row.owned{border-color:rgba(22,169,91,.48);box-shadow:inset 0 0 0 1px rgba(22,169,91,.10)}
+.variant-row.featured{border-color:rgba(246,193,63,.62);box-shadow:inset 0 0 0 1px rgba(246,193,63,.13)}
+.variant-name{color:#f3f7fb;font-size:13px;font-weight:950}.variant-meta{margin-top:4px;color:#8291a0;font-size:9px;line-height:1.4}.variant-meta b{color:#b8c5d1}
+.variant-price{text-align:right}.variant-price strong{display:block;color:#fff;font-size:17px}.variant-price small{display:block;margin-top:3px;color:#8291a0;font-size:8px}.variant-price .na{color:#7e8a96;font-size:11px}
+.variant-actions{display:grid;grid-template-columns:1fr;gap:5px;min-width:144px}.variant-actions button,.variant-actions a{min-height:36px;display:flex;align-items:center;justify-content:center;border-radius:9px;border:1px solid rgba(255,255,255,.10);font-size:9px;font-weight:950;text-decoration:none;padding:6px 8px;cursor:pointer}.variant-own{background:#13212c;color:#dce7ef}.variant-own.active{background:#10a85b;color:#06130c;border-color:#10a85b}.variant-feature{background:#17212a;color:#dce7ef}.variant-feature.active{background:#c58a08;color:#201500;border-color:#e5b22d}.variant-market{background:#0e7d4d;color:#fff!important;border-color:#0e7d4d!important}.variant-market.fallback{background:#52606d;border-color:#52606d!important}
+.variant-note{padding:0 16px 15px;color:#758595;font-size:9px;line-height:1.45}
+
+@media(max-width:760px){
+  .art-result-img:after{display:none}
+  .variant-modal{padding:0;align-items:stretch;background:#060b11}
+  .variant-panel{width:100%;height:100dvh;max-height:none;border-radius:0;border:0}
+  .variant-head{padding:calc(10px + env(safe-area-inset-top)) 12px 10px}
+  .variant-head h3{font-size:19px}.variant-close{width:40px;height:40px}
+  .variant-card-summary{grid-template-columns:84px minmax(0,1fr);gap:11px;padding:10px 12px}.variant-card-summary img{width:84px;max-height:118px}.variant-card-summary strong{font-size:14px}
+  .variant-list{padding:9px 9px calc(16px + env(safe-area-inset-bottom));gap:8px}
+  .variant-row{grid-template-columns:minmax(0,1fr) 92px;gap:8px;padding:10px}.variant-actions{grid-column:1/-1;grid-template-columns:1fr 1fr 1fr;min-width:0}.variant-actions button,.variant-actions a{min-height:42px;font-size:8px;padding:5px}.variant-name{font-size:12px}.variant-price strong{font-size:14px}
+}
+
+
+
+/* ===== v10.15 · DETALHE PROFISSIONAL DE VARIANTE + MULTI-MERCADO ===== */
+.specific-card-actions{grid-template-columns:1fr 1fr!important}
+.variant-open-btn{display:none!important}
+.variant-modal{z-index:24000}
+.variant-panel{width:min(1040px,calc(100vw - 28px));max-height:min(94vh,900px)}
+.variant-pro-body{display:grid;grid-template-columns:minmax(300px,.86fr) minmax(420px,1.14fr);min-height:0;overflow:hidden}
+.variant-showcase{padding:18px;background:radial-gradient(circle at 50% 20%,rgba(225,46,39,.09),transparent 36%),#09111a;overflow:auto}
+.variant-image-shell{position:relative;width:min(330px,100%);aspect-ratio:2.5/3.5;margin:0 auto;border-radius:18px;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,#172331,#081019);border:1px solid rgba(255,255,255,.10);box-shadow:0 24px 55px rgba(0,0,0,.42);overflow:hidden}
+.variant-image-shell img{width:100%;height:100%;object-fit:contain;display:block;filter:drop-shadow(0 12px 18px rgba(0,0,0,.20))}
+.variant-image-badge{position:absolute;left:9px;bottom:9px;max-width:calc(100% - 18px);padding:6px 8px;border-radius:9px;background:rgba(5,10,16,.88);border:1px solid rgba(255,255,255,.10);color:#dce6ee;font-size:8px;font-weight:900;letter-spacing:.25px;backdrop-filter:blur(8px)}
+.variant-identity{width:min(420px,100%);margin:13px auto 0;text-align:center}.variant-identity strong{display:block;color:#fff;font-size:18px;font-weight:1000}.variant-identity span{display:block;margin-top:4px;color:#91a0af;font-size:10px;line-height:1.45}.variant-identity em{display:inline-flex;margin-top:7px;padding:5px 8px;border-radius:999px;background:rgba(255,255,255,.06);color:#c6d2dc;font-size:8px;font-style:normal;font-weight:900}
+.variant-picker-label,.variant-market-title{margin:16px 0 8px;color:#778899;font-size:8px;font-weight:1000;letter-spacing:1.1px}
+.variant-selector{display:flex;gap:7px;flex-wrap:wrap;justify-content:center}.variant-choice{min-height:38px;padding:7px 10px;border:1px solid rgba(255,255,255,.10);border-radius:11px;background:#111c27;color:#bfcbd6;font-size:9px;font-weight:950;cursor:pointer}.variant-choice.active{background:linear-gradient(180deg,#d92d27,#8f120f);border-color:#ef4a43;color:#fff;box-shadow:0 8px 18px rgba(161,21,17,.24)}.variant-choice.owned:not(.active){border-color:rgba(22,169,91,.45);color:#91f0ba}
+.variant-primary-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:13px auto 0;width:min(420px,100%)}.variant-primary-actions button{min-height:46px;border-radius:12px;font-size:10px;font-weight:1000;cursor:pointer}.variant-own-big{border:1px solid rgba(22,169,91,.35);background:#10251d;color:#9cf0bc}.variant-own-big.active{background:#10a85b;border-color:#10a85b;color:#06130c}.variant-feature-big{border:1px solid rgba(246,193,63,.35);background:#251f0e;color:#ffe18a}.variant-feature-big.active{background:#d09b18;border-color:#f0bd39;color:#1e1604}
+.variant-details-panel{padding:18px;overflow:auto;background:linear-gradient(180deg,#0d1721,#080e15)}
+.variant-selected-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 13px;border-radius:14px;background:#111e29;border:1px solid rgba(255,255,255,.08)}.variant-selected-head span{display:block;color:#788896;font-size:8px;font-weight:1000;letter-spacing:.8px}.variant-selected-head strong{display:block;margin-top:4px;color:#fff;font-size:18px;font-weight:1000}.variant-owned-pill{padding:6px 8px;border-radius:999px;background:#202b35;color:#8694a1;font-size:8px;font-weight:1000;white-space:nowrap}.variant-owned-pill.owned{background:rgba(22,169,91,.17);color:#95f0ba;border:1px solid rgba(22,169,91,.32)}
+.variant-market-grid{display:grid;gap:8px}.market-card{display:grid;grid-template-columns:42px minmax(0,1fr) auto;gap:11px;align-items:center;padding:11px;border-radius:14px;background:#111b25;border:1px solid rgba(255,255,255,.08)}.market-logo{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:1000;background:#071018;border:1px solid rgba(255,255,255,.08)}.market-card.cardmarket .market-logo{color:#53d18d}.market-card.tcgplayer .market-logo{color:#77b8ff}.market-card.vinted .market-logo{color:#2cd5d2}.market-card.olx .market-logo{color:#b8ff35}.market-copy{min-width:0}.market-copy strong{display:block;color:#eef4f9;font-size:12px;font-weight:950}.market-copy span{display:block;margin-top:3px;color:#7f8e9c;font-size:8px;line-height:1.35}.market-price{text-align:right}.market-price strong{display:block;color:#fff;font-size:18px;font-weight:1000;white-space:nowrap}.market-price small{display:block;margin-top:3px;color:#738392;font-size:8px}.market-link{display:inline-flex;margin-top:5px;align-items:center;justify-content:center;min-height:30px;padding:5px 8px;border-radius:9px;background:#202d38;color:#e8f0f6!important;text-decoration:none;font-size:8px;font-weight:950;white-space:nowrap}.market-card.cardmarket .market-link{background:#0d7047}.market-card.tcgplayer .market-link{background:#175d9b}.market-card.vinted .market-link{background:#087f7d}.market-card.olx .market-link{background:#547515}
+.variant-meta-card{margin-top:12px;padding:12px 13px;border-radius:14px;background:#101923;border:1px solid rgba(255,255,255,.07);color:#93a2b0;font-size:9px;line-height:1.65}.variant-meta-card strong{color:#dce5ed}.variant-data-note{margin-top:10px;color:#6f7f8e;font-size:8px;line-height:1.5}.variant-data-note b{color:#aebcc8}
+@media(max-width:760px){.variant-modal{padding:0;align-items:stretch;background:#060b11}.variant-panel{width:100%;height:100dvh;max-height:none;border-radius:0;border:0}.variant-pro-body{display:block;overflow:auto}.variant-showcase{padding:12px 11px 14px}.variant-image-shell{width:min(284px,78vw);border-radius:15px}.variant-identity{margin-top:10px}.variant-picker-label{margin-top:12px}.variant-selector{flex-wrap:nowrap;justify-content:flex-start;overflow-x:auto;padding-bottom:3px;-webkit-overflow-scrolling:touch}.variant-choice{flex:0 0 auto;min-height:42px}.variant-primary-actions{position:relative;grid-template-columns:1fr 1fr}.variant-details-panel{padding:13px 10px calc(18px + env(safe-area-inset-bottom));overflow:visible}.variant-selected-head strong{font-size:15px}.market-card{grid-template-columns:38px minmax(0,1fr) auto;padding:10px 9px;gap:8px}.market-logo{width:38px;height:38px}.market-price strong{font-size:15px}.market-link{font-size:7px;padding:5px 6px}.variant-data-note{padding-bottom:5px}}
+
+
+
+/* ===== v10.15 · SCANNER DE CARTAS (mobile-first, sem alterar o desktop existente) ===== */
+.mobile-scan-btn{display:none}
+.scanner-modal{position:fixed;inset:0;z-index:26000;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(0,0,0,.82);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.scanner-modal.open{display:flex}
+.scanner-panel{width:min(720px,100%);max-height:min(92vh,920px);display:flex;flex-direction:column;overflow:hidden;border-radius:24px;background:linear-gradient(180deg,#0d1721,#060b11);border:1px solid rgba(255,255,255,.12);box-shadow:0 30px 90px rgba(0,0,0,.7)}
+.scanner-head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;padding:16px 18px;background:linear-gradient(135deg,#46110f,#78140f 55%,#25090b);border-bottom:1px solid rgba(255,255,255,.08)}
+.scanner-head h3{margin:0;color:#fff;font-size:22px;font-weight:1000}.scanner-head p{margin:4px 0 0;color:#efc5c1;font-size:10px;line-height:1.4}
+.scanner-close{width:42px;height:42px;border:0;border-radius:50%;background:rgba(255,255,255,.10);color:#fff;font-size:24px}
+.scanner-body{overflow:auto;padding:14px 16px calc(18px + env(safe-area-inset-bottom))}
+.scanner-camera-shell{position:relative;width:min(330px,100%);aspect-ratio:63/88;margin:0 auto;overflow:hidden;border-radius:18px;background:#020508;border:1px solid rgba(255,255,255,.12);box-shadow:0 18px 42px rgba(0,0,0,.35)}
+.scanner-camera-shell video,.scanner-camera-shell img{width:100%;height:100%;display:block;object-fit:cover}
+.scanner-guide{position:absolute;inset:7%;border:2px solid rgba(255,255,255,.72);border-radius:14px;pointer-events:none;box-shadow:0 0 0 999px rgba(0,0,0,.16)}
+.scanner-guide:before,.scanner-guide:after,.scanner-guide span:before,.scanner-guide span:after{content:"";position:absolute;width:28px;height:28px;border-color:#ffd04a;border-style:solid}
+.scanner-guide:before{left:-2px;top:-2px;border-width:4px 0 0 4px;border-radius:9px 0 0 0}.scanner-guide:after{right:-2px;top:-2px;border-width:4px 4px 0 0;border-radius:0 9px 0 0}.scanner-guide span:before{left:-2px;bottom:-2px;border-width:0 0 4px 4px;border-radius:0 0 0 9px}.scanner-guide span:after{right:-2px;bottom:-2px;border-width:0 4px 4px 0;border-radius:0 0 9px 0}
+.scanner-status{margin:12px auto 0;max-width:520px;padding:10px 12px;border-radius:13px;background:#101b25;border:1px solid rgba(255,255,255,.08);text-align:center}.scanner-status strong{display:block;color:#f2f6fa;font-size:12px}.scanner-status span{display:block;margin-top:3px;color:#8d9cab;font-size:9px;line-height:1.45}.scanner-status.working strong{color:#ffd75f}.scanner-status.good strong{color:#7ee3a8}.scanner-status.bad strong{color:#ff817b}
+.scanner-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:520px;margin:10px auto 0}.scanner-actions button{min-height:46px;border-radius:12px;font-size:11px;font-weight:950;cursor:pointer}.scanner-capture{border:0;background:linear-gradient(180deg,#d62d26,#8f130f);color:#fff}.scanner-photo{border:1px solid rgba(255,255,255,.10);background:#15212d;color:#e8eef4}
+.scanner-candidates{max-width:620px;margin:13px auto 0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.scanner-candidate{border:1px solid rgba(255,255,255,.09);border-radius:13px;background:#101a24;overflow:hidden;color:#fff;text-align:left;padding:0;cursor:pointer}.scanner-candidate img{display:block;width:100%;aspect-ratio:63/88;object-fit:contain;background:#071019;padding:5px}.scanner-candidate-info{padding:7px}.scanner-candidate-info strong{display:block;font-size:9px;line-height:1.2}.scanner-candidate-info span{display:block;margin-top:3px;color:#8697a7;font-size:7px;line-height:1.3}.scanner-candidate.best{border-color:rgba(246,193,63,.7);box-shadow:0 0 0 1px rgba(246,193,63,.18)}
+.scanner-privacy{max-width:520px;margin:11px auto 0;color:#657585;font-size:8px;line-height:1.45;text-align:center}
+@media(max-width:760px){
+  .controls{grid-template-columns:1fr 1fr!important}
+  .mobile-filter-toggle{grid-column:1/2!important}
+  .mobile-scan-btn{display:flex;grid-column:2/3;align-items:center;justify-content:center;min-height:42px;border:1px solid rgba(246,193,63,.28);border-radius:12px;background:linear-gradient(180deg,#382d13,#17130a);color:#ffe08a;font-size:11px;font-weight:950;letter-spacing:.15px}
+  .scanner-modal{padding:0;align-items:stretch;background:#060b11}
+  .scanner-panel{width:100%;height:100dvh;max-height:none;border-radius:0;border:0}
+  .scanner-head{padding:calc(10px + env(safe-area-inset-top)) 12px 10px}.scanner-head h3{font-size:19px}.scanner-close{width:40px;height:40px}
+  .scanner-body{padding:10px 10px calc(14px + env(safe-area-inset-bottom))}
+  .scanner-camera-shell{width:min(300px,78vw);max-height:53dvh}
+  .scanner-actions{grid-template-columns:1fr 1fr}.scanner-actions button{min-height:44px}
+  .scanner-candidates{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.scanner-candidate-info{padding:6px}.scanner-candidate-info strong{font-size:8px}.scanner-candidate-info span{font-size:6px}
+}
+
 </style>
 </head>
 <body class="auth-locked">
@@ -777,6 +872,7 @@ body:not(.auth-locked) .auth-gate{opacity:0;visibility:hidden;pointer-events:non
   <div class="controls">
     <div class="search-wrap"><input id="search" placeholder="Pesquisar Pokémon…"></div>
     <button class="mobile-filter-toggle" id="mobileFilterToggle" type="button">⚙️ Filtros <span class="filter-count hidden" id="mobileFilterCount">0</span></button>
+    <button class="mobile-scan-btn" id="mobileScanBtn" type="button">📷 Scanear carta</button>
     <div class="select-wrap">
       <select id="filterBy" aria-label="Filtrar coleção">
         <option value="all">Filtros: Todos</option>
@@ -829,7 +925,7 @@ body:not(.auth-locked) .auth-gate{opacity:0;visibility:hidden;pointer-events:non
     <div class="pagination-shell" id="pagination"></div>
   </section>
 
-  <div class="footer">O controlo <strong>ART</strong> continua independente e mantém as tuas marcações atuais. Ao abrir um Pokémon, a pesquisa combina <strong>número da Pokédex + nome</strong> para encontrar mais cartas. Podes marcar cartas específicas como tuas, guardar objetivos na <strong>Wishlist</strong> e escolher uma carta para aparecer como imagem principal na Pokédex. Os preços são Cardmarket: quando a fonte principal não devolve valor, o site tenta automaticamente uma segunda fonte (TCGdex). A galeria inclui também cartas 30C já reveladas mesmo antes de as APIs as indexarem; nessas cartas o preço só aparece quando o mercado correto estiver ativo. Nos separadores das gerações, o primeiro crachá acende quando tens pelo menos uma CARTA de todos os Pokémon da região; o crachá dourado ★ é o nível ART Master e só acende quando todos os Pokémon dessa geração estão marcados como ART.</div>
+  <div class="footer">O controlo <strong>ART</strong> continua independente e mantém as tuas marcações atuais. Ao abrir um Pokémon, a pesquisa combina <strong>número da Pokédex + nome</strong> para encontrar mais cartas. Podes abrir cada carta para escolher a <strong>variante física</strong> (Normal, Holo, Reverse e foils especiais como Poké Ball/Master Ball quando a base os identifica), guardar objetivos na <strong>Wishlist</strong> e escolher exatamente essa variante para aparecer no binder. Os preços automáticos vêm de Cardmarket e TCGPlayer quando existe correspondência da variante. Vinted e OLX abrem pesquisas específicas dessa carta/variante, sem scraping de anúncios. A galeria inclui também cartas 30C já reveladas mesmo antes de as APIs as indexarem; nessas cartas o preço só aparece quando o mercado correto estiver ativo. Nos separadores das gerações, o primeiro crachá acende quando tens pelo menos uma CARTA de todos os Pokémon da região; o crachá dourado ★ é o nível ART Master e só acende quando todos os Pokémon dessa geração estão marcados como ART.</div>
 </div>
 
 <nav class="mobile-bottom-nav" id="mobileBottomNav" aria-label="Navegação móvel">
@@ -851,9 +947,70 @@ body:not(.auth-locked) .auth-gate{opacity:0;visibility:hidden;pointer-events:non
     </div>
     <div class="art-modal-toolbar">
       <div class="art-modal-summary" id="artModalSummary">A carregar…</div>
-      <div class="art-modal-source">Pokémon TCG API + TCGdex · Cardmarket · inclui 30C revelada/pré-lançamento</div>
+      <div class="art-modal-source">Pokémon TCG API + TCGdex · Cardmarket + TCGPlayer · Vinted/OLX por pesquisa</div>
     </div>
     <div class="art-modal-body" id="artModalBody"></div>
+  </div>
+</div>
+
+
+<div class="variant-modal" id="variantModal" aria-hidden="true">
+  <div class="variant-panel" role="dialog" aria-modal="true" aria-labelledby="variantModalTitle">
+    <div class="variant-head">
+      <div><h3 id="variantModalTitle">Detalhe da carta</h3><p id="variantModalSub">Escolhe a variante física exata</p></div>
+      <button class="variant-close" id="variantModalClose" aria-label="Fechar">×</button>
+    </div>
+    <div class="variant-pro-body">
+      <section class="variant-showcase">
+        <div class="variant-image-shell">
+          <img id="variantHeroImage" alt="Carta selecionada">
+          <div class="variant-image-badge" id="variantImageBadge">Imagem da carta</div>
+        </div>
+        <div class="variant-identity" id="variantIdentity"></div>
+        <div class="variant-picker-label">VARIANTE</div>
+        <div class="variant-selector" id="variantSelector"></div>
+        <div class="variant-primary-actions">
+          <button type="button" class="variant-own-big" id="variantOwnBig">＋ TENHO ESTA</button>
+          <button type="button" class="variant-feature-big" id="variantFeatureBig">☆ USAR NO BINDER</button>
+        </div>
+      </section>
+      <section class="variant-details-panel">
+        <div class="variant-selected-head">
+          <div><span>VARIANTE SELECIONADA</span><strong id="variantSelectedName">—</strong></div>
+          <div class="variant-owned-pill" id="variantOwnedPill">NÃO MARCADA</div>
+        </div>
+        <div class="variant-market-title">PREÇOS E MERCADOS</div>
+        <div class="variant-market-grid" id="variantMarketGrid"></div>
+        <div class="variant-meta-card" id="variantMetaCard"></div>
+        <div class="variant-data-note" id="variantDataNote"></div>
+      </section>
+    </div>
+  </div>
+</div>
+
+
+<div class="scanner-modal" id="scannerModal" aria-hidden="true">
+  <div class="scanner-panel" role="dialog" aria-modal="true" aria-labelledby="scannerTitle">
+    <div class="scanner-head">
+      <div><h3 id="scannerTitle">Scanear carta</h3><p>Aponta para a carta inteira. Vamos identificar Pokémon + número e abrir a impressão certa.</p></div>
+      <button class="scanner-close" id="scannerClose" aria-label="Fechar">×</button>
+    </div>
+    <div class="scanner-body">
+      <div class="scanner-camera-shell" id="scannerCameraShell">
+        <video id="scannerVideo" playsinline muted></video>
+        <canvas id="scannerCanvas" hidden></canvas>
+        <img id="scannerPreview" alt="Pré-visualização da carta" hidden>
+        <div class="scanner-guide" aria-hidden="true"><span></span></div>
+      </div>
+      <div class="scanner-status" id="scannerStatus"><strong>Pronto para scanear</strong><span>A leitura é feita no dispositivo. Tenta evitar reflexos fortes sobre a carta.</span></div>
+      <div class="scanner-actions">
+        <button type="button" class="scanner-capture" id="scannerCapture">📸 Capturar</button>
+        <button type="button" class="scanner-photo" id="scannerPhotoBtn">🖼 Escolher foto</button>
+      </div>
+      <input type="file" id="scannerFile" accept="image/*" capture="environment" hidden>
+      <div class="scanner-candidates" id="scannerCandidates"></div>
+      <div class="scanner-privacy">O scanner usa OCR local no browser. Se a identificação não for única, escolhes visualmente a carta certa antes de abrir as variantes.</div>
+    </div>
   </div>
 </div>
 
@@ -1193,14 +1350,37 @@ const CARD_DETAIL_STORE_KEY='pokedexxl-specific-card-collection-v2'; // cache lo
 let CARD_DETAIL_STORE=null;
 
 function emptyCardDetails(){ return {owned:{},wishlist:{},featured:null}; }
+function variantItemKey(cardId,variantKey='default'){ return `${String(cardId||'')}@@${String(variantKey||'default')}`; }
+function splitVariantItemKey(key){
+  const s=String(key||''); const i=s.indexOf('@@');
+  return i<0?{cardId:s,variantKey:'default'}:{cardId:s.slice(0,i),variantKey:s.slice(i+2)||'default'};
+}
+function normalizeOwnedSnapshot(snap,oldKey){
+  if(!snap||typeof snap!=='object'||Array.isArray(snap)) return null;
+  const parsed=splitVariantItemKey(oldKey);
+  const cardId=String(snap.id||parsed.cardId||'');
+  const variantKey=String(snap.variantKey||parsed.variantKey||'default');
+  const legacyUnknown=variantKey==='default'&&!snap.variantType&&!snap.variantFoil&&!snap.variantSubtype;
+  return {...snap,id:cardId,variantKey,variantLabel:String(snap.variantLabel||(legacyUnknown?'Variante por confirmar':'Variante não definida')),legacyVariantUnknown:legacyUnknown===true};
+}
 function normalizeCardDetails(value){
   const d=(value&&typeof value==='object'&&!Array.isArray(value))?value:{};
-  const owned=(d.owned&&typeof d.owned==='object'&&!Array.isArray(d.owned))?d.owned:{};
+  const rawOwned=(d.owned&&typeof d.owned==='object'&&!Array.isArray(d.owned))?d.owned:{};
+  const owned={};
+  Object.entries(rawOwned).forEach(([oldKey,raw])=>{
+    const snap=normalizeOwnedSnapshot(raw,oldKey); if(!snap?.id) return;
+    owned[variantItemKey(snap.id,snap.variantKey)]=snap;
+  });
   const wishlistRaw=(d.wishlist&&typeof d.wishlist==='object'&&!Array.isArray(d.wishlist))?d.wishlist:{};
   const wishlist={...wishlistRaw};
-  Object.keys(owned).forEach(id=>delete wishlist[id]); // se já é tua, deixa de ser objetivo
-  const featured=d.featured!=null?String(d.featured):null;
-  return {owned:{...owned},wishlist,featured:featured&&owned[featured]?featured:null};
+  const ownedCardIds=new Set(Object.values(owned).map(s=>String(s?.id||'')));
+  ownedCardIds.forEach(id=>delete wishlist[id]);
+  let featured=d.featured!=null?String(d.featured):null;
+  if(featured&&!owned[featured]){
+    const oldCardId=splitVariantItemKey(featured).cardId;
+    featured=Object.keys(owned).find(k=>String(owned[k]?.id||'')===String(oldCardId))||null;
+  }
+  return {owned,wishlist,featured:featured&&owned[featured]?featured:null};
 }
 function hasMeaningfulCardDetails(value){
   const d=normalizeCardDetails(value);
@@ -1225,20 +1405,71 @@ function pokemonCardDetail(id,create=false){
   if(store[k]) store[k]=normalizeCardDetails(store[k]);
   return store[k]||null;
 }
-function cardSnapshot(card){
-  const price=cardmarketPrice(card);
+function variantTcgplayerImageUrl(card,variant){
+  const id=Number(variant?.tcgplayerId)||null;
+  if(id) return `https://product-images.tcgplayer.com/fit-in/700x700/${id}.jpg`;
+  return String(card.images?.large||card.images?.small||'');
+}
+function variantImageInfo(card,variant){
+  const id=Number(variant?.tcgplayerId)||null;
+  return {url:variantTcgplayerImageUrl(card,variant),label:id?'Imagem do produto TCGPlayer':'Scan da impressão base',exact:!!id};
+}
+function bestTcgPrice(p){
+  if(!p) return {value:Infinity,label:'sem preço'};
+  return bestPriceFromPairs([['marketPrice',p.marketPrice??p.market,'market'],['lowPrice',p.lowPrice??p.low,'desde'],['midPrice',p.midPrice??p.mid,'mediana'],['directLowPrice',p.directLowPrice,'direct desde'],['highPrice',p.highPrice??p.high,'máximo']]);
+}
+function variantExplicitTcgplayerPrice(v){
+  const p=v?.pricing?.tcgplayer||v?.pricing?.tcgPlayer||null;
+  const r=bestTcgPrice(p);
+  return {...r,source:Number.isFinite(r.value)?'TCGdex · variante':null};
+}
+function variantTcgplayerPrice(card,variant){
+  const v=variant||defaultVariantForCard(card);
+  const direct=variantExplicitTcgplayerPrice(v); if(Number.isFinite(direct.value)) return direct;
+  const keys=v?.type==='reverse'?['reverse-holofoil','reverseHolofoil','reverse']:v?.type==='holo'?['holofoil','holo']:['normal'];
+  const feeds=[card.__tcgdexTcgplayer||{},card.tcgplayer?.prices||{}];
+  for(const feed of feeds){
+    for(const k of keys){const r=bestTcgPrice(feed?.[k]);if(Number.isFinite(r.value)) return {...r,source:feed===card.__tcgdexTcgplayer?'TCGdex':'Pokémon TCG API'};}
+  }
+  return {value:Infinity,label:'sem preço',source:null};
+}
+function usd(value){return Number.isFinite(value)?`$${Number(value).toFixed(2)}`:'—';}
+function variantTcgplayerUrl(card,variant){
+  const id=Number(variant?.tcgplayerId)||null;
+  if(id) return `https://www.tcgplayer.com/product/${id}`;
+  const q=variantSearchQuery(card,variant);
+  return `https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&q=${encodeURIComponent(q)}&view=grid`;
+}
+function variantSearchQuery(card,variant){
+  return ['Pokemon',card?.name,card?.set?.name,card?.number,variant?.label].filter(Boolean).join(' ');
+}
+function vintedVariantUrl(card,variant){return `https://www.vinted.pt/catalog?search_text=${encodeURIComponent(variantSearchQuery(card,variant))}`;}
+function olxSlug(s){return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');}
+function olxVariantUrl(card,variant){return `https://www.olx.pt/ads/q-${olxSlug(variantSearchQuery(card,variant))}/`;}
+
+function cardSnapshot(card,variant=null){
+  const v=variant||defaultVariantForCard(card);
+  const price=variantCardmarketPrice(card,v);
   const checkedAt=new Date().toISOString();
   return {
     id:String(card.id||''),
     name:String(card.name||''),
-    imageSmall:String(card.images?.small||card.images?.large||''),
-    imageLarge:String(card.images?.large||card.images?.small||''),
+    imageSmall:String(variantImageInfo(card,v).url||card.images?.small||card.images?.large||''),
+    imageLarge:String(variantImageInfo(card,v).url||card.images?.large||card.images?.small||''),
     setName:String(card.set?.name||''),
     setCode:String(card.set?.ptcgoCode||card.set?.id||''),
     number:String(card.number||''),
-    marketUrl:String(card.cardmarket?.url||card.__marketUrl||''),
+    marketUrl:String(variantCardmarketUrl(card,v)||card.cardmarket?.url||card.__marketUrl||''),
     rarity:String(card.rarity||''),
     source:String(card.__source||'Pokemon TCG API'),
+    variantKey:String(v?.key||'default'),
+    variantLabel:String(v?.label||'Variante não definida'),
+    variantType:String(v?.type||''),
+    variantFoil:String(v?.foil||''),
+    variantSubtype:String(v?.subtype||''),
+    variantStamps:Array.isArray(v?.stamps)?v.stamps:[],
+    variantCardmarketId:Number(v?.cardmarketId)||null,
+    variantTcgplayerId:Number(v?.tcgplayerId)||null,
     marketPrice:Number.isFinite(price.value)?Number(price.value):null,
     marketPriceLabel:Number.isFinite(price.value)?String(price.label||'preço'):null,
     marketPriceSource:Number.isFinite(price.value)?String(price.source||'Cardmarket'):null,
@@ -1246,8 +1477,9 @@ function cardSnapshot(card){
     priceCheckedAt:checkedAt
   };
 }
-function mergeSnapshotWithCard(oldSnapshot,card){
-  const fresh=cardSnapshot(card);
+function mergeSnapshotWithCard(oldSnapshot,card,variant=null){
+  const v=variant||variantFromSnapshot(oldSnapshot)||defaultVariantForCard(card);
+  const fresh=cardSnapshot(card,v);
   if(!Number.isFinite(Number(fresh.marketPrice)) && Number.isFinite(Number(oldSnapshot?.marketPrice))){
     fresh.marketPrice=Number(oldSnapshot.marketPrice);
     fresh.marketPriceLabel=oldSnapshot.marketPriceLabel||null;
@@ -1257,8 +1489,17 @@ function mergeSnapshotWithCard(oldSnapshot,card){
   }
   return {...oldSnapshot,...fresh};
 }
-function isSpecificCardOwned(pokemonId,cardId){
-  return !!pokemonCardDetail(pokemonId)?.owned?.[String(cardId)];
+function ownedVariantEntriesForCard(pokemonId,cardId){
+  const d=pokemonCardDetail(pokemonId); if(!d) return [];
+  return Object.entries(d.owned||{}).filter(([,snap])=>String(snap?.id||'')===String(cardId));
+}
+function isSpecificCardOwned(pokemonId,cardId,variantKey=null){
+  const entries=ownedVariantEntriesForCard(pokemonId,cardId);
+  if(variantKey==null) return entries.length>0;
+  return entries.some(([,snap])=>String(snap?.variantKey||'default')===String(variantKey));
+}
+function specificOwnedItemKey(pokemonId,cardId,variantKey){
+  return ownedVariantEntriesForCard(pokemonId,cardId).find(([,snap])=>String(snap?.variantKey||'default')===String(variantKey))?.[0]||null;
 }
 function isSpecificCardWishlisted(pokemonId,cardId){
   return !!pokemonCardDetail(pokemonId)?.wishlist?.[String(cardId)];
@@ -1324,16 +1565,23 @@ async function persistCardDetails(pokemonId){
   return true;
 }
 
-async function setSpecificCardOwned(pokemonId,card,owned,{makeFeatured=true}={}){
+async function setSpecificVariantOwned(pokemonId,card,variant,owned,{makeFeatured=true}={}){
   const d=pokemonCardDetail(pokemonId,true);
-  const id=String(card.id);
+  const v=variant||defaultVariantForCard(card);
+  const key=variantItemKey(card.id,v?.key||'default');
   if(owned){
-    d.owned[id]=mergeSnapshotWithCard(d.owned[id],card);
-    delete d.wishlist[id];
-    if(makeFeatured||!d.featured) d.featured=id;
+    const legacyKey=variantItemKey(card.id,'default');
+    if(key!==legacyKey && d.owned[legacyKey]?.legacyVariantUnknown){
+      const legacyWasFeatured=d.featured===legacyKey;
+      delete d.owned[legacyKey];
+      if(legacyWasFeatured) d.featured=key;
+    }
+    d.owned[key]=mergeSnapshotWithCard(d.owned[key],card,v);
+    delete d.wishlist[String(card.id)];
+    if(makeFeatured||!d.featured) d.featured=key;
   }else{
-    delete d.owned[id];
-    if(d.featured===id) d.featured=null;
+    delete d.owned[key];
+    if(d.featured===key) d.featured=null;
   }
   saveCardDetailStore();
   updateCollectionValueUI();
@@ -1342,21 +1590,25 @@ async function setSpecificCardOwned(pokemonId,card,owned,{makeFeatured=true}={})
 async function setSpecificCardWishlisted(pokemonId,card,wanted){
   const d=pokemonCardDetail(pokemonId,true);
   const id=String(card.id);
-  if(wanted && !d.owned[id]) d.wishlist[id]=mergeSnapshotWithCard(d.wishlist[id],card);
+  if(wanted && !isSpecificCardOwned(pokemonId,id)) d.wishlist[id]=mergeSnapshotWithCard(d.wishlist[id],card,defaultVariantForCard(card));
   else delete d.wishlist[id];
   saveCardDetailStore();
   return persistCardDetails(pokemonId);
 }
-async function setFeaturedSpecificCard(pokemonId,card){
+async function setFeaturedSpecificVariant(pokemonId,card,variant){
   const d=pokemonCardDetail(pokemonId,true);
-  const id=String(card.id);
-  d.owned[id]=mergeSnapshotWithCard(d.owned[id],card);
-  delete d.wishlist[id];
-  d.featured=id;
+  const v=variant||defaultVariantForCard(card);
+  const key=variantItemKey(card.id,v?.key||'default');
+  const legacyKey=variantItemKey(card.id,'default');
+  if(key!==legacyKey && d.owned[legacyKey]?.legacyVariantUnknown) delete d.owned[legacyKey];
+  d.owned[key]=mergeSnapshotWithCard(d.owned[key],card,v);
+  delete d.wishlist[String(card.id)];
+  d.featured=key;
   saveCardDetailStore();
   updateCollectionValueUI();
   return persistCardDetails(pokemonId);
 }
+
 async function clearSpecificCardsForPokemon(pokemonId){
   const store=loadCardDetailStore();
   store[String(Number(pokemonId))]=emptyCardDetails();
@@ -1510,6 +1762,111 @@ function cardmarketReversePrice(card){
   ]);
 }
 
+function safeVariantToken(v){return String(v||'').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'none';}
+function foilPretty(foil){
+  const map={pokeball:'Poké Ball',greatball:'Great Ball',ultraball:'Ultra Ball',masterball:'Master Ball',gold:'Gold',cosmos:'Cosmos',galaxy:'Galaxy',starlight:'Starlight',energy:'Energy','cracked-ice':'Cracked Ice',mirror:'Mirror',league:'League','player-reward':'Player Reward','professor-program':'Professor Program',tinsel:'Tinsel',loveball:'Love Ball',friendball:'Friend Ball',quickball:'Quick Ball','team-rocket':'Team Rocket',duskball:'Dusk Ball',rainbow:'Rainbow',glitter:'Glitter'};
+  return map[String(foil||'').toLowerCase()]||String(foil||'').replace(/-/g,' ').replace(/\b\w/g,m=>m.toUpperCase());
+}
+function variantLabelFromParts(v){
+  const type=String(v?.type||'normal').toLowerCase();
+  const foil=String(v?.foil||'').toLowerCase();
+  let label=type==='reverse'?'Reverse Holo':type==='holo'?'Holo':type==='metal'?'Metal':type==='lenticular'?'Lenticular':'Normal';
+  if(foil) label=`${foilPretty(foil)} ${type==='reverse'?'Reverse Holo':type==='holo'?'Holo':'Foil'}`;
+  if(v?.subtype) label+=` · ${String(v.subtype).replace(/-/g,' ')}`;
+  const stamps=Array.isArray(v?.stamps)?v.stamps:(Array.isArray(v?.stamp)?v.stamp:[]);
+  if(stamps.length) label+=` · ${stamps.map(x=>String(x).replace(/-/g,' ')).join(', ')}`;
+  if(v?.size==='jumbo') label+=' · Jumbo';
+  return label;
+}
+function normalizeVariantObject(raw,index=0){
+  const stamps=Array.isArray(raw?.stamps)?raw.stamps:(Array.isArray(raw?.stamp)?raw.stamp:[]);
+  const pricing=raw?.pricing||raw?.price||null;
+  const cardmarketId=Number(raw?.thirdParty?.cardmarket||raw?.thirdparty?.cardmarket||pricing?.cardmarket?.idProduct||pricing?.cardMarket?.idProduct)||null;
+  const tcgplayerId=Number(raw?.thirdParty?.tcgplayer||raw?.thirdparty?.tcgplayer||pricing?.tcgplayer?.productId||pricing?.tcgPlayer?.productId)||null;
+  const base={
+    type:String(raw?.type||'normal').toLowerCase(),foil:String(raw?.foil||'').toLowerCase(),subtype:String(raw?.subtype||''),size:String(raw?.size||'standard'),stamps,
+    cardmarketId,tcgplayerId,variantId:String(raw?.variantId||raw?.id||''),pricing
+  };
+  base.key=base.variantId||[base.type,base.foil,base.subtype,base.size,stamps.join('+'),cardmarketId||'',tcgplayerId||'',index].map(safeVariantToken).join('|');
+  base.label=variantLabelFromParts(base);
+  return base;
+}
+function legacyVariantList(obj){
+  if(!obj||typeof obj!=='object'||Array.isArray(obj)) return [];
+  const out=[];
+  if(obj.normal) out.push({type:'normal'});
+  if(obj.holo) out.push({type:'holo'});
+  if(obj.reverse) out.push({type:'reverse'});
+  if(obj.firstEdition) out.push({type:'normal',stamps:['1st-edition']});
+  if(obj.preRelease) out.push({type:'normal',stamps:['pre-release']});
+  if(obj.wPromo) out.push({type:'normal',stamps:['w-promo']});
+  return out;
+}
+function inferredVariantList(card){
+  const out=[];
+  const tp=card.tcgplayer?.prices||{};
+  const cm=card.cardmarket?.prices||{};
+  if(tp.normal||(!tp.holofoil&&!tp.reverseHolofoil&&!tp.reverse)) out.push({type:'normal'});
+  if(tp.holofoil) out.push({type:'holo'});
+  if(tp.reverseHolofoil||tp.reverse||cm.reverseHoloLow||cm.reverseHoloTrend||cm.reverseHoloAvg7) out.push({type:'reverse'});
+  if(!out.length){
+    const rarity=String(card.rarity||'').toLowerCase();
+    out.push({type:(rarity.includes('holo')||rarity.includes('radiant'))?'holo':'normal'});
+  }
+  return out;
+}
+function cardVariants(card){
+  let raw=Array.isArray(card.__tcgdexVariantsDetailed)&&card.__tcgdexVariantsDetailed.length?card.__tcgdexVariantsDetailed:null;
+  if(!raw && Array.isArray(card.__tcgdexVariants)&&card.__tcgdexVariants.length) raw=card.__tcgdexVariants;
+  if(!raw) raw=legacyVariantList(card.__tcgdexVariantsLegacy);
+  if(!raw.length) raw=inferredVariantList(card);
+  const out=raw.map(normalizeVariantObject);
+  const seen=new Set();
+  return out.filter(v=>{const sig=[v.type,v.foil,v.subtype,v.size,(v.stamps||[]).join(','),v.cardmarketId||'',v.tcgplayerId||''].join('|');if(seen.has(sig))return false;seen.add(sig);return true;});
+}
+function defaultVariantForCard(card){
+  const vars=cardVariants(card); return vars.find(v=>v.type==='normal'&&!v.foil)||vars.find(v=>v.type==='holo'&&!v.foil)||vars.find(v=>v.type==='reverse'&&!v.foil)||vars[0]||normalizeVariantObject({type:'normal'});
+}
+function variantFromSnapshot(snap){
+  if(!snap) return null;
+  return {key:String(snap.variantKey||'default'),label:String(snap.variantLabel||'Variante não definida'),type:String(snap.variantType||'normal'),foil:String(snap.variantFoil||''),subtype:String(snap.variantSubtype||''),stamps:Array.isArray(snap.variantStamps)?snap.variantStamps:[],cardmarketId:Number(snap.variantCardmarketId)||null,tcgplayerId:Number(snap.variantTcgplayerId)||null};
+}
+function variantExplicitCardmarketPrice(v){
+  const p=v?.pricing?.cardmarket||v?.pricing?.cardMarket||null;
+  if(!p) return {value:Infinity,label:'sem preço',source:null};
+  const r=bestPriceFromPairs([['low',p.low??p.lowPrice,'desde'],['trend',p.trend??p.trendPrice,'tendência'],['avg7',p.avg7,'média 7d'],['avg',p.avg??p.averageSellPrice,'média venda'],['avg30',p.avg30,'média 30d']]);
+  return {...r,source:Number.isFinite(r.value)?'TCGdex · variante':null};
+}
+function variantCardmarketPrice(card,variant){
+  const v=variant||defaultVariantForCard(card);
+  const explicit=variantExplicitCardmarketPrice(v); if(Number.isFinite(explicit.value)) return explicit;
+  const t=card.__tcgdexCardmarket||{};
+  const mappedId=Number(t.idProduct||t.idproduct)||null;
+  const variantId=Number(v?.cardmarketId)||null;
+  // Se a TCGdex ligou esta variante a um produto Cardmarket específico e o pricing pertence ao mesmo produto, é o preço mais seguro.
+  if(variantId&&mappedId&&variantId===mappedId){
+    const exact=bestPriceFromPairs([['low',t.low,'desde'],['trend',t.trend,'tendência'],['avg7',t.avg7,'média 7d'],['avg',t.avg,'média venda'],['avg30',t.avg30,'média 30d'],['low-holo',t['low-holo'],'holo desde'],['trend-holo',t['trend-holo'],'holo tendência']]);
+    return {...exact,source:Number.isFinite(exact.value)?'TCGdex · Cardmarket variante':null};
+  }
+  // Foils especiais têm valor próprio; nunca reutilizar um preço genérico e correr o risco de avaliar uma Master Ball como uma reverse normal.
+  if(v?.foil) return {value:Infinity,label:'consultar Cardmarket',key:null,source:null};
+  if(v?.type==='reverse'){
+    const r=cardmarketReversePrice(card); return {...r,source:Number.isFinite(r.value)?(card.cardmarket?.prices?.reverseHoloLow?'Pokémon TCG API':'TCGdex'):null};
+  }
+  if(v?.type==='holo'){
+    const p=card.__tcgdexCardmarket||{};
+    const r=bestPriceFromPairs([['low-holo',p['low-holo'],'holo desde'],['trend-holo',p['trend-holo'],'holo tendência'],['avg7-holo',p['avg7-holo'],'holo média 7d'],['avg30-holo',p['avg30-holo'],'holo média 30d'],['avg1-holo',p['avg1-holo'],'holo média 24h']]);
+    if(Number.isFinite(r.value)) return {...r,source:'TCGdex'};
+    return cardmarketPrice(card);
+  }
+  return cardmarketPrice(card);
+}
+function variantCardmarketUrl(card,variant){
+  const id=Number(variant?.cardmarketId)||null;
+  if(id) return `https://www.cardmarket.com/en/Pokemon/Products?idProduct=${id}`;
+  return card.cardmarket?.url||card.__marketUrl||cardmarketFallbackUrl(card);
+}
+
 function euro(value){
   return Number.isFinite(value)?`${value.toFixed(2).replace('.',',')} €`:'Preço indisponível';
 }
@@ -1520,8 +1877,8 @@ function collectionValueStats(){
   Object.values(store||{}).forEach(raw=>{
     const d=normalizeCardDetails(raw);
     Object.values(d.owned||{}).forEach(snap=>{
-      const id=String(snap?.id||'');
-      if(id&&!unique.has(id)) unique.set(id,snap);
+      const id=variantItemKey(snap?.id||'',snap?.variantKey||'default');
+      if(snap?.id&&!unique.has(id)) unique.set(id,snap);
     });
   });
   let total=0,priced=0;
@@ -1561,58 +1918,52 @@ async function refreshOwnedCardPriceCache(){
   const byCard=new Map();
   Object.entries(store||{}).forEach(([pokemonId,raw])=>{
     const d=normalizeCardDetails(raw);
-    Object.entries(d.owned||{}).forEach(([cardId,snap])=>{
+    Object.entries(d.owned||{}).forEach(([itemKey,snap])=>{
       if(!snapshotNeedsPriceRefresh(snap)) return;
-      if(!byCard.has(cardId)) byCard.set(cardId,{snap,owners:[]});
-      byCard.get(cardId).owners.push(Number(pokemonId));
+      const cardId=String(snap?.id||''); if(!cardId) return;
+      if(!byCard.has(cardId)) byCard.set(cardId,{snap,items:[]});
+      byCard.get(cardId).items.push({pokemonId:Number(pokemonId),itemKey,snap});
     });
   });
   if(!byCard.size){updateCollectionValueUI();return;}
 
-  const entries=[...byCard.entries()];
-  const primaryIds=entries.map(([id])=>id).filter(id=>!/^(30c-|classic30-|future30-)/i.test(id));
+  const cardIds=[...byCard.keys()];
+  const primaryIds=cardIds.filter(id=>!/^(30c-|classic30-|future30-)/i.test(id));
   const liveCards=new Map();
   for(let i=0;i<primaryIds.length;i+=40){
     const ids=primaryIds.slice(i,i+40);
     const q=`(${ids.map(id=>`id:"${lucenePhrase(id)}"`).join(' OR ')})`;
     try{
-      const select=encodeURIComponent('id,name,number,rarity,set,images,cardmarket');
+      const select=encodeURIComponent('id,name,number,rarity,set,images,cardmarket,tcgplayer');
       const payload=await fetchJsonWithRetry(`https://api.pokemontcg.io/v2/cards?q=${encodeURIComponent(q)}&page=1&pageSize=250&select=${select}`);
       (payload.data||[]).forEach(c=>{c.__source='Pokémon TCG API · atualização de valor';liveCards.set(String(c.id),c);});
     }catch(e){console.warn('Atualização em lote de preços falhou:',e);}
   }
 
-  // Para cartas que não tenham preço na fonte principal, tenta TCGdex em número limitado
-  // por sessão para não tornar o arranque pesado. O restante é atualizado ao abrir a carta.
-  let fallbackBudget=10;
-  for(const [cardId,info] of entries){
+  let fallbackBudget=12;
+  const changedPokemon=new Set();
+  for(const [cardId,info] of byCard){
     let card=liveCards.get(cardId)||pseudoCardFromSnapshot(info.snap);
-    let price=cardmarketPrice(card);
-    if(!Number.isFinite(price.value) && fallbackBudget>0){
+    if((!card.__tcgdexVariantsChecked||!card.__tcgdexPriceChecked) && fallbackBudget>0){
       fallbackBudget--;
       try{await enrichCardmarketPriceFromTcgdex(card);}catch(e){}
-      price=cardmarketPrice(card);
     }
-    const checkedAt=new Date().toISOString();
-    info.owners.forEach(pid=>{
-      const d=pokemonCardDetail(pid,true);
-      const old=d.owned[cardId];
-      if(!old) return;
-      const fresh=mergeSnapshotWithCard(old,card);
-      fresh.priceCheckedAt=checkedAt;
+    info.items.forEach(({pokemonId,itemKey,snap})=>{
+      const d=pokemonCardDetail(pokemonId,true); const old=d.owned[itemKey]; if(!old) return;
+      const variant=variantFromSnapshot(old);
+      const fresh=mergeSnapshotWithCard(old,card,variant);
+      const price=variantCardmarketPrice(card,variant);
+      fresh.priceCheckedAt=new Date().toISOString();
       if(Number.isFinite(price.value)){
         fresh.marketPrice=Number(price.value);fresh.marketPriceLabel=price.label||'preço';fresh.marketPriceSource=price.source||'Cardmarket';
         fresh.marketPriceUpdated=String(card.cardmarket?.updatedAt||card.__tcgdexPriceUpdated||fresh.marketPriceUpdated||'');
       }
-      d.owned[cardId]=fresh;
-      store[String(pid)]=d;
+      d.owned[itemKey]=fresh; store[String(pokemonId)]=d; changedPokemon.add(pokemonId);
     });
   }
-  saveCardDetailStore();
-  updateCollectionValueUI();
-
+  saveCardDetailStore(); updateCollectionValueUI();
   if(window.__cardDetailsCloudReady!==false){
-    const changedIds=[...new Set(entries.flatMap(([,info])=>info.owners))];
+    const changedIds=[...changedPokemon];
     for(let i=0;i<changedIds.length;i+=100){
       const rows=changedIds.slice(i,i+100).map(id=>{const cur=supaFor(id)||{};return {pokemon_id:id,card:cur.card===true,full_art:cur.full_art===true,card_details:normalizeCardDetails(pokemonCardDetail(id))};});
       const {error}=await supabaseClient.from('pokemon_cards').upsert(rows,{onConflict:'pokemon_id'});
@@ -1726,11 +2077,12 @@ async function tcgdexNameCandidates(card){
   return promise;
 }
 async function enrichCardmarketPriceFromTcgdex(card){
-  if(card.__tcgdexPriceChecked) return card;
+  if(card.__tcgdexPriceChecked&&card.__tcgdexVariantsChecked) return card;
   if(TCGDEX_PRICE_CACHE.has(card.id)){
     const saved=TCGDEX_PRICE_CACHE.get(card.id);
     Object.assign(card,saved);
     card.__tcgdexPriceChecked=true;
+    if(saved.__tcgdexVariantsDetailed||saved.__tcgdexVariantsLegacy||saved.__tcgdexVariantsChecked) card.__tcgdexVariantsChecked=true;
     return card;
   }
   let best=null;
@@ -1751,6 +2103,10 @@ async function enrichCardmarketPriceFromTcgdex(card){
     __tcgdexPriceChecked:true,
     __tcgdexCardmarket:best?.pricing?.cardmarket||null,
     __tcgdexPriceUpdated:best?.pricing?.cardmarket?.updated||null,
+    __tcgdexTcgplayer:best?.pricing?.tcgplayer||null,
+    __tcgdexVariantsDetailed:Array.isArray(best?.variants_detailed)?best.variants_detailed:(Array.isArray(best?.variants)?best.variants:null),
+    __tcgdexVariantsLegacy:(!Array.isArray(best?.variants)&&best?.variants&&typeof best.variants==='object')?best.variants:null,
+    __tcgdexVariantsChecked:true,
     __tcgdexMatchedId:best?.id||null
   };
   Object.assign(card,payload);
@@ -1776,8 +2132,8 @@ async function enrichMissingVisiblePrices(cards){
     let changed=false;
     targets.forEach(card=>{
       const id=String(card.id);
-      if(d.owned[id]){d.owned[id]=mergeSnapshotWithCard(d.owned[id],card);changed=true;}
-      if(d.wishlist[id]){d.wishlist[id]=mergeSnapshotWithCard(d.wishlist[id],card);changed=true;}
+      Object.entries(d.owned||{}).forEach(([itemKey,snap])=>{if(String(snap?.id||'')===id){d.owned[itemKey]=mergeSnapshotWithCard(snap,card,variantFromSnapshot(snap));changed=true;}});
+      if(d.wishlist[id]){d.wishlist[id]=mergeSnapshotWithCard(d.wishlist[id],card,defaultVariantForCard(card));changed=true;}
     });
     if(changed){saveCardDetailStore();updateCollectionValueUI();persistCardDetails(pokemonId).catch(()=>{});}
     renderModalCards(false,true);
@@ -1817,7 +2173,7 @@ async function fetchAllCardsForPokemon(p,onRetry){
 
     while(page<=maxPages){
       const q=encodeURIComponent(query);
-      const select=encodeURIComponent('id,name,supertype,subtypes,rarity,number,artist,set,images,cardmarket,nationalPokedexNumbers');
+      const select=encodeURIComponent('id,name,supertype,subtypes,rarity,number,artist,set,images,cardmarket,tcgplayer,nationalPokedexNumbers');
       const url=`https://api.pokemontcg.io/v2/cards?q=${q}&page=${page}&pageSize=${pageSize}&orderBy=-set.releaseDate&select=${select}`;
       const payload=await fetchJsonWithRetry(url,onRetry);
       const rows=(payload.data||[]).filter(card=>{
@@ -1907,14 +2263,17 @@ function renderPokemonCardResult(card, cheapestId){
   const cheapest=card.id===cheapestId&&Number.isFinite(price.value);
   const pokemonId=currentModalPokemon?.id;
   const owned=isSpecificCardOwned(pokemonId,card.id);
+  const ownedVariantCount=ownedVariantEntriesForCard(pokemonId,card.id).length;
   const wanted=isSpecificCardWishlisted(pokemonId,card.id);
-  const featured=featuredCardFor(pokemonId)?.id===String(card.id);
+  const featuredSnap=featuredCardFor(pokemonId);
+  const featured=featuredSnap?.id===String(card.id);
+  const variantsKnown=cardVariants(card).length;
 
   return `
     <article class="art-result ${cheapest?'cheapest':''} ${owned?'my-card':''} ${wanted?'wish-card':''} ${featured?'featured-card':''}" data-result-card-id="${escapeHtml(card.id)}">
       ${featured?'<div class="featured-ribbon">★ NA TUA POKÉDEX</div>':(cheapest?'<div class="cheapest-ribbon">★ Mais barata encontrada</div>':'')}
       ${wanted&&!featured?'<div class="wishlist-ribbon">♥ WISHLIST</div>':''}
-      <div class="art-result-img"><img loading="lazy" src="${escapeHtml(card.images?.small||card.images?.large||'')}" alt="${escapeHtml(card.name)}"></div>
+      <div class="art-result-img" data-open-variants="${escapeHtml(card.id)}" role="button" tabindex="0" aria-label="Ver variantes de ${escapeHtml(card.name)}"><img loading="lazy" src="${escapeHtml(card.images?.small||card.images?.large||'')}" alt="${escapeHtml(card.name)}"></div>
       <div class="art-result-info">
         <div class="art-result-name">${escapeHtml(card.name)}</div>
         <div class="art-result-set">${escapeHtml(setName)} · ${escapeHtml(setCode)} #${escapeHtml(card.number||'—')}</div>
@@ -1925,6 +2284,7 @@ function renderPokemonCardResult(card, cheapestId){
           ${card.__preRelease30?`<span class="art-result-tag anniversary">30.º ANIVERSÁRIO</span><span class="art-result-tag upcoming">${isCardUpcoming(card)?'BREVEMENTE · 30C':'30C'}</span>`:''}
           ${card.rarity?`<span class="art-result-tag">${escapeHtml(card.rarity)}</span>`:''}
         </div>
+        <div class="card-variant-summary"><span class="card-variant-chip">✦ ${variantsKnown} variante${variantsKnown===1?'':'s'}</span>${ownedVariantCount?`<span class="card-variant-chip mine">✓ ${ownedVariantCount} minha${ownedVariantCount===1?'':'s'}</span>`:''}${featured&&featuredSnap?.variantLabel?`<span class="card-variant-chip featured">★ ${escapeHtml(featuredSnap.variantLabel)}</span>`:''}</div>
         <div class="art-price-box">
           <div>
             <div class="art-price-label">${Number.isFinite(price.value)?escapeHtml(price.label):'Cardmarket'}</div>
@@ -1935,9 +2295,8 @@ function renderPokemonCardResult(card, cheapestId){
           <a class="cardmarket-btn ${directMarketUrl?'':'fallback'}" href="${escapeHtml(marketUrl)}" target="_blank" rel="noopener noreferrer">${directMarketUrl?'Cardmarket ↗':'Procurar Cardmarket ↗'}</a>
         </div>
         <div class="specific-card-actions">
-          <button type="button" class="specific-own-btn ${owned?'active':''}" data-own-card="${escapeHtml(card.id)}">${owned?'✓ TENHO ESTA':'＋ TENHO ESTA'}</button>
           <button type="button" class="specific-wish-btn ${wanted?'active':''}" data-wish-card="${escapeHtml(card.id)}" ${owned?'disabled':''}>${owned?'✓ NA COLEÇÃO':(wanted?'♥ NA WISHLIST':'♡ QUERO ESTA')}</button>
-          <button type="button" class="specific-feature-btn ${featured?'active':''}" data-feature-card="${escapeHtml(card.id)}">${featured?'★ NA POKÉDEX':'☆ USAR NA POKÉDEX'}</button>
+          <button type="button" class="specific-feature-btn ${featured?'active':''}" data-open-variants="${escapeHtml(card.id)}">${featured?'★ TROCAR VARIANTE':'☆ ESCOLHER P/ POKÉDEX'}</button>
         </div>
         <div class="card-source-note">${escapeHtml(card.__source||'Pokémon TCG API')}</div>
       </div>
@@ -2017,7 +2376,7 @@ function renderModalCards(resetLimit=false,skipEnrich=false){
   const more=filtered.length>shown.length
     ? `<div class="load-more-wrap"><button class="load-more-btn" id="loadMoreCards">Mostrar mais ${Math.min(MODAL_PAGE_STEP,filtered.length-shown.length)} cartas</button></div>`:'';
 
-  body.innerHTML=controls+cardsHtml+more+`<div class="art-modal-note">A pesquisa combina <strong>número da Pokédex + nome do Pokémon</strong> e inclui de forma garantida as <strong>27 promos First Partner do 30.º aniversário (MEP 037–063)</strong>. O botão Cardmarket aparece sempre. Podes marcar várias cartas em <strong>TENHO ESTA</strong>, guardar objetivos em <strong>QUERO ESTA</strong> e escolher a imagem principal com <strong>USAR NA POKÉDEX</strong>.</div>`;
+  body.innerHTML=controls+cardsHtml+more+`<div class="art-modal-note">A pesquisa combina <strong>número da Pokédex + nome do Pokémon</strong> e inclui de forma garantida as <strong>27 promos First Partner do 30.º aniversário (MEP 037–063)</strong>. O botão Cardmarket aparece sempre. Carrega diretamente na <strong>imagem da carta</strong> para escolher a variante física exata, ver preços e decidir qual queres usar no binder. A Wishlist continua ao nível da impressão da carta.</div>`;
 
   // restore UI values after rerender
   const searchEl=document.getElementById('cardBrowserSearch');
@@ -2045,16 +2404,14 @@ function renderModalCards(resetLimit=false,skipEnrich=false){
     renderModalCards(false);
   });
 
-  body.querySelectorAll('[data-own-card]').forEach(btn=>{
-    btn.addEventListener('click',async()=>{
-      const card=currentModalCards.find(c=>String(c.id)===String(btn.dataset.ownCard));
-      if(!card||!currentModalPokemon) return;
-      const nowOwned=isSpecificCardOwned(currentModalPokemon.id,card.id);
-      if(!nowOwned) await ensurePokemonOwnedFromSpecificCard(currentModalPokemon.id);
-      await setSpecificCardOwned(currentModalPokemon.id,card,!nowOwned,{makeFeatured:!nowOwned});
-      renderCurrentPage(false);
-      renderModalCards(false);
-    });
+  const openVariantFromElement=async el=>{
+    const card=currentModalCards.find(c=>String(c.id)===String(el.dataset.openVariants));
+    if(!card||!currentModalPokemon) return;
+    await openVariantModal(card,currentModalPokemon);
+  };
+  body.querySelectorAll('[data-open-variants]').forEach(el=>{
+    el.addEventListener('click',()=>openVariantFromElement(el));
+    el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openVariantFromElement(el);}});
   });
   body.querySelectorAll('[data-wish-card]').forEach(btn=>{
     btn.addEventListener('click',async()=>{
@@ -2067,18 +2424,81 @@ function renderModalCards(resetLimit=false,skipEnrich=false){
     });
   });
 
-  body.querySelectorAll('[data-feature-card]').forEach(btn=>{
-    btn.addEventListener('click',async()=>{
-      const card=currentModalCards.find(c=>String(c.id)===String(btn.dataset.featureCard));
-      if(!card||!currentModalPokemon) return;
-      await ensurePokemonOwnedFromSpecificCard(currentModalPokemon.id);
-      await setFeaturedSpecificCard(currentModalPokemon.id,card);
-      renderCurrentPage(false);
-      renderModalCards(false);
-    });
-  });
-
   if(!skipEnrich) enrichMissingVisiblePrices(shown).catch(err=>console.warn('Não foi possível confirmar preços em falta:',err));
+}
+
+let currentVariantCard=null;
+let currentVariantPokemon=null;
+let currentVariantSelectedKey=null;
+function variantIsFeatured(pokemonId,card,variant){
+  const d=pokemonCardDetail(pokemonId); if(!d?.featured) return false;
+  const snap=d.owned?.[d.featured]; return !!snap&&String(snap.id)===String(card.id)&&String(snap.variantKey||'default')===String(variant.key||'default');
+}
+function selectedVariantForModal(){
+  const vars=cardVariants(currentVariantCard||{});
+  return vars.find(v=>String(v.key)===String(currentVariantSelectedKey))||vars[0]||defaultVariantForCard(currentVariantCard||{});
+}
+function marketCardHtml(cls,logo,name,price,sub,url,buttonText){
+  return `<div class="market-card ${cls}"><div class="market-logo">${logo}</div><div class="market-copy"><strong>${escapeHtml(name)}</strong><span>${escapeHtml(sub)}</span></div><div class="market-price">${price}<a class="market-link" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(buttonText)} ↗</a></div></div>`;
+}
+function renderVariantModal(){
+  const card=currentVariantCard,pokemon=currentVariantPokemon; if(!card||!pokemon) return;
+  const vars=cardVariants(card);
+  if(!currentVariantSelectedKey || !vars.some(v=>String(v.key)===String(currentVariantSelectedKey))){const feat=featuredCardFor(pokemon.id);const featVar=feat&&String(feat.id)===String(card.id)?variantFromSnapshot(feat):null;currentVariantSelectedKey=(featVar?.key&&vars.some(x=>String(x.key)===String(featVar.key)))?featVar.key:(vars[0]?.key||'default');}
+  const v=selectedVariantForModal();
+  const owned=isSpecificCardOwned(pokemon.id,card.id,v.key);
+  const featured=variantIsFeatured(pokemon.id,card,v);
+  const image=variantImageInfo(card,v);
+  const cm=variantCardmarketPrice(card,v);
+  const tp=variantTcgplayerPrice(card,v);
+  const cmUrl=variantCardmarketUrl(card,v),tpUrl=variantTcgplayerUrl(card,v),viUrl=vintedVariantUrl(card,v),olxUrl=olxVariantUrl(card,v);
+  document.getElementById('variantModalTitle').textContent=card.name;
+  document.getElementById('variantModalSub').textContent=`${card.set?.name||'Set'} · #${card.number||'—'} · variante física`;
+  const hero=document.getElementById('variantHeroImage'); hero.src=image.url||card.images?.large||card.images?.small||''; hero.alt=`${card.name} · ${v.label}`; hero.onerror=()=>{hero.onerror=null;hero.src=card.images?.large||card.images?.small||'';document.getElementById('variantImageBadge').textContent='Scan da impressão base';};
+  document.getElementById('variantImageBadge').textContent=image.label;
+  document.getElementById('variantIdentity').innerHTML=`<strong>${escapeHtml(card.name)}</strong><span>${escapeHtml(card.set?.name||'')} · ${escapeHtml(card.set?.ptcgoCode||card.set?.id||'')} #${escapeHtml(card.number||'—')}<br>${escapeHtml(card.rarity||'Carta Pokémon')}</span><em>${vars.length} variante${vars.length===1?'':'s'} encontrada${vars.length===1?'':'s'}</em>`;
+  document.getElementById('variantSelector').innerHTML=vars.map(x=>`<button type="button" class="variant-choice ${String(x.key)===String(v.key)?'active':''} ${isSpecificCardOwned(pokemon.id,card.id,x.key)?'owned':''}" data-variant-select="${escapeHtml(x.key)}">${escapeHtml(x.label)}</button>`).join('');
+  document.getElementById('variantSelectedName').textContent=v.label;
+  const pill=document.getElementById('variantOwnedPill'); pill.textContent=owned?'✓ NA COLEÇÃO':'NÃO MARCADA'; pill.classList.toggle('owned',owned);
+  const ownBtn=document.getElementById('variantOwnBig'); ownBtn.textContent=owned?'✓ TENHO ESTA':'＋ TENHO ESTA'; ownBtn.classList.toggle('active',owned);
+  const featureBtn=document.getElementById('variantFeatureBig'); featureBtn.textContent=featured?'★ NO BINDER':'☆ USAR NO BINDER'; featureBtn.classList.toggle('active',featured);
+  const cmPrice=Number.isFinite(cm.value)?`<strong>${euro(cm.value)}</strong><small>${escapeHtml(cm.label||'preço')}</small>`:'<strong>—</strong><small>sem preço fiável</small>';
+  const tpPrice=Number.isFinite(tp.value)?`<strong>${usd(tp.value)}</strong><small>${escapeHtml(tp.label||'market')}</small>`:'<strong>—</strong><small>sem preço fiável</small>';
+  document.getElementById('variantMarketGrid').innerHTML=
+    marketCardHtml('cardmarket','CM','Cardmarket',cmPrice,Number.isFinite(cm.value)?`Preço ${cm.source||'Cardmarket'} para esta variante`:'Abre a variante/produto correspondente',cmUrl,'Cardmarket')+
+    marketCardHtml('tcgplayer','TCG','TCGPlayer',tpPrice,Number.isFinite(tp.value)?`Preço ${tp.source||'TCGPlayer'} para esta variante`:'Pesquisa pelo produto/variante',tpUrl,'TCGPlayer')+
+    marketCardHtml('vinted','V','Vinted','<strong>Pesquisa</strong><small>anúncios atuais</small>','Sem API pública de pesquisa de preços; abre uma pesquisa específica',viUrl,'Ver anúncios')+
+    marketCardHtml('olx','O','OLX','<strong>Pesquisa</strong><small>anúncios atuais</small>','A API oficial não permite ler anúncios de outros utilizadores; abre pesquisa específica',olxUrl,'Ver anúncios');
+  const meta=[`<strong>Tipo:</strong> ${escapeHtml(v.type||'normal')}`,v.foil?`<strong>Foil:</strong> ${escapeHtml(foilPretty(v.foil))}`:'',v.subtype?`<strong>Subtipo:</strong> ${escapeHtml(v.subtype.replace(/-/g,' '))}`:'',v.stamps?.length?`<strong>Selo:</strong> ${escapeHtml(v.stamps.join(', ').replace(/-/g,' '))}`:'',v.cardmarketId?`<strong>Cardmarket:</strong> #${v.cardmarketId}`:'',v.tcgplayerId?`<strong>TCGPlayer:</strong> #${v.tcgplayerId}`:''].filter(Boolean).join('<br>');
+  document.getElementById('variantMetaCard').innerHTML=meta||'Versão física desta carta.';
+  document.getElementById('variantDataNote').innerHTML=image.exact?'<b>Imagem:</b> usamos a imagem do produto TCGPlayer associada a esta variante. Mesmo assim, o brilho/foil físico pode ser pouco visível numa scan estática.':'<b>Imagem:</b> não existe uma imagem de produto separada exposta para esta variante; mostramos a scan da impressão base. Não simulamos um foil falso.';
+  document.querySelectorAll('[data-variant-select]').forEach(btn=>btn.addEventListener('click',()=>{currentVariantSelectedKey=btn.dataset.variantSelect;renderVariantModal();}));
+  ownBtn.onclick=async()=>{
+    const wasOwned=isSpecificCardOwned(pokemon.id,card.id,v.key);
+    if(!wasOwned) await ensurePokemonOwnedFromSpecificCard(pokemon.id);
+    // Ao marcar uma variante como tua, ela passa imediatamente a ser a carta mostrada no binder.
+    await setSpecificVariantOwned(pokemon.id,card,v,!wasOwned,{makeFeatured:!wasOwned});
+    renderCurrentPage(false); renderModalCards(false); renderVariantModal();
+  };
+  featureBtn.onclick=async()=>{await ensurePokemonOwnedFromSpecificCard(pokemon.id);await setFeaturedSpecificVariant(pokemon.id,card,v);renderCurrentPage(false);renderModalCards(false);renderVariantModal();};
+}
+async function openVariantModal(card,pokemon){
+  currentVariantCard=card; currentVariantPokemon=pokemon; currentVariantSelectedKey=null;
+  const modal=document.getElementById('variantModal'); modal.classList.add('open'); modal.setAttribute('aria-hidden','false');
+  document.getElementById('variantModalTitle').textContent=card.name;
+  document.getElementById('variantModalSub').textContent='A carregar variantes, imagem e mercados…';
+  document.getElementById('variantHeroImage').src=card.images?.large||card.images?.small||'';
+  document.getElementById('variantImageBadge').textContent='A confirmar imagem…';
+  document.getElementById('variantIdentity').innerHTML=`<strong>${escapeHtml(card.name)}</strong><span>${escapeHtml(card.set?.name||'')} · #${escapeHtml(card.number||'—')}</span>`;
+  document.getElementById('variantSelector').innerHTML='<div class="art-loading"><div class="art-spinner"></div></div>';
+  document.getElementById('variantMarketGrid').innerHTML='<div class="art-loading"><div class="art-spinner"></div><div>A consultar Cardmarket e TCGPlayer…</div></div>';
+  document.getElementById('variantMetaCard').innerHTML='A confirmar dados da variante…';
+  document.getElementById('variantDataNote').textContent='';
+  try{await enrichCardmarketPriceFromTcgdex(card);}catch(e){console.warn('Variantes/mercados TCGdex indisponíveis:',e);}
+  if(currentVariantCard===card) renderVariantModal();
+}
+function closeVariantModal(){
+  const modal=document.getElementById('variantModal');modal.classList.remove('open');modal.setAttribute('aria-hidden','true');currentVariantCard=null;currentVariantPokemon=null;currentVariantSelectedKey=null;
 }
 
 async function openArtModal(p){
@@ -2128,6 +2548,7 @@ async function openArtModal(p){
 }
 
 function closeArtModal(){
+  if(document.getElementById('variantModal')?.classList.contains('open')) closeVariantModal();
   const modal=document.getElementById('artModal');
   modal.classList.remove('open');
   modal.setAttribute('aria-hidden','true');
@@ -2195,7 +2616,7 @@ function makeCard(p){
   el.innerHTML=`
     <div class="card-top"><div class="dex-number">#${String(p.id).padStart(3,'0')}</div><div class="card-ball"></div></div>
     <div class="art-star-badge" title="ART obtida">★</div>
-    ${featured?'<div class="featured-card-label">★ CARTA DA COLEÇÃO</div>':''}
+    ${featured?`<div class="featured-card-label">★ ${escapeHtml(featured.variantLabel||'CARTA DA COLEÇÃO')}</div>`:''}
     <div class="card-image ${featured?'featured-card-image':''}"><img loading="lazy" src="${featured?escapeHtml(featured.imageSmall||featured.imageLarge):artworkUrl(p.id)}" alt="${featured?escapeHtml(featured.name):pretty(p.name)}" onerror="this.onerror=null;this.src='${fallbackArtworkUrl(p.id)}'"></div>
     <div class="completion-badge">EM FALTA</div>
     <div class="type-row" data-id="${p.id}">${typeMarkup(p.id)}</div>
@@ -2690,7 +3111,7 @@ window.addEventListener('appinstalled',()=>{
 
 if('serviceWorker' in navigator && location.protocol!=='file:'){
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('./sw.js?v=10.10',{updateViaCache:'none'})
+    navigator.serviceWorker.register('./sw.js?v=10.12',{updateViaCache:'none'})
       .then(reg=>reg.update())
       .catch(err=>console.warn('Service Worker:',err));
   });
@@ -2698,8 +3119,14 @@ if('serviceWorker' in navigator && location.protocol!=='file:'){
 
 
 document.getElementById('artModalClose').addEventListener('click',closeArtModal);
+document.getElementById('variantModalClose').addEventListener('click',closeVariantModal);
+document.getElementById('variantModal').addEventListener('click',e=>{if(e.target===e.currentTarget) closeVariantModal();});
 document.getElementById('artModal').addEventListener('click',e=>{if(e.target.id==='artModal') closeArtModal()});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElementById('artModal').classList.contains('open')) closeArtModal()});
+document.addEventListener('keydown',e=>{
+  if(e.key!=='Escape') return;
+  if(document.getElementById('variantModal').classList.contains('open')) closeVariantModal();
+  else if(document.getElementById('artModal').classList.contains('open')) closeArtModal();
+});
 
 let appStarted=false;
 async function startApp(){
@@ -2873,6 +3300,122 @@ document.getElementById('installBtn').addEventListener('click',async()=>{
   updateFilterBadge();
   updateNav();
 })();
+
+
+
+// ===== v10.15 · SCANNER DE CARTAS =====
+let scannerStream=null;
+let scannerCandidateContext=[];
+function setScannerStatus(title,detail='',kind=''){
+  const el=document.getElementById('scannerStatus'); if(!el) return;
+  el.className='scanner-status'+(kind?' '+kind:'');
+  el.innerHTML=`<strong>${escapeHtml(title)}</strong><span>${escapeHtml(detail)}</span>`;
+}
+function stopScannerCamera(){
+  if(scannerStream){scannerStream.getTracks().forEach(t=>t.stop());scannerStream=null;}
+  const video=document.getElementById('scannerVideo'); if(video) video.srcObject=null;
+}
+async function startScannerCamera(){
+  const video=document.getElementById('scannerVideo'),preview=document.getElementById('scannerPreview');
+  if(preview) preview.hidden=true; if(video) video.hidden=false;
+  stopScannerCamera();
+  if(!navigator.mediaDevices?.getUserMedia){setScannerStatus('Câmara não disponível','Usa “Escolher foto” para fotografar a carta com a câmara do iPhone.','bad');return;}
+  try{
+    scannerStream=await navigator.mediaDevices.getUserMedia({audio:false,video:{facingMode:{ideal:'environment'},width:{ideal:1440},height:{ideal:1920}}});
+    video.srcObject=scannerStream; await video.play();
+    setScannerStatus('Enquadra a carta inteira','Mantém o telemóvel direito e evita reflexos fortes.');
+  }catch(e){
+    console.warn('Scanner camera',e);setScannerStatus('Não foi possível abrir a câmara','Podes usar “Escolher foto” — no iPhone abre a câmara/galeria nativa.','bad');
+  }
+}
+function openScanner(){
+  const modal=document.getElementById('scannerModal');modal.classList.add('open');modal.setAttribute('aria-hidden','false');
+  document.getElementById('scannerCandidates').innerHTML='';scannerCandidateContext=[];
+  startScannerCamera();
+}
+function closeScanner(){
+  stopScannerCamera();const modal=document.getElementById('scannerModal');modal.classList.remove('open');modal.setAttribute('aria-hidden','true');
+}
+async function ensureScannerOCR(){
+  if(window.Tesseract) return window.Tesseract;
+  setScannerStatus('A preparar reconhecimento…','Na primeira utilização é necessário carregar o motor OCR.','working');
+  await new Promise((resolve,reject)=>{const sc=document.createElement('script');sc.src='https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js';sc.async=true;sc.onload=resolve;sc.onerror=()=>reject(new Error('Não foi possível carregar o OCR'));document.head.appendChild(sc);});
+  return window.Tesseract;
+}
+function scanNorm(v){return String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();}
+function scanCompact(v){return scanNorm(v).replace(/\s+/g,'');}
+function levenshtein(a,b){a=String(a);b=String(b);const m=a.length,n=b.length,dp=Array(n+1).fill(0);for(let j=0;j<=n;j++)dp[j]=j;for(let i=1;i<=m;i++){let prev=dp[0];dp[0]=i;for(let j=1;j<=n;j++){const old=dp[j];dp[j]=Math.min(dp[j]+1,dp[j-1]+1,prev+(a[i-1]===b[j-1]?0:1));prev=old;}}return dp[n];}
+function pokemonFromScanText(text){
+  const all=window.__all||[];const norm=' '+scanNorm(text)+' ';const compact=scanCompact(text);let best=null,bestScore=-1;
+  for(const p of all){const label=pretty(p.name);const n=scanNorm(label),c=scanCompact(label);if(!c||c.length<3)continue;let score=0;if(norm.includes(' '+n+' '))score=120+c.length;else if(compact.includes(c))score=100+c.length;else{
+      const words=norm.trim().split(/\s+/);if(c.length>=5){for(const w of words){const d=levenshtein(c,scanCompact(w));if(d<=Math.max(1,Math.floor(c.length*.16)))score=Math.max(score,70-d*8+c.length);}}
+    }
+    if(score>bestScore){bestScore=score;best=p;}
+  }
+  return bestScore>=65?best:null;
+}
+function collectorNumberFromScanText(text){
+  const upper=String(text||'').toUpperCase();
+  const slash=[...upper.matchAll(/\b([A-Z]{0,3}\s*-?\s*\d{1,3})\s*[\/|]\s*(\d{1,3})\b/g)];
+  if(slash.length){const raw=slash[slash.length-1][1].replace(/\s+/g,'');const m=raw.match(/(\d{1,3})$/);return m?String(Number(m[1])):raw;}
+  const promo=upper.match(/\b(?:MEP|SVP|SWSH|SM)\s*[- ]?\s*(\d{2,3})\b/);if(promo)return String(Number(promo[1]));
+  return null;
+}
+function cardScanScore(card,text,targetNum){
+  const norm=scanNorm(text);let score=0;
+  if(targetNum&&normalizeLocalCardNumber(card.number)===normalizeLocalCardNumber(targetNum))score+=120;
+  const name=scanNorm(card.name);if(name&&norm.includes(name))score+=70;
+  const setWords=scanNorm(card.set?.name).split(' ').filter(w=>w.length>=4);score+=Math.min(30,setWords.filter(w=>norm.includes(w)).length*8);
+  const code=scanNorm(card.set?.ptcgoCode||card.set?.id);if(code&&norm.includes(code))score+=18;
+  const rarity=scanNorm(card.rarity);if(rarity&&rarity.length>4&&norm.includes(rarity))score+=5;
+  return score;
+}
+async function preprocessScannerBlob(blob){
+  let source=null,w=0,h=0,cleanup=()=>{};
+  if(typeof createImageBitmap==='function'){
+    const bmp=await createImageBitmap(blob);source=bmp;w=bmp.width;h=bmp.height;cleanup=()=>bmp.close?.();
+  }else{
+    const url=URL.createObjectURL(blob);const img=new Image();await new Promise((res,rej)=>{img.onload=res;img.onerror=rej;img.src=url});source=img;w=img.naturalWidth;h=img.naturalHeight;cleanup=()=>URL.revokeObjectURL(url);
+  }
+  const maxW=1500,scale=Math.min(1,maxW/w);const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(w*scale));canvas.height=Math.max(1,Math.round(h*scale));const ctx=canvas.getContext('2d',{willReadFrequently:true});ctx.drawImage(source,0,0,canvas.width,canvas.height);cleanup();
+  const id=ctx.getImageData(0,0,canvas.width,canvas.height),d=id.data;for(let i=0;i<d.length;i+=4){const y=.299*d[i]+.587*d[i+1]+.114*d[i+2];const v=Math.max(0,Math.min(255,(y-128)*1.35+128));d[i]=d[i+1]=d[i+2]=v;}ctx.putImageData(id,0,0);return canvas;
+}
+async function identifyScannedCard(blob){
+  stopScannerCamera();
+  const preview=document.getElementById('scannerPreview'),video=document.getElementById('scannerVideo');preview.src=URL.createObjectURL(blob);preview.hidden=false;video.hidden=true;
+  try{
+    const T=await ensureScannerOCR();setScannerStatus('A ler a carta…','A procurar nome, número e pistas do set.','working');
+    const canvas=await preprocessScannerBlob(blob);
+    const result=await T.recognize(canvas,'eng',{logger:m=>{if(m.status==='recognizing text')setScannerStatus('A ler a carta…',`${Math.round((m.progress||0)*100)}%`,'working')}});
+    const text=result?.data?.text||'';const pokemon=pokemonFromScanText(text);const num=collectorNumberFromScanText(text);
+    if(!pokemon){setScannerStatus('Não consegui identificar o Pokémon','Tenta outra foto mais direita, com a carta inteira e menos reflexos.','bad');return;}
+    setScannerStatus(`Encontrei ${pretty(pokemon.name)}`,num?`Número provável: ${num}. A confirmar a impressão…`:'A confirmar qual é a impressão…','working');
+    let cards=await fetchAllCardsForPokemon(pokemon);
+    const scored=cards.map(card=>({card,score:cardScanScore(card,text,num)})).sort((a,b)=>b.score-a.score);
+    let candidates=scored.filter(x=>!num||normalizeLocalCardNumber(x.card.number)===normalizeLocalCardNumber(num));if(!candidates.length)candidates=scored;candidates=candidates.slice(0,9);
+    if(!candidates.length){setScannerStatus('Pokémon encontrado, mas não encontrei a carta','Podes abrir o Pokémon manualmente e escolher a impressão.','bad');return;}
+    scannerCandidateContext=candidates.map(x=>({card:x.card,pokemon,score:x.score}));
+    const top=candidates[0],second=candidates[1];
+    // Só abre automaticamente quando a correspondência é realmente inequívoca.
+    if(num&&top.score>=180&&(!second||top.score-second.score>=35)){
+      setScannerStatus('Carta identificada',`${top.card.set?.name||'Set'} · #${top.card.number}. A abrir variantes…`,'good');
+      closeScanner();await openVariantModal(top.card,pokemon);return;
+    }
+    setScannerStatus(`${candidates.length} hipótese${candidates.length===1?'':'s'} encontrada${candidates.length===1?'':'s'}`,'Toca na imagem da tua carta para abrir imediatamente as variantes.','good');
+    const box=document.getElementById('scannerCandidates');box.innerHTML=scannerCandidateContext.map((x,i)=>`<button type="button" class="scanner-candidate ${i===0?'best':''}" data-scan-candidate="${i}"><img src="${escapeHtml(x.card.images?.small||x.card.images?.large||'')}" alt="${escapeHtml(x.card.name)}"><div class="scanner-candidate-info"><strong>${escapeHtml(x.card.name)} #${escapeHtml(x.card.number||'—')}</strong><span>${escapeHtml(x.card.set?.name||'Set')}</span></div></button>`).join('');
+    box.querySelectorAll('[data-scan-candidate]').forEach(btn=>btn.addEventListener('click',async()=>{const x=scannerCandidateContext[Number(btn.dataset.scanCandidate)];if(!x)return;closeScanner();await openVariantModal(x.card,x.pokemon);}));
+  }catch(e){console.error('Scanner',e);setScannerStatus('O scanner falhou',e?.message||'Tenta novamente ou escolhe uma fotografia.','bad');}
+}
+async function captureScannerFrame(){
+  const video=document.getElementById('scannerVideo');if(!video?.videoWidth){document.getElementById('scannerFile').click();return;}
+  const canvas=document.getElementById('scannerCanvas');canvas.width=video.videoWidth;canvas.height=video.videoHeight;canvas.getContext('2d').drawImage(video,0,0);canvas.toBlob(blob=>{if(blob)identifyScannedCard(blob)},'image/jpeg',.94);
+}
+document.getElementById('mobileScanBtn')?.addEventListener('click',openScanner);
+document.getElementById('scannerClose')?.addEventListener('click',closeScanner);
+document.getElementById('scannerModal')?.addEventListener('click',e=>{if(e.target===e.currentTarget)closeScanner()});
+document.getElementById('scannerCapture')?.addEventListener('click',captureScannerFrame);
+document.getElementById('scannerPhotoBtn')?.addEventListener('click',()=>document.getElementById('scannerFile').click());
+document.getElementById('scannerFile')?.addEventListener('change',e=>{const f=e.target.files?.[0];if(f)identifyScannedCard(f);e.target.value='';});
 
 document.getElementById('resetGenBtn').addEventListener('click',()=>{state.generation=null;state.page=1;renderCurrentPage()});
 </script>
