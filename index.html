@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="Pokédex XL">
 <link rel="manifest" href="manifest.webmanifest">
-<title>Pokédex XL — Master Set · v12.2 FINAL AUDITED</title>
+<title>Pokédex XL — Master Set · v12.3.2 IMAGE REPAIR</title>
 <link rel="apple-touch-icon" href="icon-180.png">
 <style>
 :root{
@@ -944,7 +944,7 @@ body:not(.auth-locked) .auth-gate{opacity:0;visibility:hidden;pointer-events:non
 .v12-webgl-card canvas{overflow:visible!important}
 
 
-/* v12.2 FINAL AUDITED · binder estável: nunca cria dezenas de contextos WebGL. */
+/* v12.3 COMPLETE CATALOG · binder estável: nunca cria dezenas de contextos WebGL. */
 .featured-card-image.binder-static-variant{overflow:hidden!important;isolation:isolate;border-radius:10px}
 .featured-card-image.binder-static-variant>img.binder-featured-img{display:block!important;width:100%!important;height:100%!important;max-width:100%!important;max-height:100%!important;object-fit:contain!important;border-radius:9px!important;position:relative;z-index:1}
 .featured-card-image.binder-static-variant::after{content:"";position:absolute;inset:8% 7%;z-index:2;pointer-events:none;border-radius:7px;opacity:.07;background:radial-gradient(circle at 38% 25%,rgba(255,255,255,.7),transparent 24%),linear-gradient(120deg,transparent 22%,rgba(255,255,255,.22) 45%,transparent 68%);mix-blend-mode:screen}
@@ -953,6 +953,12 @@ body:not(.auth-locked) .auth-gate{opacity:0;visibility:hidden;pointer-events:non
 .featured-card-image.binder-static-variant[data-variant-effect="reverse"]::after,.featured-card-image.binder-static-variant[data-variant-effect="masterball"]::after,.featured-card-image.binder-static-variant[data-variant-effect="pokeball"]::after{opacity:.085}
 .featured-card-image.final-variant-card{overflow:hidden!important}
 
+
+/* v12.3 · catálogo suplementar / coleções especiais */
+.art-result-tag.special-catalog{background:rgba(72,130,205,.15);border:1px solid rgba(89,154,238,.28);color:#acd2ff}
+.art-result-tag.trick-catalog{background:rgba(239,128,37,.14);border:1px solid rgba(255,151,63,.32);color:#ffc17c}
+.art-result-tag.mcd-catalog{background:rgba(225,46,39,.13);border:1px solid rgba(255,95,84,.30);color:#ffaaa3}
+.cache-live-note.catalog-plus{color:#a9cdf8}
 </style>
 
 <!-- v12.2 · motor visual único: WebGL principal + imagem estável como fallback -->
@@ -1441,7 +1447,11 @@ const MEP_RECENT_PROMOS=[
   {mep:'076',name:'Crobat',pokemonId:169},
   {mep:'077',name:'Goodra',pokemonId:706},
   {mep:'078',name:'Toxel',pokemonId:848},
-  {mep:'079',name:'Charmeleon',pokemonId:5},
+  {mep:'079',name:'Charmeleon',pokemonId:5,
+    image:'https://product-images.tcgplayer.com/fit-in/700x700/694693.jpg',
+    imageFallbacks:['./assets/charmeleon-mep-079.jpg','https://storage.googleapis.com/images.pricecharting.com/corrxar2fm3oq6lx2v6r/1600.jpg'],
+    forceImage:true,
+    variants:[{type:'holo',foil:'cosmos',subtype:'black-star-promo',thirdParty:{tcgplayer:694693}}],exclusiveVariants:true},
   {mep:'080',name:'Fennekin',pokemonId:653},
   {mep:'081',name:'Mega Greninja ex',pokemonId:658},
   {mep:'082',name:'Miraidon',pokemonId:1008},
@@ -1461,14 +1471,19 @@ MEP_RECENT_PROMOS.forEach(x=>{if(!MEP_RECENT_BY_POKEMON.has(x.pokemonId))MEP_REC
 function recentMepCardsForPokemon(pokemonId){
   return (MEP_RECENT_BY_POKEMON.get(Number(pokemonId))||[]).map(raw=>{
     const imageBase=`https://assets.tcgdex.net/en/me/mep/${raw.mep}`;
+    const canonicalImage=String(raw.image||'');
     const marketName=raw.name.replace(/[^A-Za-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
     return {
       id:`mep-${raw.mep}`,name:raw.name,number:raw.mep,supertype:'Pokémon',subtypes:['Pokémon'],rarity:'Promo',
       nationalPokedexNumbers:[raw.pokemonId],
       set:{id:'mep',name:'MEP Black Star Promos',series:'Mega Evolution',ptcgoCode:'MEP',releaseDate:raw.releaseDate||''},
-      images:{small:`${imageBase}/low.webp`,large:`${imageBase}/high.webp`},cardmarket:null,
+      images:{small:canonicalImage||`${imageBase}/low.webp`,large:canonicalImage||`${imageBase}/high.webp`},cardmarket:null,
+      __imageFallbacks:[...(raw.imageFallbacks||[]),...(canonicalImage?[`${imageBase}/high.webp`,`${imageBase}/low.webp`]:[])],
+      __forceCanonicalImage:raw.forceImage===true&&!!canonicalImage,
       __marketUrl:`https://www.cardmarket.com/en/Pokemon/Products/Singles/MEP-Black-Star-Promos/${marketName}-MEP${raw.mep}`,
       __source:'TCGdex · MEP Black Star Promos · garantia local',
+      __v123ManualVariants:Array.isArray(raw.variants)?raw.variants:[],
+      __v123ExclusiveManualVariants:raw.exclusiveVariants===true,
       __mepRecent:true,__upcoming30:raw.releaseDate?isCardUpcoming({releaseDate:raw.releaseDate}):false,
       __tcgdexPriceChecked:false,__tcgdexVariantsChecked:false,__tcgdexCardmarket:null,__tcgdexPriceUpdated:null
     };
@@ -1618,6 +1633,28 @@ function variantTcgplayerImageUrl(card,variant){
   if(id) return `https://product-images.tcgplayer.com/fit-in/700x700/${id}.jpg`;
   return String(card.images?.large||card.images?.small||'');
 }
+function cardImageCandidates(card,preferred=''){
+  const pid=Number(card?.nationalPokedexNumbers?.[0])||null;
+  const candidates=[preferred,card?.images?.small,card?.images?.large,...(Array.isArray(card?.__imageFallbacks)?card.__imageFallbacks:[]),pid?artworkUrl(pid):'',pid?fallbackArtworkUrl(pid):''];
+  const seen=new Set();
+  return candidates.map(x=>String(x||'').trim()).filter(x=>x&&!seen.has(x)&&seen.add(x));
+}
+function encodedImageFallbacks(urls){return encodeURIComponent(JSON.stringify((urls||[]).filter(Boolean)))}
+function advanceCardImageFallback(img){
+  if(!img)return;
+  let urls=[];try{urls=JSON.parse(decodeURIComponent(img.dataset.imageFallbacks||''))||[]}catch(_){}
+  const next=urls.shift();
+  if(!next){img.onerror=null;return;}
+  img.dataset.imageFallbacks=encodedImageFallbacks(urls);
+  img.src=next;
+}
+function setCardImageWithFallback(img,card,preferred=''){
+  if(!img)return;
+  const urls=cardImageCandidates(card,preferred);
+  img.dataset.imageFallbacks=encodedImageFallbacks(urls.slice(1));
+  img.onerror=()=>advanceCardImageFallback(img);
+  img.src=urls[0]||'';
+}
 function variantImageInfo(card,variant){
   const id=Number(variant?.tcgplayerId)||null;
   const effect=variantVisualEffect(variant);
@@ -1761,7 +1798,7 @@ async function createProFoilCard(card,v,url,{interactive=true,compact=false}={})
   const module=window.__cardsCssModule || await window.__cardsCssReady;
   const host=document.createElement('div');host.className='profoil-host'+(compact?' compact':'');
   if(!module?.createHoloCard){
-    const img=document.createElement('img');img.className='profoil-fallback';img.src=url||card?.images?.large||card?.images?.small||'';img.alt=`${card?.name||'Carta'} · ${v?.label||'variante'}`;host.appendChild(img);
+    const img=document.createElement('img');img.className='profoil-fallback';img.alt=`${card?.name||'Carta'} · ${v?.label||'variante'}`;setCardImageWithFallback(img,card,url);host.appendChild(img);
     return {element:host,destroy:()=>{}};
   }
   const frame=variantFrameMode(card,v);const mask=proFoilMaskFor(card,v);
@@ -1790,7 +1827,7 @@ function createRealFoilCard(card,v,url,{interactive=true,compact=false}={}){
   const effect=variantVisualEffect(v),frame=variantFrameMode(card,v);
   const root=document.createElement('div');root.className=`realfoil-card${compact?' compact':''}`;root.dataset.finish=effect;root.dataset.frame=frame;
   const tilt=document.createElement('div');tilt.className='realfoil-tilt';
-  const img=document.createElement('img');img.className='realfoil-img';img.alt=`${card?.name||'Carta'} · ${v?.label||'variante'}`;img.src=url||card?.images?.large||card?.images?.small||'';img.onerror=()=>{const fallback=card?.images?.large||card?.images?.small||'';if(fallback&&img.src!==fallback){img.onerror=null;img.src=fallback}};
+  const img=document.createElement('img');img.className='realfoil-img';img.alt=`${card?.name||'Carta'} · ${v?.label||'variante'}`;setCardImageWithFallback(img,card,url);
   tilt.appendChild(img);
   const full=document.createElement('div');full.className='realfoil-full';tilt.appendChild(full);
   const art=document.createElement('div');art.className='realfoil-art';tilt.appendChild(art);
@@ -1805,7 +1842,7 @@ function plainVariantHero(mount,card,v,url){
   try{ACTIVE_VARIANT_VISUAL?.destroy?.()}catch(e){}ACTIVE_VARIANT_VISUAL=null;
   if(!mount)return;
   mount.innerHTML='';
-  const img=document.createElement('img');img.className='profoil-fallback';img.alt=`${card?.name||'Carta'} · ${v?.label||'variante'}`;img.src=url||card?.images?.large||card?.images?.small||'';
+  const img=document.createElement('img');img.className='profoil-fallback';img.alt=`${card?.name||'Carta'} · ${v?.label||'variante'}`;setCardImageWithFallback(img,card,url);
   mount.appendChild(img);mount.dataset.renderToken=String(token);
 }
 async function renderVariantHeroVisual(card,v,imageInfo){
@@ -1886,6 +1923,7 @@ function cardSnapshot(card,variant=null){
     imageLarge:canonicalLarge,
     canonicalImageSmall:canonicalSmall,
     canonicalImageLarge:canonicalLarge,
+    imageFallbacks:cardImageCandidates(card).slice(1),
     variantImage:String(variantVisual.url||canonicalLarge||canonicalSmall||''),
     supertype:String(card.supertype||''),
     subtypes:Array.isArray(card.subtypes)?card.subtypes.map(String):[],
@@ -2338,7 +2376,8 @@ function snapshotNeedsPriceRefresh(snap){
   return !Number.isFinite(Number(snap.marketPrice)) || !Number.isFinite(last) || (Date.now()-last)>86400000;
 }
 function snapshotNeedsVisualRepair(snap){
-  return !snap?.id || Number(snap.snapshotVersion||0)<2 || !String(snap.canonicalImageLarge||snap.imageLarge||'');
+  const image=String(snap?.canonicalImageLarge||snap?.imageLarge||'');
+  return !snap?.id || Number(snap.snapshotVersion||0)<2 || !image || (String(snap.id).toLowerCase()==='mep-079'&&!/product-images\.tcgplayer\.com\/fit-in\/700x700\/694693\.jpg/i.test(image));
 }
 function pseudoCardFromSnapshot(snap){
   return {
@@ -2347,7 +2386,7 @@ function pseudoCardFromSnapshot(snap){
     set:{id:String(snap.setCode||''),name:String(snap.setName||'')},
     images:{small:String(snap.canonicalImageSmall||snap.imageSmall||''),large:String(snap.canonicalImageLarge||snap.imageLarge||'')},
     cardmarket:snap.marketUrl?{url:String(snap.marketUrl),prices:{}}:null,
-    __marketUrl:String(snap.marketUrl||''),__source:String(snap.source||'Coleção')
+    __marketUrl:String(snap.marketUrl||''),__source:String(snap.source||'Coleção'),__imageFallbacks:Array.isArray(snap.imageFallbacks)?snap.imageFallbacks:[]
   };
 }
 async function refreshOwnedCardPriceCache(){
@@ -2697,6 +2736,18 @@ function cardmarketFallbackUrl(card){
   else terms=[card.name,card.set?.ptcgoCode||card.set?.id,card.number];
   return `https://www.cardmarket.com/en/Pokemon/Products/Singles?searchString=${encodeURIComponent(terms.filter(Boolean).join(' '))}`;
 }
+function specialCatalogTags(card){
+  const setName=String(card?.set?.name||'').toLowerCase();
+  const vars=(()=>{try{return cardVariants(card)}catch(_){return []}})();
+  const trick=vars.some(v=>(v.stamps||[]).some(s=>String(s).toLowerCase()==='trick-or-trade'));
+  const out=[];
+  if(/mcdonald/.test(setName)) out.push('<span class="art-result-tag mcd-catalog">🍟 McDonald’s</span>');
+  if(trick||/trick or trade|pokéween|pokeween/.test(setName)) out.push('<span class="art-result-tag trick-catalog">🎃 Trick or Trade</span>');
+  if(/pop series|trainer kit|poke card creator|poké card creator|best of game|southern islands|pokemon rumble|pokémon rumble|sample/.test(setName)) out.push('<span class="art-result-tag special-catalog">✦ Coleção especial</span>');
+  if(card?.__tcgdexCatalogSupplement&&!out.length) out.push('<span class="art-result-tag special-catalog">＋ Catálogo suplementar</span>');
+  return out.join('');
+}
+
 function renderPokemonCardResult(card, cheapestId){
   const price=cardmarketPrice(card);
   const reverse=cardmarketReversePrice(card);
@@ -2720,18 +2771,20 @@ function renderPokemonCardResult(card, cheapestId){
   const featuredSnap=featuredCardFor(pokemonId);
   const featured=featuredSnap?.id===String(card.id);
   const variantsKnown=cardVariants(card).length;
+  const imageCandidates=cardImageCandidates(card);
 
   return `
     <article class="art-result ${cheapest?'cheapest':''} ${owned?'my-card':''} ${wanted?'wish-card':''} ${featured?'featured-card':''}" data-result-card-id="${escapeHtml(card.id)}">
       ${featured?'<div class="featured-ribbon">★ NA TUA POKÉDEX</div>':(cheapest?'<div class="cheapest-ribbon">★ Mais barata encontrada</div>':'')}
       ${wanted&&!featured?'<div class="wishlist-ribbon">♥ WISHLIST</div>':''}
-      <div class="art-result-img" data-open-variants="${escapeHtml(card.id)}" role="button" tabindex="0" aria-label="Ver variantes de ${escapeHtml(card.name)}"><img loading="lazy" src="${escapeHtml(card.images?.small||card.images?.large||'')}" alt="${escapeHtml(card.name)}"></div>
+      <div class="art-result-img" data-open-variants="${escapeHtml(card.id)}" role="button" tabindex="0" aria-label="Ver variantes de ${escapeHtml(card.name)}"><img loading="lazy" src="${escapeHtml(imageCandidates[0]||'')}" data-image-fallbacks="${escapeHtml(encodedImageFallbacks(imageCandidates.slice(1)))}" onerror="advanceCardImageFallback(this)" alt="${escapeHtml(card.name)}"></div>
       <div class="art-result-info">
         <div class="art-result-name">${escapeHtml(card.name)}</div>
         <div class="art-result-set">${escapeHtml(setName)} · ${escapeHtml(setCode)} #${escapeHtml(card.number||'—')}</div>
         ${release?`<div class="card-release">Lançamento: ${escapeHtml(release)}</div>`:''}
         <div class="art-result-tags">
           ${special?`<span class="art-result-tag special">${escapeHtml(special)}</span>`:'<span class="art-result-tag neutral">Carta Pokémon</span>'}
+          ${specialCatalogTags(card)}
           ${card.__anniversary30?'<span class="art-result-tag anniversary">30.º ANIVERSÁRIO</span>':''}
           ${card.__preRelease30?`<span class="art-result-tag anniversary">30.º ANIVERSÁRIO</span><span class="art-result-tag upcoming">${isCardUpcoming(card)?'BREVEMENTE · 30C':'30C'}</span>`:''}
           ${card.rarity?`<span class="art-result-tag">${escapeHtml(card.rarity)}</span>`:''}
@@ -2756,7 +2809,8 @@ function renderPokemonCardResult(card, cheapestId){
 }
 
 function modalFilteredCards(){
-  const search=(document.getElementById('cardBrowserSearch')?.value||'').trim().toLowerCase();
+  const search=(document.getElementById('cardBrowserSearch')?.value||'').trim();
+  const searchTokens=scanNorm(search).split(/\s+/).filter(Boolean);
   const filter=document.getElementById('cardBrowserFilter')?.value||'all';
   const sort=document.getElementById('cardBrowserSort')?.value||'newest';
 
@@ -2766,9 +2820,9 @@ function modalFilteredCards(){
     if(filter==='promo' && !String(card.rarity||'').toLowerCase().includes('promo') && !String(card.set?.name||'').toLowerCase().includes('promo')) return false;
     if(filter==='owned' && !isSpecificCardOwned(currentModalPokemon?.id,card.id)) return false;
     if(filter==='wishlist' && !isSpecificCardWishlisted(currentModalPokemon?.id,card.id)) return false;
-    if(!search) return true;
-    const hay=[card.name,card.rarity,card.number,card.artist,card.set?.name,card.set?.series,card.set?.ptcgoCode,artCategory(card)].filter(Boolean).join(' ').toLowerCase();
-    return hay.includes(search);
+    if(!searchTokens.length) return true;
+    const hay=scanNorm([card.name,card.rarity,card.number,card.artist,card.set?.id,card.set?.name,card.set?.series,card.set?.ptcgoCode,artCategory(card)].filter(Boolean).join(' '));
+    return searchTokens.every(token=>hay.includes(token));
   });
 
   cards=cards.slice().sort((a,b)=>{
@@ -2828,7 +2882,7 @@ function renderModalCards(resetLimit=false,skipEnrich=false){
   const more=filtered.length>shown.length
     ? `<div class="load-more-wrap"><button class="load-more-btn" id="loadMoreCards">Mostrar mais ${Math.min(MODAL_PAGE_STEP,filtered.length-shown.length)} cartas</button></div>`:'';
 
-  body.innerHTML=controls+cardsHtml+more+`<div class="art-modal-note">A pesquisa combina <strong>número da Pokédex + nome do Pokémon</strong> e inclui de forma garantida as <strong>promos MEP recentes (037–101 oficiais/reveladas, quando associadas a Pokémon)</strong>. O botão Cardmarket aparece sempre. Carrega diretamente na <strong>imagem da carta</strong> para escolher a variante física exata, ver preços e decidir qual queres usar no binder. A Wishlist continua ao nível da impressão da carta.</div>`;
+  body.innerHTML=controls+cardsHtml+more+`<div class="art-modal-note">A pesquisa combina <strong>número da Pokédex + nome do Pokémon</strong> e inclui de forma garantida as <strong>promos MEP recentes (037–110 oficiais/reveladas, quando associadas a Pokémon)</strong>. O botão Cardmarket aparece sempre. Carrega diretamente na <strong>imagem da carta</strong> para escolher a variante física exata, ver preços e decidir qual queres usar no binder. A Wishlist continua ao nível da impressão da carta.</div>`;
 
   // restore UI values after rerender
   const searchEl=document.getElementById('cardBrowserSearch');
@@ -3062,6 +3116,8 @@ function makeCard(p){
   const hasArt=current?.full_art===true;
   const featured=featuredCardFor(p.id);
   if(featured) el.classList.add('has-featured-tcg');
+  const featuredImage=featured?String(featured.canonicalImageSmall||featured.canonicalImageLarge||featured.imageSmall||featured.imageLarge||''):'';
+  const featuredFallbacks=featured?Array.from(new Set([...(Array.isArray(featured.imageFallbacks)?featured.imageFallbacks:[]),artworkUrl(p.id),fallbackArtworkUrl(p.id)].filter(Boolean))):[];
 
   const availability=artAvailability(p.id);
   el.dataset.artAvailability=availability;
@@ -3073,7 +3129,7 @@ function makeCard(p){
     <div class="card-top"><div class="dex-number">#${String(p.id).padStart(3,'0')}</div><div class="card-ball"></div></div>
     <div class="art-star-badge" title="ART obtida">★</div>
     ${featured?`<div class="featured-card-label">★ ${escapeHtml(featured.variantLabel||'CARTA DA COLEÇÃO')}</div>`:''}
-    <div class="card-image ${featured?'featured-card-image':''}" ${featured?`data-variant-effect="${escapeHtml(variantVisualEffect(variantFromSnapshot(featured)))}" data-variant-image="${escapeHtml(featured.canonicalImageSmall||featured.canonicalImageLarge||featured.imageSmall||featured.imageLarge||'')}" data-variant-alt="${escapeHtml(`${featured.name} · ${featured.variantLabel||'variante'}`)}" data-variant-card-id="${escapeHtml(featured.id||'')}" data-variant-key="${escapeHtml(featured.variantKey||'default')}" data-variant-label="${escapeHtml(featured.variantLabel||'Variante')}" data-variant-type="${escapeHtml(featured.variantType||'normal')}" data-variant-foil="${escapeHtml(featured.variantFoil||'')}" data-variant-subtype="${escapeHtml(featured.variantSubtype||'')}" data-variant-rarity="${escapeHtml(featured.rarity||'')}"`:''}><img loading="lazy" src="${featured?escapeHtml(featured.canonicalImageSmall||featured.canonicalImageLarge||featured.imageSmall||featured.imageLarge):artworkUrl(p.id)}" alt="${featured?escapeHtml(featured.name):pretty(p.name)}" onerror="this.onerror=null;this.src='${fallbackArtworkUrl(p.id)}'"></div>
+    <div class="card-image ${featured?'featured-card-image':''}" ${featured?`data-variant-effect="${escapeHtml(variantVisualEffect(variantFromSnapshot(featured)))}" data-variant-image="${escapeHtml(featuredImage)}" data-variant-alt="${escapeHtml(`${featured.name} · ${featured.variantLabel||'variante'}`)}" data-variant-card-id="${escapeHtml(featured.id||'')}" data-variant-key="${escapeHtml(featured.variantKey||'default')}" data-variant-label="${escapeHtml(featured.variantLabel||'Variante')}" data-variant-type="${escapeHtml(featured.variantType||'normal')}" data-variant-foil="${escapeHtml(featured.variantFoil||'')}" data-variant-subtype="${escapeHtml(featured.variantSubtype||'')}" data-variant-rarity="${escapeHtml(featured.rarity||'')}"`:''}><img loading="lazy" src="${featured?escapeHtml(featuredImage):artworkUrl(p.id)}" ${featured?`data-image-fallbacks="${escapeHtml(encodedImageFallbacks(featuredFallbacks))}" onerror="advanceCardImageFallback(this)"`:`onerror="this.onerror=null;this.src='${fallbackArtworkUrl(p.id)}'"`} alt="${featured?escapeHtml(featured.name):pretty(p.name)}"></div>
     <div class="completion-badge">EM FALTA</div>
     <div class="type-row" data-id="${p.id}">${typeMarkup(p.id)}</div>
     <h3 class="dex-name">${pretty(p.name)}</h3>
@@ -3565,7 +3621,7 @@ window.addEventListener('appinstalled',()=>{
 
 if('serviceWorker' in navigator && location.protocol!=='file:'){
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('./sw.js?v=12.2',{updateViaCache:'none'})
+    navigator.serviceWorker.register('./sw.js?v=12.3.2',{updateViaCache:'none'})
       .then(reg=>reg.update())
       .catch(err=>console.warn('Service Worker:',err));
   });
@@ -3589,6 +3645,10 @@ async function startApp(){
   const data=await loadSupabaseData();
   window.__supabaseData=data;
   await hydrateAndMigrateCardDetails(data);
+  const repairedImageIds=v123RepairForcedSnapshotImages();
+  if(repairedImageIds.length&&window.__cardDetailsCloudReady!==false){
+    for(const id of repairedImageIds) await persistCardDetails(id);
+  }
   loadNames();
   startRealtime();
   renderCurrentPage(false);
@@ -4165,7 +4225,7 @@ function requestV12MotionPermission(){
 }
 function v12StableImageCard(card,v,url,{compact=false}={}){
   const host=document.createElement('div');host.className='v12-webgl-card'+(compact?' compact':'')+' v12-webgl-fallback';
-  const img=document.createElement('img');img.className='profoil-fallback';img.alt=`${card?.name||'Carta'} · ${v?.label||'variante'}`;img.src=url||card?.images?.large||card?.images?.small||'';host.appendChild(img);
+  const img=document.createElement('img');img.className='profoil-fallback';img.alt=`${card?.name||'Carta'} · ${v?.label||'variante'}`;setCardImageWithFallback(img,card,url);host.appendChild(img);
   return {element:host,destroy:()=>{}};
 }
 
@@ -4206,7 +4266,258 @@ window.addEventListener('load',()=>{
   setTimeout(()=>{ensureScannerOCRWorker().catch(()=>{});v12OpenDB().catch?.(()=>{});},900);
   setTimeout(()=>{Promise.allSettled([window.__v12ThreeReady,v12LoadShader('holo.vert'),v12LoadShader('regular-holo.frag'),v12LoadShader('reverse-holo.frag'),v12LoadShader('master-ball.frag')]);},1500);
 });
-console.info('POKÉDEX XL v12.2 FINAL AUDITED carregada');
+
+// ============================================================================
+// v12.3 · COMPLETE CATALOG
+// TCGdex como catálogo suplementar + Trick or Trade 2022-2025 garantido.
+// A galeria nunca espera por este complemento: mostra o cache/base imediatamente
+// e acrescenta cartas/variantes em segundo plano.
+// ============================================================================
+const V123_SUPPLEMENT_VERSION='complete-catalog-v3-image-repair';
+const V123_SUPPLEMENT_TTL=24*60*60*1000;
+const V123_SUPPLEMENTING=new Map();
+const V123_DONE_PREFIX='pokedex-xl-v123-supplement:';
+const V123_TCGDEX_DETAIL_CACHE=new Map();
+const V123_BASE_CARD_VARIANTS=cardVariants;
+
+// Trick or Trade são reimpressões estampadas: ficam como variante física da carta-base.
+const V123_TRICK=[
+  // 2022
+  ['2022','RCL','15','Trevenant',1],['2022','RCL','31','Litwick',0],['2022','RCL','32','Lampent',0],['2022','RCL','33','Chandelure',1],
+  ['2022','DAA','81','Mimikyu',1],['2022','DAA','82','Sinistea',0],['2022','DAA','83','Polteageist',0],['2022','DAA','102','Spinarak',0],['2022','DAA','103','Ariados',0],['2022','DAA','105','Darkrai',1],
+  ['2022','CPA','18','Hatenna',0],['2022','BST','69','Cubone',0],['2022','BST','89','Zubat',0],['2022','BST','93','Murkrow',0],
+  ['2022','CRE','55','Gastly',0],['2022','CRE','56','Haunter',0],['2022','CRE','57','Gengar',1],['2022','CRE','72','Hattrem',0],['2022','CRE','73','Hatterene',1],
+  ['2022','EVS','49','Pikachu',0],['2022','EVS','76','Pumpkaboo',0],['2022','EVS','77','Gourgeist',1],['2022','FST','16','Phantump',0],
+  ['2022','BRS','56','Mewtwo',1],['2022','BRS','60','Duskull',0],['2022','BRS','61','Dusclops',0],['2022','BRS','62','Dusknoir',1],
+  ['2022','ASR','58','Misdreavus',0],['2022','ASR','59','Mismagius',1],['2022','ASR','103','Nickit',0],
+  // 2023
+  ['2023','SSH','89','Sinistea',0],['2023','SSH','90','Polteageist',0],['2023','RCL','102','Galarian Runerigus',0],
+  ['2023','VIV','19','Dhelmise',0],['2023','VIV','69','Duskull',0],['2023','VIV','70','Dusclops',0],['2023','VIV','71','Dusknoir',1],['2023','VIV','95','Lycanroc',0],
+  ['2023','EVS','80','Marshadow',1],['2023','LOR','16','Phantump',0],['2023','LOR','17','Trevenant',1],['2023','LOR','24','Litwick',0],['2023','LOR','25','Lampent',0],['2023','LOR','26','Chandelure',1],
+  ['2023','LOR','64','Gastly',0],['2023','LOR','65','Haunter',0],['2023','LOR','66','Gengar',1],['2023','LOR','73','Banette',0],['2023','LOR','81','Spectrier',1],
+  ['2023','SIT','103','Zubat',0],['2023','SVI','34','Houndoom',1],['2023','SVI','87','Shuppet',0],['2023','SVI','89','Drifloon',0],['2023','SVI','90','Drifblim',0],['2023','SVI','104','Greavard',0],['2023','SVI','106','Houndstone',1],
+  ['2023','PAL','62','Pikachu',1],['2023','PAL','88','Mismagius',0],['2023','PAL','97','Mimikyu',1],['2023','PAL','131','Murkrow',0],
+  // 2024
+  ['2024','PAL','12','Sprigatito',0],['2024','PAL','50','Quaxly',0],['2024','OBF','130','Umbreon',0],['2024','OBF','131','Houndour',0],['2024','OBF','133','Houndoom',0],['2024','OBF','136','Darkrai',1],
+  ['2024','PAR','23','Fuecoco',0],['2024','PAR','77','Pumpkaboo',0],['2024','PAR','78','Gourgeist',0],
+  ['2024','PAF','18','Pikachu',1],['2024','PAF','37','Mimikyu',1],['2024','PAF','42','Greavard',0],['2024','PAF','43','Houndstone',0],['2024','PAF','57','Gengar',1],
+  ['2024','TEF','77','Scream Tail',0],['2024','TEF','78','Flutter Mane',1],['2024','TEF','102','Gastly',0],['2024','TEF','103','Haunter',0],['2024','TEF','139','Iron Jugulis',0],
+  ['2024','TWM','12','Phantump',0],['2024','TWM','13','Trevenant',0],['2024','TWM','21','Poltchageist',0],['2024','TWM','22','Sinistcha',1],['2024','TWM','24','Teal Mask Ogerpon',1],
+  ['2024','TWM','36','Litwick',0],['2024','TWM','37','Lampent',0],['2024','TWM','38','Chandelure',0],['2024','TWM','95','Munkidori',1],['2024','TWM','96','Fezandipiti',1],['2024','TWM','111','Okidogi',1],
+  // 2025 Pokéween: não existiu um set de 30; foi esta promo estampada.
+  ['2025','MEG','87','Spiritomb',0]
+];
+const V123_SET_NAMES={SSH:'Sword & Shield',RCL:'Rebel Clash',DAA:'Darkness Ablaze',CPA:"Champion's Path",BST:'Battle Styles',CRE:'Chilling Reign',EVS:'Evolving Skies',FST:'Fusion Strike',BRS:'Brilliant Stars',ASR:'Astral Radiance',VIV:'Vivid Voltage',LOR:'Lost Origin',SIT:'Silver Tempest',SVI:'Scarlet & Violet',PAL:'Paldea Evolved',OBF:'Obsidian Flames',PAR:'Paradox Rift',PAF:'Paldean Fates',TEF:'Temporal Forces',TWM:'Twilight Masquerade',MEG:'Mega Evolution'};
+function v123NormName(v){return scanNorm(String(v||'')).trim()}
+function v123SetMatches(card,code){
+  const c=scanCompact(card?.set?.ptcgoCode||card?.set?.id||'');
+  if(c===scanCompact(code))return true;
+  const expected=v123NormName(V123_SET_NAMES[code]||'');
+  const actual=v123NormName(card?.set?.name||'');
+  return !!expected && (actual===expected||actual.includes(expected)||expected.includes(actual));
+}
+function v123ApplyKnownSpecialVariants(p,cards){
+  if(!Array.isArray(cards))return false;let changed=false;
+  const pname=v123NormName(pretty(p?.name||''));
+  for(const [year,code,num,name,holo] of V123_TRICK){
+    if(!v123NameMatchesPokemon(p,name))continue;
+    const card=cards.find(c=>v123NormName(c?.name)===v123NormName(name)&&normalizeLocalCardNumber(c?.number)===normalizeLocalCardNumber(num)&&v123SetMatches(c,code));
+    if(!card)continue;
+    card.__v123ManualVariants=Array.isArray(card.__v123ManualVariants)?card.__v123ManualVariants:[];
+    const exists=card.__v123ManualVariants.some(v=>(v.stamp||v.stamps||[]).includes?.('trick-or-trade')&&String(v.__trickYear||'')===year);
+    if(!exists){card.__v123ManualVariants.push({type:holo?'holo':'normal',stamp:['trick-or-trade'],__trickYear:year,__collection:`Trick or Trade ${year}`});changed=true;}
+    card.__trickOrTradeYears=Array.from(new Set([...(card.__trickOrTradeYears||[]),year]));
+  }
+  return changed;
+}
+cardVariants=function(card){
+  const base=V123_BASE_CARD_VARIANTS(card)||[];
+  const manual=(card?.__v123ManualVariants||[]).map(normalizeVariantObject);
+  const out=[];const seen=new Set();
+  const candidates=card?.__v123ExclusiveManualVariants&&manual.length?manual:[...base,...manual];
+  // Dados reais da TCGdex primeiro: quando têm IDs/preços, ganham ao fallback manual.
+  for(const v of candidates){
+    const key=[v.type,v.foil,v.subtype,v.size,(v.stamps||[]).slice().sort().join(',')].join('|');
+    if(seen.has(key))continue;seen.add(key);out.push(v);
+  }
+  return out;
+};
+function v123NameMatchesPokemon(p,name){
+  const n=` ${v123NormName(name)} `;
+  return pokemonSearchAliases(p).some(a=>{const x=v123NormName(a);return x&&n.includes(` ${x} `)});
+}
+function v123SemanticSig(card){return [v123NormName(card?.name),normalizeLocalCardNumber(card?.number),normalizeMarketSetName(card?.set?.name||card?.set?.id)].join('|')}
+
+// As cartas garantidas localmente têm de ser aplicadas também aos catálogos já
+// guardados no IndexedDB. Sem esta passagem, uma cache criada numa versão anterior
+// podia ocultar promos recentes (por exemplo Charmeleon MEP 079) durante várias horas.
+function v123EnsureGuaranteedLocalCards(p,cards){
+  const all=Array.isArray(cards)?cards:[];
+  const id=Number(p?.id);
+  const guaranteed=[];
+  const anniversary=firstPartner30thCardFor(id);
+  if(anniversary) guaranteed.push(anniversary);
+  guaranteed.push(...recentMepCardsForPokemon(id),...preRelease30CardsForPokemon(id));
+  let changed=false;
+  for(const manual of guaranteed){
+    const pos=all.findIndex(existing=>{
+      if(String(existing?.id||'').toLowerCase()===String(manual?.id||'').toLowerCase()) return true;
+      const existingSet=scanCompact(existing?.set?.id||existing?.set?.ptcgoCode);
+      const manualSet=scanCompact(manual?.set?.id||manual?.set?.ptcgoCode);
+      const sameSet=!!existingSet&&!!manualSet&&existingSet===manualSet;
+      if(sameSet&&normalizeLocalCardNumber(existing?.number)===normalizeLocalCardNumber(manual?.number)) return true;
+      return !!manual?.__preRelease30&&sameThirtyCard(existing,manual);
+    });
+    if(pos<0){all.unshift(manual);changed=true;continue;}
+    const existing=all[pos];
+    const manualVariants=[...(manual.__v123ManualVariants||[])];
+    const existingVariants=[...(existing.__v123ManualVariants||[])];
+    const variantSeen=new Set();
+    const mergedManualVariants=[...manualVariants,...existingVariants].filter(v=>{
+      const sig=[v?.type,v?.foil,v?.subtype,v?.size,JSON.stringify(v?.stamp||v?.stamps||[]),v?.__trickYear].join('|');
+      if(variantSeen.has(sig)) return false;
+      variantSeen.add(sig);return true;
+    });
+    const mergedFallbacks=Array.from(new Set([...(manual.__imageFallbacks||[]),...(existing.__imageFallbacks||[])]));
+    const before=JSON.stringify({img:existing.images,fallbacks:existing.__imageFallbacks,force:existing.__forceCanonicalImage,flags:[existing.__mepRecent,existing.__anniversary30,existing.__preRelease30],variants:existingVariants,exclusive:existing.__v123ExclusiveManualVariants});
+    const sourceBase=existing.__source||manual.__source||'Catálogo';
+    all[pos]={...manual,...existing,
+      images:manual.__forceCanonicalImage?manual.images:((existing.images?.small||existing.images?.large)?existing.images:manual.images),
+      __imageFallbacks:mergedFallbacks,
+      __forceCanonicalImage:!!(manual.__forceCanonicalImage||existing.__forceCanonicalImage),
+      __marketUrl:existing.cardmarket?.url||existing.__marketUrl||manual.__marketUrl,
+      __mepRecent:!!(existing.__mepRecent||manual.__mepRecent),
+      __anniversary30:!!(existing.__anniversary30||manual.__anniversary30),
+      __preRelease30:!!(existing.__preRelease30||manual.__preRelease30),
+      __v123ManualVariants:mergedManualVariants,
+      __v123ExclusiveManualVariants:!!(manual.__v123ExclusiveManualVariants||existing.__v123ExclusiveManualVariants),
+      __source:sourceBase.includes('garantia local confirmada')?sourceBase:`${sourceBase} · garantia local confirmada`
+    };
+    const after=JSON.stringify({img:all[pos].images,fallbacks:all[pos].__imageFallbacks,force:all[pos].__forceCanonicalImage,flags:[all[pos].__mepRecent,all[pos].__anniversary30,all[pos].__preRelease30],variants:all[pos].__v123ManualVariants,exclusive:all[pos].__v123ExclusiveManualVariants});
+    if(before!==after) changed=true;
+  }
+  return {cards:all,changed};
+}
+function v123RepairForcedSnapshotImages(){
+  const forced=new Map(MEP_RECENT_PROMOS.filter(x=>x.forceImage&&x.image).map(x=>[`mep-${x.mep}`,x]));
+  if(!forced.size)return [];
+  const store=loadCardDetailStore();const changedIds=[];
+  for(const [pokemonId,rawDetails] of Object.entries(store||{})){
+    const d=normalizeCardDetails(rawDetails);let changed=false;
+    const repair=snap=>{
+      const raw=forced.get(String(snap?.id||'').toLowerCase());if(!raw)return snap;
+      const fallbacks=Array.from(new Set([...(raw.imageFallbacks||[]),...(Array.isArray(snap.imageFallbacks)?snap.imageFallbacks:[])]));
+      const next={...snap,snapshotVersion:2,imageSmall:raw.image,imageLarge:raw.image,canonicalImageSmall:raw.image,canonicalImageLarge:raw.image,variantImage:raw.image,imageFallbacks:fallbacks};
+      if(raw.variants?.[0]){
+        const v=normalizeVariantObject(raw.variants[0]);
+        next.variantLabel=v.label;next.variantType=v.type;next.variantFoil=v.foil;next.variantSubtype=v.subtype;next.variantTcgplayerId=v.tcgplayerId||null;
+      }
+      if(JSON.stringify(next)!==JSON.stringify(snap))changed=true;
+      return next;
+    };
+    Object.keys(d.owned||{}).forEach(k=>{d.owned[k]=repair(d.owned[k])});
+    Object.keys(d.wishlist||{}).forEach(k=>{d.wishlist[k]=repair(d.wishlist[k])});
+    if(changed){store[String(pokemonId)]=d;const row=supaFor(Number(pokemonId));if(row)row.card_details=d;changedIds.push(Number(pokemonId));}
+  }
+  if(changedIds.length){saveCardDetailStore();updateCollectionValueUI();}
+  return changedIds;
+}
+async function v123TcgdexDetail(id){
+  const key=String(id||'');if(!key)return null;
+  if(V123_TCGDEX_DETAIL_CACHE.has(key))return V123_TCGDEX_DETAIL_CACHE.get(key);
+  const job=fetchTcgdexJson(`https://api.tcgdex.net/v2/en/cards/${encodeURIComponent(key)}`).catch(()=>null);
+  V123_TCGDEX_DETAIL_CACHE.set(key,job);return job;
+}
+async function v123DiscoverTcgdexCards(p,existing){
+  const aliases=pokemonSearchAliases(p);let briefs=[];let successful=false;
+  for(const alias of aliases){
+    try{
+      for(let page=1;page<=4;page++){
+        const rows=await fetchTcgdexJson(`https://api.tcgdex.net/v2/en/cards?name=${encodeURIComponent(alias)}&pagination:page=${page}&pagination:itemsPerPage=250`);
+        if(!Array.isArray(rows))break;successful=true;briefs.push(...rows);if(rows.length<250)break;
+      }
+    }catch(e){console.warn('TCGdex catálogo suplementar',alias,e)}
+  }
+  if(!successful)throw new Error('TCGdex indisponível');
+  const bseen=new Set();briefs=briefs.filter(b=>b?.id&&v123NameMatchesPokemon(p,b.name)&&!bseen.has(String(b.id).toLowerCase())&&bseen.add(String(b.id).toLowerCase()));
+  const existingIds=new Set((existing||[]).flatMap(c=>[String(c?.id||'').toLowerCase(),String(c?.__tcgdexMatchedId||'').toLowerCase()]).filter(Boolean));
+  const missing=briefs.filter(b=>!existingIds.has(String(b.id).toLowerCase()));
+  let idx=0;const details=[];const workers=Array.from({length:Math.min(6,missing.length)},async()=>{while(idx<missing.length){const b=missing[idx++];const d=await v123TcgdexDetail(b.id);if(d)details.push(d)}});await Promise.all(workers);
+  const pid=Number(p.id);const out=[];
+  for(const d of details){
+    const dex=(Array.isArray(d?.dexId)?d.dexId:[]).map(Number);
+    const category=String(d?.category||'').toLowerCase();
+    if(dex.length&&!dex.includes(pid))continue;
+    if(!dex.length && category && category!=='pokemon' && category!=='pokémon')continue;
+    if(!v123NameMatchesPokemon(p,d?.name||''))continue;
+    const card=tcgdexDetailToCard(d);if(!card)continue;
+    if(!(card.images?.small||card.images?.large))continue;
+    card.__source='TCGdex · catálogo suplementar';card.__tcgdexCatalogSupplement=true;out.push(card);
+  }
+  return out;
+}
+function v123MergeCatalog(existing,supplement){
+  const all=[...(existing||[])];const byId=new Map(),bySig=new Map();
+  all.forEach((c,i)=>{if(c?.id)byId.set(String(c.id).toLowerCase(),i);bySig.set(v123SemanticSig(c),i)});
+  let added=0,merged=0;
+  for(const s of supplement||[]){
+    const id=String(s?.id||'').toLowerCase(),sig=v123SemanticSig(s);let pos=byId.get(id);if(pos==null)pos=bySig.get(sig);
+    if(pos!=null){
+      const base=all[pos];
+      // Mantém a imagem/preço principal se existirem, mas acrescenta variantes/preços TCGdex.
+      all[pos]={...s,...base,
+        images:(base.images?.small||base.images?.large)?base.images:s.images,
+        __tcgdexPriceChecked:s.__tcgdexPriceChecked??base.__tcgdexPriceChecked,
+        __tcgdexCardmarket:s.__tcgdexCardmarket??base.__tcgdexCardmarket,
+        __tcgdexTcgplayer:s.__tcgdexTcgplayer??base.__tcgdexTcgplayer,
+        __tcgdexVariantsDetailed:s.__tcgdexVariantsDetailed??base.__tcgdexVariantsDetailed,
+        __tcgdexVariantsLegacy:s.__tcgdexVariantsLegacy??base.__tcgdexVariantsLegacy,
+        __tcgdexMatchedId:s.__tcgdexMatchedId||base.__tcgdexMatchedId,
+        __source:`${base.__source||'Catálogo principal'} · TCGdex confirmado`
+      };merged++;
+    }else{all.push(s);const np=all.length-1;if(id)byId.set(id,np);bySig.set(sig,np);added++;}
+  }
+  return {cards:all,added,merged};
+}
+async function v123CompletePokemonCatalog(p,baseCards,{force=false}={}){
+  const id=Number(p.id);if(V123_SUPPLEMENTING.has(id))return V123_SUPPLEMENTING.get(id);
+  const doneKey=V123_DONE_PREFIX+id;let done=false;
+  if(!force){try{const meta=JSON.parse(localStorage.getItem(doneKey)||'null');done=meta?.version===V123_SUPPLEMENT_VERSION&&(Date.now()-Number(meta.updatedAt||0))<V123_SUPPLEMENT_TTL}catch(_){}}
+  if(done){v123ApplyKnownSpecialVariants(p,baseCards);return baseCards}
+  const job=(async()=>{
+    v123ApplyKnownSpecialVariants(p,baseCards);
+    let extras=[];try{extras=await v123DiscoverTcgdexCards(p,baseCards)}catch(e){console.warn('Catálogo suplementar indisponível:',e);return baseCards}
+    const merged=v123MergeCatalog(baseCards,extras);v123ApplyKnownSpecialVariants(p,merged.cards);
+    CARD_BROWSER_CACHE.set(id,merged.cards);
+    try{await v12CatalogPut(id,merged.cards,{touchCatalog:false})}catch(_){}
+    localStorage.setItem(doneKey,JSON.stringify({version:V123_SUPPLEMENT_VERSION,updatedAt:Date.now()}));
+    if(currentModalPokemon?.id===id){
+      currentModalCards=merged.cards;renderModalCards(false,true);
+      const s=document.getElementById('artModalSummary');if(s){const extra=merged.added?` · +${merged.added} do catálogo suplementar`:'';s.innerHTML=`${merged.cards.length} cartas${extra} <span class="cache-live-note catalog-plus">✓ CATÁLOGO COMPLETO</span>`;}
+    }
+    return merged.cards;
+  })().finally(()=>V123_SUPPLEMENTING.delete(id));V123_SUPPLEMENTING.set(id,job);return job;
+}
+const V123_BASE_FETCH_ALL=fetchAllCardsForPokemon;
+fetchAllCardsForPokemon=async function(p,onRetry){
+  const baseCards=await V123_BASE_FETCH_ALL(p,onRetry);
+  const guaranteed=v123EnsureGuaranteedLocalCards(p,baseCards);
+  const cards=guaranteed.cards;
+  v123ApplyKnownSpecialVariants(p,cards);
+  if(guaranteed.changed){
+    CARD_BROWSER_CACHE.set(Number(p.id),cards);
+    v12CatalogPut(Number(p.id),cards,{touchCatalog:false}).catch(()=>{});
+  }
+  // Nunca bloqueia a galeria: completa McDonald's / especiais / lacunas TCGdex em background.
+  setTimeout(()=>v123CompletePokemonCatalog(p,cards).catch(()=>{}),30);
+  return cards;
+};
+// Se uma galeria já estiver aberta e o catálogo suplementar ainda não tiver corrido,
+// dá feedback sem substituir o conteúdo já renderizado.
+const V123_RENDER_MODAL=renderModalCards;
+renderModalCards=function(...args){const r=V123_RENDER_MODAL.apply(this,args);try{const p=currentModalPokemon;if(p){let current=false;try{const m=JSON.parse(localStorage.getItem(V123_DONE_PREFIX+Number(p.id))||'null');current=m?.version===V123_SUPPLEMENT_VERSION&&(Date.now()-Number(m.updatedAt||0))<V123_SUPPLEMENT_TTL}catch(_){}if(!current){const s=document.getElementById('artModalSummary');if(s&&!s.textContent.includes('catálogo especial'))s.innerHTML+=` <span class="cache-live-note catalog-plus">· a completar catálogo especial…</span>`}}}catch(_){}return r};
+
+console.info('POKÉDEX XL v12.3.2 IMAGE REPAIR carregada');
 
 document.getElementById('resetGenBtn').addEventListener('click',()=>{state.generation=null;state.page=1;renderCurrentPage()});
 </script>

@@ -1,5 +1,5 @@
-const CACHE_NAME='pokedex-xl-v12-2-final-audited';
-const SHELL=['./','./index.html','./manifest.webmanifest','./icon-180.png','./icon-192.png','./icon-512.png'];
+const CACHE_NAME='pokedex-xl-v12-3-2-image-repair';
+const SHELL=['./','./index.html','./manifest.webmanifest','./icon-180.png','./icon-192.png','./icon-512.png','./assets/charmeleon-mep-079.jpg'];
 
 self.addEventListener('install',event=>{
   event.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.addAll(SHELL)).then(()=>self.skipWaiting()));
