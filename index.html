@@ -499,11 +499,12 @@ body:not(.auth-locked) .auth-gate{opacity:0;visibility:hidden;pointer-events:non
         <button type="button" id="exportBtn">⬇ Exportar backup</button>
         <button type="button" id="importBtn">⬆ Importar backup</button>
         <div class="collection-menu-sep"></div>
+        <button type="button" class="hidden" id="installBtn">📲 Instalar Pokédex XL</button>
+        <small class="hidden" id="installHint">Instala a Pokédex como aplicação neste dispositivo.</small>
         <button type="button" id="logoutBtn">↪ Terminar sessão</button>
       </div>
     </div>
     <input type="file" id="importFile" accept="application/json,.json" hidden>
-    <button class="action-btn hidden" id="installBtn">📱 Instalar App</button>
   </div>
 
   <section class="stage">
@@ -2365,9 +2366,11 @@ window.addEventListener('beforeinstallprompt',e=>{
   e.preventDefault();
   deferredInstallPrompt=e;
   document.getElementById('installBtn').classList.remove('hidden');
+  document.getElementById('installHint').classList.remove('hidden');
 });
 window.addEventListener('appinstalled',()=>{
   document.getElementById('installBtn').classList.add('hidden');
+  document.getElementById('installHint').classList.add('hidden');
   deferredInstallPrompt=null;
 });
 
@@ -2462,6 +2465,7 @@ document.getElementById('installBtn').addEventListener('click',async()=>{
   await deferredInstallPrompt.userChoice;
   deferredInstallPrompt=null;
   document.getElementById('installBtn').classList.add('hidden');
+  document.getElementById('installHint').classList.add('hidden');
 });
 document.getElementById('resetGenBtn').addEventListener('click',()=>{state.generation=null;state.page=1;renderCurrentPage()});
 </script>
