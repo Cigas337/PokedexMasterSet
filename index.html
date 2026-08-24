@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="Pokédex XL">
 <link rel="manifest" href="manifest.webmanifest">
-<title>Pokédex XL — Master Set · v12.0 FINAL PRO</title>
+<title>Pokédex XL — Master Set · v12.1 FINAL STABLE</title>
 <link rel="apple-touch-icon" href="icon-180.png">
 <style>
 :root{
@@ -922,7 +922,7 @@ body:not(.auth-locked) .auth-gate{opacity:0;visibility:hidden;pointer-events:non
 }
 
 
-/* ===== v12.0 FINAL PRO · cache instantânea + scanner profissional + WebGL ===== */
+/* ===== v12.1 FINAL STABLE · cache instantânea + scanner profissional + WebGL ===== */
 .cache-live-note{display:inline-flex;align-items:center;gap:5px;margin-left:6px;padding:3px 6px;border-radius:999px;background:rgba(30,180,105,.10);border:1px solid rgba(30,180,105,.20);color:#8ee0b2;font-size:7px;font-weight:900;vertical-align:middle}
 .v12-webgl-card{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;perspective:1100px;touch-action:none;isolation:isolate}
 .v12-webgl-card canvas{display:block;width:100%!important;height:100%!important;border-radius:4.6%;filter:drop-shadow(0 18px 24px rgba(0,0,0,.34));touch-action:none}
@@ -932,6 +932,16 @@ body:not(.auth-locked) .auth-gate{opacity:0;visibility:hidden;pointer-events:non
 .scanner-status.matched{border-color:rgba(25,190,105,.45)!important;background:rgba(25,190,105,.09)!important}
 .scanner-camera-shell.scan-locked:after{content:'✓ CARTA DETETADA';position:absolute;left:50%;top:12px;transform:translateX(-50%);z-index:8;padding:7px 10px;border-radius:999px;background:rgba(8,128,69,.92);color:#fff;font-size:8px;font-weight:1000;letter-spacing:.5px;box-shadow:0 8px 20px rgba(0,0,0,.3)}
 @media(max-width:760px){.v12-webgl-card canvas{filter:drop-shadow(0 13px 18px rgba(0,0,0,.30))}}
+
+/* v12.1 FINAL STABLE · pesquisa por foto sem scanner contínuo */
+.scanner-modal.photo-search .scanner-camera-shell{background:linear-gradient(145deg,#101a24,#05090d);display:flex;align-items:center;justify-content:center}
+.scanner-modal.photo-search #scannerVideo,.scanner-modal.photo-search .scanner-guide{display:none!important}
+.scanner-modal.photo-search #scannerPreview{display:block;width:100%;height:100%;object-fit:contain;background:#05090d}
+.scanner-modal.photo-search .scanner-auto-line{background:rgba(246,193,63,.07);border-color:rgba(246,193,63,.17);color:#e9c95d}
+.scanner-modal.photo-search .scanner-auto-line .scanner-auto-dot{display:none!important}
+.scanner-modal.photo-search .scanner-fallback-row .scanner-photo{min-height:42px;padding:8px 14px;background:#15212d;color:#e8eef4;border:1px solid rgba(255,255,255,.10);font-size:10px}
+.v12-webgl-card{overflow:visible!important}
+.v12-webgl-card canvas{overflow:visible!important}
 
 </style>
 
@@ -1014,7 +1024,7 @@ window.__cardsCssReady=import('https://cdn.jsdelivr.net/npm/@kongyo2/cards-css@0
   <div class="controls">
     <div class="search-wrap"><input id="search" placeholder="Pesquisar Pokémon…"></div>
     <button class="mobile-filter-toggle" id="mobileFilterToggle" type="button">⚙️ Filtros <span class="filter-count hidden" id="mobileFilterCount">0</span></button>
-    <button class="mobile-scan-btn" id="mobileScanBtn" type="button">📷 Scanear carta</button>
+    <button class="mobile-scan-btn" id="mobileScanBtn" type="button">📷 Pesquisar por foto</button>
     <div class="select-wrap">
       <select id="filterBy" aria-label="Filtrar coleção">
         <option value="all">Filtros: Todos</option>
@@ -1134,7 +1144,7 @@ window.__cardsCssReady=import('https://cdn.jsdelivr.net/npm/@kongyo2/cards-css@0
 <div class="scanner-modal" id="scannerModal" aria-hidden="true">
   <div class="scanner-panel" role="dialog" aria-modal="true" aria-labelledby="scannerTitle">
     <div class="scanner-head">
-      <div><h3 id="scannerTitle">Scanear carta</h3><p>Aponta para a carta inteira. A leitura é automática e abre diretamente a impressão certa quando a identificação é segura.</p></div>
+      <div><h3 id="scannerTitle">Pesquisar por foto</h3><p>Escolhe ou tira uma fotografia da carta inteira. A app lê o nome/número e compara a imagem para encontrar a impressão correta.</p></div>
       <button class="scanner-close" id="scannerClose" aria-label="Fechar">×</button>
     </div>
     <div class="scanner-body">
@@ -1144,12 +1154,12 @@ window.__cardsCssReady=import('https://cdn.jsdelivr.net/npm/@kongyo2/cards-css@0
         <img id="scannerPreview" alt="Pré-visualização da carta" hidden>
         <div class="scanner-guide" aria-hidden="true"><span></span></div>
       </div>
-      <div class="scanner-status" id="scannerStatus"><strong>Pronto para scanear</strong><span>A leitura é feita no dispositivo. Tenta evitar reflexos fortes sobre a carta.</span></div>
-      <div class="scanner-auto-line"><span class="scanner-auto-dot"></span><strong>SCAN AUTOMÁTICO</strong><span>Não precisas de carregar em capturar.</span></div>
-      <div class="scanner-fallback-row"><button type="button" class="scanner-photo" id="scannerPhotoBtn">Problemas com a câmara? Usar fotografia</button></div>
-      <input type="file" id="scannerFile" accept="image/*" capture="environment" hidden>
+      <div class="scanner-status" id="scannerStatus"><strong>Escolhe uma fotografia</strong><span>Fotografa a carta direita, inteira e com o mínimo de reflexos possível.</span></div>
+      <div class="scanner-auto-line"><strong>PESQUISA POR IMAGEM</strong><span>OCR + comparação visual da carta.</span></div>
+      <div class="scanner-fallback-row"><button type="button" class="scanner-photo" id="scannerPhotoBtn">Escolher outra fotografia</button></div>
+      <input type="file" id="scannerFile" accept="image/*" hidden>
       <div class="scanner-candidates" id="scannerCandidates"></div>
-      <div class="scanner-privacy">O scanner analisa automaticamente a imagem no dispositivo. Só mostra candidatos quando não consegue decidir com segurança.</div>
+      <div class="scanner-privacy">A fotografia é analisada no dispositivo. Se a identificação não for segura, a app mostra as melhores correspondências para escolheres.</div>
     </div>
   </div>
 </div>
@@ -3913,16 +3923,33 @@ function scheduleScannerAuto(delay=260){
     finally{scannerAutoBusy=false;if(session===scannerSession&&document.getElementById('scannerModal')?.classList.contains('open'))scheduleScannerAuto(300);}
   },delay);
 }
-document.getElementById('mobileScanBtn')?.addEventListener('click',()=>{requestProFoilMotionPermission();openScanner()});
+function openPhotoSearchFilePicker(){
+  stopScannerCamera();
+  document.getElementById('scannerFile')?.click();
+}
+function showPhotoSearchModal(file){
+  stopScannerCamera();
+  const modal=document.getElementById('scannerModal');modal.classList.add('open','photo-search');modal.setAttribute('aria-hidden','false');
+  const video=document.getElementById('scannerVideo');if(video)video.hidden=true;
+  const preview=document.getElementById('scannerPreview');if(preview){try{if(preview.dataset.objectUrl)URL.revokeObjectURL(preview.dataset.objectUrl)}catch(_){}const u=URL.createObjectURL(file);preview.dataset.objectUrl=u;preview.src=u;preview.hidden=false}
+  document.getElementById('scannerCandidates').innerHTML='';scannerCandidateContext=[];
+  setScannerStatus('A pesquisar esta carta…','A ler nome/número e a comparar a fotografia com o catálogo.','working');
+}
+const V12_1_CLOSE_SCANNER=closeScanner;
+closeScanner=function(){
+  const preview=document.getElementById('scannerPreview');try{if(preview?.dataset?.objectUrl)URL.revokeObjectURL(preview.dataset.objectUrl)}catch(_){}if(preview)delete preview.dataset.objectUrl;
+  V12_1_CLOSE_SCANNER();document.getElementById('scannerModal')?.classList.remove('photo-search');
+};
+document.getElementById('mobileScanBtn')?.addEventListener('click',openPhotoSearchFilePicker);
 document.getElementById('scannerClose')?.addEventListener('click',closeScanner);
 document.getElementById('scannerModal')?.addEventListener('click',e=>{if(e.target===e.currentTarget)closeScanner()});
-document.getElementById('scannerPhotoBtn')?.addEventListener('click',()=>document.getElementById('scannerFile').click());
-document.getElementById('scannerFile')?.addEventListener('change',e=>{const f=e.target.files?.[0];if(f)identifyScannedCard(f,{auto:false});e.target.value='';});
+document.getElementById('scannerPhotoBtn')?.addEventListener('click',openPhotoSearchFilePicker);
+document.getElementById('scannerFile')?.addEventListener('change',async e=>{const f=e.target.files?.[0];e.target.value='';if(!f)return;showPhotoSearchModal(f);await identifyScannedCard(f,{auto:false});});
 
 
 
 // ============================================================================
-// v12.0 FINAL PRO
+// v12.1 FINAL STABLE
 // Persistência do catálogo + atualização silenciosa + scanner híbrido OCR/visual
 // + renderer WebGL/GLSL. As funções antigas permanecem como fallback.
 // ============================================================================
@@ -4088,15 +4115,16 @@ async function v12WebGLCard(card,v,url,{interactive=true,compact=false}={}){
   const THREE=await window.__v12ThreeReady;if(!THREE)throw new Error('Three indisponível');const shader=v12ShaderFor(card,v);let vert,frag;if(shader){[vert,frag]=await Promise.all([v12LoadShader('holo.vert'),v12LoadShader(shader)])}else{vert='varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}';frag=v12NormalFrag()}
   const host=document.createElement('div');host.className='v12-webgl-card'+(compact?' compact':'');
   const renderer=new THREE.WebGLRenderer({alpha:true,antialias:true,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));host.appendChild(renderer.domElement);
-  const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(31,2.5/3.5,.1,10);camera.position.z=2.55;
+  const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(31,2.5/3.5,.1,10);camera.position.z=2.95;
   const loader=new THREE.TextureLoader();loader.setCrossOrigin('anonymous');const cardTex=await new Promise((res,rej)=>loader.load(url,res,undefined,rej));cardTex.colorSpace=THREE.SRGBColorSpace;cardTex.minFilter=THREE.LinearFilter;cardTex.magFilter=THREE.LinearFilter;
   const mask=v12CanvasTexture(THREE,'mask',card,v),noise=v12CanvasTexture(THREE,'noise');const uniforms=v12UniformDefaults(THREE,frag,cardTex,mask,noise);if(!uniforms.uPointer)uniforms.uPointer={value:new THREE.Vector2(.5,.5)};if(!uniforms.uBackground)uniforms.uBackground={value:new THREE.Vector2(.5,.5)};if(!uniforms.uFade)uniforms.uFade={value:1};
   const mat=new THREE.ShaderMaterial({vertexShader:vert,fragmentShader:frag,uniforms,transparent:true,side:THREE.DoubleSide});const mesh=new THREE.Mesh(new THREE.PlaneGeometry(1,1.4),mat);scene.add(mesh);
   let mx=.5,my=.5,tx=0,ty=0,raf=0,dead=false,last=performance.now();
+  const CARD_SAFE_MARGIN=.073;
   const resize=()=>{const r=host.getBoundingClientRect(),w=Math.max(2,Math.round(r.width)),h=Math.max(2,Math.round(r.height));renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()};
-  const pose=(x,y)=>{mx=Math.max(0,Math.min(1,x));my=Math.max(0,Math.min(1,y));tx=(.5-my)*.22;ty=(mx-.5)*.26};
-  const pointer=e=>{const r=host.getBoundingClientRect();pose((e.clientX-r.left)/r.width,(e.clientY-r.top)/r.height)};if(interactive){host.addEventListener('pointerdown',pointer);host.addEventListener('pointermove',e=>{if(e.pointerType==='mouse'||e.buttons)pointer(e)})}
-  let orient=null;if(interactive){try{if(typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function')await DeviceOrientationEvent.requestPermission().catch(()=>null)}catch(_){}orient=e=>{const g=Number(e.gamma),b=Number(e.beta);if(Number.isFinite(g)&&Number.isFinite(b))pose(.5+Math.max(-28,Math.min(28,g))/70,.5+Math.max(-25,Math.min(25,b-45))/65)};window.addEventListener('deviceorientation',orient,{passive:true})}
+  const pose=(x,y)=>{mx=Math.max(0,Math.min(1,x));my=Math.max(0,Math.min(1,y));tx=(.5-my)*.19;ty=(mx-.5)*.22};
+  const pointer=e=>{const r=host.getBoundingClientRect();if(!r.width||!r.height)return;const rawX=(e.clientX-r.left)/r.width,rawY=(e.clientY-r.top)/r.height;const x=(rawX-CARD_SAFE_MARGIN)/(1-CARD_SAFE_MARGIN*2);const y=(rawY-CARD_SAFE_MARGIN)/(1-CARD_SAFE_MARGIN*2);pose(x,1-y)};if(interactive){host.addEventListener('pointerdown',pointer);host.addEventListener('pointermove',e=>{if(e.pointerType==='mouse'||e.buttons)pointer(e)})}
+  let orient=null;if(interactive){try{if(typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function')await DeviceOrientationEvent.requestPermission().catch(()=>null)}catch(_){}orient=e=>{const g=Number(e.gamma),b=Number(e.beta);if(Number.isFinite(g)&&Number.isFinite(b))pose(.5+Math.max(-28,Math.min(28,g))/70,.5-Math.max(-25,Math.min(25,b-45))/65)};window.addEventListener('deviceorientation',orient,{passive:true})}
   const loop=now=>{if(dead)return;resize();mesh.rotation.x+=(tx-mesh.rotation.x)*.12;mesh.rotation.y+=(ty-mesh.rotation.y)*.12;uniforms.uPointer?.value?.set?.(mx,my);uniforms.uBackground?.value?.set?.(.37+mx*.26,.37+my*.26);if(uniforms.uPointerFromCenter)uniforms.uPointerFromCenter.value=Math.hypot(mx-.5,my-.5)*2;if(uniforms.uTime)uniforms.uTime.value+=(now-last)/1000;last=now;renderer.render(scene,camera);raf=requestAnimationFrame(loop)};raf=requestAnimationFrame(loop);
   return {element:host,destroy:()=>{dead=true;cancelAnimationFrame(raf);if(orient)window.removeEventListener('deviceorientation',orient);try{cardTex.dispose();mask.dispose();noise.dispose();mat.dispose();mesh.geometry.dispose();renderer.dispose()}catch(_){}}}
 }
@@ -4110,7 +4138,7 @@ window.addEventListener('load',()=>{
   setTimeout(()=>{ensureScannerOCRWorker().catch(()=>{});v12OpenDB().catch?.(()=>{});},900);
   setTimeout(()=>{Promise.allSettled([window.__v12ThreeReady,v12LoadShader('holo.vert'),v12LoadShader('regular-holo.frag'),v12LoadShader('reverse-holo.frag'),v12LoadShader('master-ball.frag')]);},1500);
 });
-console.info('POKÉDEX XL v12.0 FINAL PRO carregada');
+console.info('POKÉDEX XL v12.1 FINAL STABLE carregada');
 
 document.getElementById('resetGenBtn').addEventListener('click',()=>{state.generation=null;state.page=1;renderCurrentPage()});
 </script>
