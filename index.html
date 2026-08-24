@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="Pokédex XL">
 <link rel="manifest" href="manifest.webmanifest">
-<title>Pokédex XL — Master Set · v11.0 FINAL</title>
+<title>Pokédex XL — Master Set · v12.0 FINAL PRO</title>
 <link rel="apple-touch-icon" href="icon-180.png">
 <style>
 :root{
@@ -920,6 +920,19 @@ body:not(.auth-locked) .auth-gate{opacity:0;visibility:hidden;pointer-events:non
  .profoil-host>.holo-card{width:min(100%,86vw)!important;max-height:100%!important}
  .variant-image-shell .holo-card__rotator{filter:drop-shadow(0 15px 20px rgba(0,0,0,.34))}
 }
+
+
+/* ===== v12.0 FINAL PRO · cache instantânea + scanner profissional + WebGL ===== */
+.cache-live-note{display:inline-flex;align-items:center;gap:5px;margin-left:6px;padding:3px 6px;border-radius:999px;background:rgba(30,180,105,.10);border:1px solid rgba(30,180,105,.20);color:#8ee0b2;font-size:7px;font-weight:900;vertical-align:middle}
+.v12-webgl-card{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;perspective:1100px;touch-action:none;isolation:isolate}
+.v12-webgl-card canvas{display:block;width:100%!important;height:100%!important;border-radius:4.6%;filter:drop-shadow(0 18px 24px rgba(0,0,0,.34));touch-action:none}
+.v12-webgl-card.compact canvas{filter:none;border-radius:4.2%}
+.v12-webgl-fallback{width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+.scanner-status.locking{border-color:rgba(246,193,63,.35)!important;background:rgba(246,193,63,.07)!important}
+.scanner-status.matched{border-color:rgba(25,190,105,.45)!important;background:rgba(25,190,105,.09)!important}
+.scanner-camera-shell.scan-locked:after{content:'✓ CARTA DETETADA';position:absolute;left:50%;top:12px;transform:translateX(-50%);z-index:8;padding:7px 10px;border-radius:999px;background:rgba(8,128,69,.92);color:#fff;font-size:8px;font-weight:1000;letter-spacing:.5px;box-shadow:0 8px 20px rgba(0,0,0,.3)}
+@media(max-width:760px){.v12-webgl-card canvas{filter:drop-shadow(0 13px 18px rgba(0,0,0,.30))}}
+
 </style>
 
 <!-- v11.2 · DEX-GRADE FOIL ENGINE (MIT) -->
@@ -3905,6 +3918,199 @@ document.getElementById('scannerClose')?.addEventListener('click',closeScanner);
 document.getElementById('scannerModal')?.addEventListener('click',e=>{if(e.target===e.currentTarget)closeScanner()});
 document.getElementById('scannerPhotoBtn')?.addEventListener('click',()=>document.getElementById('scannerFile').click());
 document.getElementById('scannerFile')?.addEventListener('change',e=>{const f=e.target.files?.[0];if(f)identifyScannedCard(f,{auto:false});e.target.value='';});
+
+
+
+// ============================================================================
+// v12.0 FINAL PRO
+// Persistência do catálogo + atualização silenciosa + scanner híbrido OCR/visual
+// + renderer WebGL/GLSL. As funções antigas permanecem como fallback.
+// ============================================================================
+const V12_CATALOG_TTL=6*60*60*1000;
+const V12_DB_NAME='pokedex-xl-catalog-v12';
+const V12_DB_STORE='pokemonCards';
+const V12_REFRESHING=new Map();
+let V12_DB_PROMISE=null;
+function v12OpenDB(){
+  if(V12_DB_PROMISE)return V12_DB_PROMISE;
+  V12_DB_PROMISE=new Promise((resolve,reject)=>{
+    if(!('indexedDB'in window)){resolve(null);return;}
+    const req=indexedDB.open(V12_DB_NAME,1);
+    req.onupgradeneeded=()=>{const db=req.result;if(!db.objectStoreNames.contains(V12_DB_STORE))db.createObjectStore(V12_DB_STORE,{keyPath:'pokemonId'})};
+    req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);
+  }).catch(e=>{console.warn('IndexedDB catálogo',e);return null});
+  return V12_DB_PROMISE;
+}
+async function v12CatalogGet(pokemonId){
+  const db=await v12OpenDB();if(!db)return null;
+  return await new Promise(resolve=>{try{const tx=db.transaction(V12_DB_STORE,'readonly');const r=tx.objectStore(V12_DB_STORE).get(Number(pokemonId));r.onsuccess=()=>resolve(r.result||null);r.onerror=()=>resolve(null)}catch(_){resolve(null)}});
+}
+async function v12CatalogPut(pokemonId,cards){
+  const db=await v12OpenDB();if(!db||!Array.isArray(cards)||!cards.length)return;
+  try{await new Promise(resolve=>{const tx=db.transaction(V12_DB_STORE,'readwrite');tx.objectStore(V12_DB_STORE).put({pokemonId:Number(pokemonId),updatedAt:Date.now(),cards});tx.oncomplete=resolve;tx.onerror=resolve;tx.onabort=resolve})}catch(e){console.warn('Cache catálogo',e)}
+}
+const V12_NETWORK_FETCH_ALL=fetchAllCardsForPokemon;
+async function v12RefreshPokemonCatalog(p){
+  const id=Number(p.id);if(V12_REFRESHING.has(id))return V12_REFRESHING.get(id);
+  const job=(async()=>{
+    const previous=CARD_BROWSER_CACHE.get(id)||null;
+    try{
+      CARD_BROWSER_CACHE.delete(id);
+      const fresh=await V12_NETWORK_FETCH_ALL(p,null);
+      if(Array.isArray(fresh)&&fresh.length){CARD_BROWSER_CACHE.set(id,fresh);await v12CatalogPut(id,fresh);if(currentModalPokemon?.id===id){currentModalCards=fresh;renderModalCards(false,true);const s=document.getElementById('artModalSummary');if(s)s.innerHTML=`${fresh.length} cartas <span class="cache-live-note">✓ ATUALIZADO</span>`;}return fresh}
+    }catch(e){console.warn('Atualização silenciosa catálogo',e);if(previous)CARD_BROWSER_CACHE.set(id,previous)}
+    return previous||[];
+  })().finally(()=>V12_REFRESHING.delete(id));
+  V12_REFRESHING.set(id,job);return job;
+}
+fetchAllCardsForPokemon=async function(p,onRetry){
+  const id=Number(p.id);
+  if(CARD_BROWSER_CACHE.has(id))return CARD_BROWSER_CACHE.get(id);
+  const stored=await v12CatalogGet(id);
+  if(stored?.cards?.length){
+    CARD_BROWSER_CACHE.set(id,stored.cards);
+    const stale=Date.now()-Number(stored.updatedAt||0)>V12_CATALOG_TTL;
+    setTimeout(()=>v12RefreshPokemonCatalog(p),stale?80:1200);
+    return stored.cards;
+  }
+  const fresh=await V12_NETWORK_FETCH_ALL(p,onRetry);
+  if(fresh?.length)v12CatalogPut(id,fresh);
+  return fresh;
+};
+
+// Pré-aquece o cache da imagem quando uma galeria é mostrada.
+const V12_OLD_RENDER_MODAL_CARDS=renderModalCards;
+renderModalCards=function(...args){
+  const result=V12_OLD_RENDER_MODAL_CARDS.apply(this,args);
+  try{(currentModalCards||[]).slice(0,60).forEach(c=>{const src=c.images?.small||c.images?.large;if(src){const im=new Image();im.src=src}})}catch(_){}
+  return result;
+};
+
+// ---------- Scanner híbrido: OCR rápido + assinatura visual ----------
+const V12_OLD_OCR_WORKER=ensureScannerOCRWorker;
+ensureScannerOCRWorker=async function(){
+  const worker=await V12_OLD_OCR_WORKER();
+  if(worker&&!worker.__v12Configured){
+    worker.__v12Configured=true;
+    try{await worker.setParameters({tessedit_pageseg_mode:'11',preserve_interword_spaces:'1',user_defined_dpi:'300'})}catch(_){}
+  }
+  return worker;
+};
+function v12FixOCRDigits(s){return String(s||'').toUpperCase().replace(/[OQ]/g,'0').replace(/[IL]/g,'1').replace(/(?<=\d)S(?=\d|\b)/g,'5').replace(/(?<=\d)B(?=\d|\b)/g,'8')}
+const V12_OLD_COLLECTOR_NUMBER=collectorNumberFromScanText;
+collectorNumberFromScanText=function(text){
+  const direct=V12_OLD_COLLECTOR_NUMBER(text);if(direct)return direct;
+  const t=v12FixOCRDigits(text);
+  const slash=[...t.matchAll(/\b(\d{1,3})\s*[\/|\\]\s*(\d{1,3})\b/g)];if(slash.length)return String(Number(slash[slash.length-1][1]));
+  const promo=t.match(/\b(?:MEP|SVP|SWSH|SMP|XYP|BWP|DP|HGSS)\s*[- ]?\s*(\d{2,3})\b/);return promo?String(Number(promo[1])):null;
+};
+async function v12PreprocessScan(blob){
+  let source,w,h,cleanup=()=>{};
+  if(typeof createImageBitmap==='function'){const b=await createImageBitmap(blob);source=b;w=b.width;h=b.height;cleanup=()=>b.close?.()}
+  else{const u=URL.createObjectURL(blob),im=new Image();await new Promise((r,j)=>{im.onload=r;im.onerror=j;im.src=u});source=im;w=im.naturalWidth;h=im.naturalHeight;cleanup=()=>URL.revokeObjectURL(u)}
+  const out=document.createElement('canvas');out.width=720;out.height=460;const ctx=out.getContext('2d',{willReadFrequently:true});ctx.fillStyle='#fff';ctx.fillRect(0,0,720,460);
+  // Nome: topo; identificação: faixa inferior. A faixa inferior recebe mais espaço/resolução.
+  ctx.drawImage(source,0,0,w,h*.30,0,0,720,190);
+  ctx.drawImage(source,0,h*.61,w,h*.39,0,205,720,255);cleanup();
+  const id=ctx.getImageData(0,0,out.width,out.height),d=id.data;
+  let mean=0;for(let i=0;i<d.length;i+=4)mean+=(d[i]+d[i+1]+d[i+2])/3;mean/=d.length/4;
+  for(let i=0;i<d.length;i+=4){const y=.299*d[i]+.587*d[i+1]+.114*d[i+2];const contrast=(y-mean)*1.75+138;const v=Math.max(0,Math.min(255,contrast));d[i]=d[i+1]=d[i+2]=v}ctx.putImageData(id,0,0);return out;
+}
+preprocessScannerBlob=v12PreprocessScan;
+
+const V12_SIG_CACHE=new Map();
+async function v12ImageSource(input){
+  if(input instanceof Blob){if(typeof createImageBitmap==='function')return {img:await createImageBitmap(input),cleanup:i=>i.close?.()};const u=URL.createObjectURL(input),im=new Image();await new Promise((r,j)=>{im.onload=r;im.onerror=j;im.src=u});return {img:im,cleanup:()=>URL.revokeObjectURL(u)}}
+  const res=await fetch(String(input),{cache:'force-cache'});if(!res.ok)throw new Error('imagem '+res.status);return v12ImageSource(await res.blob());
+}
+async function v12VisualSignature(input){
+  const {img,cleanup}=await v12ImageSource(input);try{
+    const c=document.createElement('canvas');c.width=17;c.height=25;const x=c.getContext('2d',{willReadFrequently:true});x.drawImage(img,0,0,17,25);const d=x.getImageData(0,0,17,25).data;
+    const g=new Float32Array(17*25);let mean=0;for(let i=0,j=0;i<d.length;i+=4,j++){const v=.299*d[i]+.587*d[i+1]+.114*d[i+2];g[j]=v;mean+=v}mean/=g.length;
+    let sd=0;for(const v of g)sd+=(v-mean)*(v-mean);sd=Math.sqrt(sd/g.length)||1;for(let i=0;i<g.length;i++)g[i]=(g[i]-mean)/sd;
+    const bits=new Uint8Array(16*25);let k=0;for(let y=0;y<25;y++)for(let xx=0;xx<16;xx++)bits[k++]=g[y*17+xx]>g[y*17+xx+1]?1:0;
+    const hist=new Float32Array(24);for(let i=0;i<d.length;i+=4){hist[Math.min(7,d[i]>>5)]++;hist[8+Math.min(7,d[i+1]>>5)]++;hist[16+Math.min(7,d[i+2]>>5)]++}for(let ch=0;ch<3;ch++){let s=0;for(let b=0;b<8;b++)s+=hist[ch*8+b];for(let b=0;b<8;b++)hist[ch*8+b]/=s||1}
+    return {bits,hist};
+  }finally{cleanup(img)}
+}
+function v12SigDistance(a,b){let h=0;for(let i=0;i<a.bits.length;i++)h+=a.bits[i]!==b.bits[i];h/=a.bits.length;let hd=0;for(let i=0;i<a.hist.length;i++)hd+=Math.abs(a.hist[i]-b.hist[i]);hd/=6;return h*.78+hd*.22}
+async function v12CardSig(card){const key=String(card.id);if(V12_SIG_CACHE.has(key))return V12_SIG_CACHE.get(key);const url=card.images?.small||card.images?.large;if(!url)return null;const promise=v12VisualSignature(url).catch(()=>null);V12_SIG_CACHE.set(key,promise);return promise}
+async function v12VisualResolve(blob,cards,text,num){
+  if(!cards?.length)return null;let pool=cards;
+  if(num){const n=normalizeLocalCardNumber(num),narrow=pool.filter(c=>normalizeLocalCardNumber(c.number)===n);if(narrow.length)pool=narrow}
+  if(pool.length>90){pool=pool.map(card=>({card,score:cardScanScore(card,text,num,null)})).sort((a,b)=>b.score-a.score).slice(0,90).map(x=>x.card)}
+  const live=await v12VisualSignature(blob);let idx=0,results=[];const workers=Array.from({length:Math.min(10,pool.length)},async()=>{while(idx<pool.length){const card=pool[idx++],sig=await v12CardSig(card);if(sig)results.push({card,d:v12SigDistance(live,sig)})}});await Promise.all(workers);results.sort((a,b)=>a.d-b.d);if(!results.length)return null;return {best:results[0],second:results[1]||null,top:results.slice(0,5)}
+}
+function v12ShowVisualCandidates(result,pokemon){if(!result?.top?.length)return;showScannerCandidates(result.top.map((x,i)=>({card:x.card,score:1000-Math.round(x.d*1000)})),pokemon)}
+
+identifyScannedCard=async function(blob,{auto=false}={}){
+  const session=scannerSession;
+  if(!auto){clearScannerAuto();const preview=document.getElementById('scannerPreview'),video=document.getElementById('scannerVideo');preview.src=URL.createObjectURL(blob);preview.hidden=false;video.hidden=true}
+  try{
+    const worker=await ensureScannerOCRWorker();if(session!==scannerSession&&auto)return false;
+    setScannerStatus('A identificar carta…','Nome, número e imagem são analisados em conjunto.','working');
+    const canvas=await v12PreprocessScan(blob);const result=await worker.recognize(canvas);const text=result?.data?.text||'';
+    const setCode=scanSetCode(text),num=collectorNumberFromScanText(text);
+    if(setCode&&num){const direct=await directPromoFromScan(setCode,num);if(direct){document.getElementById('scannerCameraShell')?.classList.add('scan-locked');setScannerStatus('Carta identificada',`${direct.card.name} · ${setCode} ${direct.card.number}`,'matched');setTimeout(async()=>{closeScanner();await openVariantModal(direct.card,direct.pokemon)},120);return true}}
+    const pokemon=pokemonFromScanText(text);
+    if(!pokemon){if(!auto){setScannerStatus('Ainda não consegui ler o nome','Aproxima a carta ou usa a fotografia.','bad')}return false}
+    setScannerStatus(`${pretty(pokemon.name)} detetado`,num?`Número ${num} · a confirmar impressão…`:'A comparar visualmente a impressão…','locking');
+    const cards=await fetchAllCardsForPokemon(pokemon);
+    if(num){const n=normalizeLocalCardNumber(num),same=cards.filter(c=>normalizeLocalCardNumber(c.number)===n);if(same.length===1){const card=same[0];document.getElementById('scannerCameraShell')?.classList.add('scan-locked');setScannerStatus('Carta identificada',`${card.set?.name||'Set'} · #${card.number}`,'matched');setTimeout(async()=>{closeScanner();await openVariantModal(card,pokemon)},100);return true}}
+    const visual=await v12VisualResolve(blob,cards,text,num);
+    if(visual){const gap=visual.second?visual.second.d-visual.best.d:.20;const strong=visual.best.d<.31&&gap>.025;const veryStrong=visual.best.d<.255&&gap>.012;if(strong||veryStrong){const card=visual.best.card;document.getElementById('scannerCameraShell')?.classList.add('scan-locked');setScannerStatus('Carta reconhecida',`${card.set?.name||'Set'} · #${card.number} · correspondência visual`,'matched');setTimeout(async()=>{closeScanner();await openVariantModal(card,pokemon)},120);return true}
+      // Não fica eternamente a reconhecer: mostra imediatamente as melhores hipóteses.
+      setScannerStatus('Encontrei as melhores correspondências','Se não abrir automaticamente, toca na carta correta abaixo.','good');v12ShowVisualCandidates(visual,pokemon);return false;
+    }
+    const scored=cards.map(card=>({card,score:cardScanScore(card,text,num,setCode)})).sort((a,b)=>b.score-a.score).slice(0,5);if(scored.length){setScannerStatus('Escolhe a impressão','Não consegui confirmar visualmente com segurança.','good');showScannerCandidates(scored,pokemon)}
+    return false;
+  }catch(e){console.error('Scanner v12',e);setScannerStatus('Não consegui identificar automaticamente','Mantive “Usar fotografia” como fallback.','bad');return false}
+};
+
+// Câmara: autofoco/exposição contínuos quando o browser suporta.
+const V12_OLD_START_CAMERA=startScannerCamera;
+startScannerCamera=async function(){
+  await V12_OLD_START_CAMERA();
+  try{const track=scannerStream?.getVideoTracks?.()[0];const caps=track?.getCapabilities?.()||{};const adv={};if(caps.focusMode?.includes?.('continuous'))adv.focusMode='continuous';if(caps.exposureMode?.includes?.('continuous'))adv.exposureMode='continuous';if(caps.whiteBalanceMode?.includes?.('continuous'))adv.whiteBalanceMode='continuous';if(Object.keys(adv).length)await track.applyConstraints({advanced:[adv]})}catch(e){console.debug('Autofoco não disponível',e)}
+};
+
+// ---------- WebGL/GLSL renderer inspirado na arquitetura MIT do Pokebox ----------
+window.__v12ThreeReady=import('https://cdn.jsdelivr.net/npm/three@0.182.0/build/three.module.js').catch(e=>{console.warn('Three.js indisponível',e);return null});
+const V12_SHADER_BASE='https://raw.githubusercontent.com/selop/pokebox/main/src/shaders/';
+const V12_SHADER_CACHE=new Map();
+async function v12LoadShader(path){if(V12_SHADER_CACHE.has(path))return V12_SHADER_CACHE.get(path);const job=(async()=>{const r=await fetch(V12_SHADER_BASE+path,{cache:'force-cache'});if(!r.ok)throw new Error('shader '+r.status);let s=await r.text();const inc=[...s.matchAll(/#include\s+"([^"]+)"/g)];for(const m of inc)s=s.replace(m[0],await v12LoadShader(m[1]));return s})();V12_SHADER_CACHE.set(path,job);return job}
+function v12ShaderFor(card,v){const eff=variantVisualEffect(v),rar=String(card?.rarity||'').toLowerCase();if(eff==='masterball')return 'master-ball.frag';if(eff==='reverse'||eff==='pokeball')return 'reverse-holo.frag';if(eff==='holo'||eff==='cosmos'||eff==='crystal')return 'regular-holo.frag';if(/special illustration/.test(rar))return 'special-illustration-rare.frag';if(/illustration rare/.test(rar))return 'illustration-rare.frag';if(/ultra rare/.test(rar))return 'ultra-rare.frag';if(/double rare/.test(rar))return 'double-rare.frag';if(/shiny rare/.test(rar))return 'shiny-rare.frag';if(/rainbow/.test(rar)||eff==='rainbow')return 'rainbow-rare.frag';return null}
+function v12CanvasTexture(THREE,kind='white',card=null,v=null){const c=document.createElement('canvas');c.width=256;c.height=358;const x=c.getContext('2d');if(kind==='mask'){x.fillStyle='#000';x.fillRect(0,0,c.width,c.height);const frame=variantFrameMode(card,v),eff=variantVisualEffect(v);x.fillStyle='#fff';if(frame==='full'||['rainbow','gold','radiant','glitter','metal'].includes(eff))x.fillRect(0,0,c.width,c.height);else{const ax=c.width*.077,ay=c.height*.143,aw=c.width*.846,ah=c.height*.352;if(['holo','cosmos','crystal'].includes(eff))x.fillRect(ax,ay,aw,ah);else{x.fillRect(0,0,c.width,ay);x.fillRect(0,ay+ah,c.width,c.height-ay-ah);x.fillRect(0,ay,ax,ah);x.fillRect(ax+aw,ay,c.width-ax-aw,ah)}}}else if(kind==='noise'){const im=x.createImageData(c.width,c.height);for(let i=0;i<im.data.length;i+=4){const n=Math.random()*255;im.data[i]=im.data[i+1]=im.data[i+2]=n;im.data[i+3]=255}x.putImageData(im,0,0)}else{x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height)}const t=new THREE.CanvasTexture(c);t.needsUpdate=true;return t}
+function v12UniformDefaults(THREE,frag,cardTex,maskTex,noiseTex){const u={};for(const m of frag.matchAll(/uniform\s+(float|vec2|vec3|sampler2D)\s+(\w+)\s*;/g)){const type=m[1],name=m[2];if(type==='sampler2D')u[name]={value:/CardTex|CardBackTex/.test(name)?cardTex:/MaskTex/.test(name)?maskTex:noiseTex};else if(type==='vec2')u[name]={value:new THREE.Vector2(.5,.5)};else if(type==='vec3')u[name]={value:new THREE.Vector3(1,1,1)};else u[name]={value:1}}
+  const set=(n,v)=>{if(u[n])u[n].value=v};set('uHasFoil',1);set('uHasGlitter',1);set('uHasNoise',1);set('uCardOpacity',.92);set('uFade',1);set('uTime',0);set('uShineIntensity',1.15);set('uShineOpacity',.78);set('uShineColorR',.88);set('uShineColorG',.95);set('uShineColorB',1);set('uSpecularRadius',.46);set('uSpecularPower',2.2);set('uBaseBrightness',1.02);set('uBaseContrast',1.03);set('uBaseSaturation',1.08);set('uRainbowScale',1.15);set('uRainbowShift',.1);set('uRainbowOpacity',.72);set('uGlareOpacity',.72);set('uGlareContrast',1.25);set('uGlareSaturation',1.15);set('uSparkleScale',3.8);set('uSparkleIntensity',.72);set('uSparkle2Scale',6.5);set('uSparkle2Intensity',.46);return u}
+function v12NormalFrag(){return `precision highp float;uniform sampler2D uCardTex;uniform vec2 uPointer;uniform float uFade;varying vec2 vUv;void main(){vec4 c=texture2D(uCardTex,vUv);float d=distance(vUv,uPointer);float g=(1.0-smoothstep(0.0,.48,d))*.24;vec3 r=c.rgb+vec3(g);gl_FragColor=vec4(clamp(r,0.0,1.0),c.a*uFade);}`}
+async function v12WebGLCard(card,v,url,{interactive=true,compact=false}={}){
+  const THREE=await window.__v12ThreeReady;if(!THREE)throw new Error('Three indisponível');const shader=v12ShaderFor(card,v);let vert,frag;if(shader){[vert,frag]=await Promise.all([v12LoadShader('holo.vert'),v12LoadShader(shader)])}else{vert='varying vec2 vUv;void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}';frag=v12NormalFrag()}
+  const host=document.createElement('div');host.className='v12-webgl-card'+(compact?' compact':'');
+  const renderer=new THREE.WebGLRenderer({alpha:true,antialias:true,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));host.appendChild(renderer.domElement);
+  const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(31,2.5/3.5,.1,10);camera.position.z=2.55;
+  const loader=new THREE.TextureLoader();loader.setCrossOrigin('anonymous');const cardTex=await new Promise((res,rej)=>loader.load(url,res,undefined,rej));cardTex.colorSpace=THREE.SRGBColorSpace;cardTex.minFilter=THREE.LinearFilter;cardTex.magFilter=THREE.LinearFilter;
+  const mask=v12CanvasTexture(THREE,'mask',card,v),noise=v12CanvasTexture(THREE,'noise');const uniforms=v12UniformDefaults(THREE,frag,cardTex,mask,noise);if(!uniforms.uPointer)uniforms.uPointer={value:new THREE.Vector2(.5,.5)};if(!uniforms.uBackground)uniforms.uBackground={value:new THREE.Vector2(.5,.5)};if(!uniforms.uFade)uniforms.uFade={value:1};
+  const mat=new THREE.ShaderMaterial({vertexShader:vert,fragmentShader:frag,uniforms,transparent:true,side:THREE.DoubleSide});const mesh=new THREE.Mesh(new THREE.PlaneGeometry(1,1.4),mat);scene.add(mesh);
+  let mx=.5,my=.5,tx=0,ty=0,raf=0,dead=false,last=performance.now();
+  const resize=()=>{const r=host.getBoundingClientRect(),w=Math.max(2,Math.round(r.width)),h=Math.max(2,Math.round(r.height));renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()};
+  const pose=(x,y)=>{mx=Math.max(0,Math.min(1,x));my=Math.max(0,Math.min(1,y));tx=(.5-my)*.22;ty=(mx-.5)*.26};
+  const pointer=e=>{const r=host.getBoundingClientRect();pose((e.clientX-r.left)/r.width,(e.clientY-r.top)/r.height)};if(interactive){host.addEventListener('pointerdown',pointer);host.addEventListener('pointermove',e=>{if(e.pointerType==='mouse'||e.buttons)pointer(e)})}
+  let orient=null;if(interactive){try{if(typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function')await DeviceOrientationEvent.requestPermission().catch(()=>null)}catch(_){}orient=e=>{const g=Number(e.gamma),b=Number(e.beta);if(Number.isFinite(g)&&Number.isFinite(b))pose(.5+Math.max(-28,Math.min(28,g))/70,.5+Math.max(-25,Math.min(25,b-45))/65)};window.addEventListener('deviceorientation',orient,{passive:true})}
+  const loop=now=>{if(dead)return;resize();mesh.rotation.x+=(tx-mesh.rotation.x)*.12;mesh.rotation.y+=(ty-mesh.rotation.y)*.12;uniforms.uPointer?.value?.set?.(mx,my);uniforms.uBackground?.value?.set?.(.37+mx*.26,.37+my*.26);if(uniforms.uPointerFromCenter)uniforms.uPointerFromCenter.value=Math.hypot(mx-.5,my-.5)*2;if(uniforms.uTime)uniforms.uTime.value+=(now-last)/1000;last=now;renderer.render(scene,camera);raf=requestAnimationFrame(loop)};raf=requestAnimationFrame(loop);
+  return {element:host,destroy:()=>{dead=true;cancelAnimationFrame(raf);if(orient)window.removeEventListener('deviceorientation',orient);try{cardTex.dispose();mask.dispose();noise.dispose();mat.dispose();mesh.geometry.dispose();renderer.dispose()}catch(_){}}}
+}
+const V12_OLD_PROFOIL=createProFoilCard;
+createProFoilCard=async function(card,v,url,opts={}){
+  try{return await v12WebGLCard(card,v,url,opts)}catch(e){console.warn('WebGL PRO fallback',e);return V12_OLD_PROFOIL(card,v,url,opts)}
+};
+
+// Pré-aquecimento: o scanner e os shaders ficam prontos antes do primeiro uso.
+window.addEventListener('load',()=>{
+  setTimeout(()=>{ensureScannerOCRWorker().catch(()=>{});v12OpenDB().catch?.(()=>{});},900);
+  setTimeout(()=>{Promise.allSettled([window.__v12ThreeReady,v12LoadShader('holo.vert'),v12LoadShader('regular-holo.frag'),v12LoadShader('reverse-holo.frag'),v12LoadShader('master-ball.frag')]);},1500);
+});
+console.info('POKÉDEX XL v12.0 FINAL PRO carregada');
 
 document.getElementById('resetGenBtn').addEventListener('click',()=>{state.generation=null;state.page=1;renderCurrentPage()});
 </script>

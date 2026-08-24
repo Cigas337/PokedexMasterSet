@@ -1,4 +1,4 @@
-const CACHE_NAME='pokedex-xl-v11-2-dex-grade-foil';
+const CACHE_NAME='pokedex-xl-v12-0-final-pro';
 const SHELL=['./','./index.html','./manifest.webmanifest','./icon-180.png','./icon-192.png','./icon-512.png'];
 
 self.addEventListener('install',event=>{
@@ -62,7 +62,9 @@ self.addEventListener('fetch',event=>{
   const cacheable = url.origin===self.location.origin ||
     url.hostname==='raw.githubusercontent.com' ||
     url.hostname==='pokeapi.co' ||
-    url.hostname==='cdn.jsdelivr.net';
+    url.hostname==='cdn.jsdelivr.net' ||
+    url.hostname==='images.pokemontcg.io' ||
+    url.hostname==='assets.tcgdex.net';
 
   if(cacheable){
     event.respondWith(
