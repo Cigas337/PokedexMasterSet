@@ -5,10 +5,10 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#080f17">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="Pokédex XL">
 <link rel="manifest" href="manifest.webmanifest">
-<title>Pokédex XL — National Dex Master Set · v10.4</title>
+<title>Pokédex XL — Master Set · v10.11</title>
 <link rel="apple-touch-icon" href="icon-180.png">
 <style>
 :root{
@@ -29,9 +29,11 @@
   --shadow:0 20px 44px rgba(0,0,0,.42);
 }
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;background:#03070b;min-height:100%;}
 body{
   margin:0;
+  min-height:100vh;
+  min-height:100dvh;
   color:var(--text);
   font-family:Arial,Helvetica,sans-serif;
   background:
@@ -654,6 +656,55 @@ body:not(.auth-locked) .auth-gate{opacity:0;visibility:hidden;pointer-events:non
   .art-modal-toolbar{padding-top:5px!important;padding-bottom:5px!important}
 }
 
+
+/* v10.10 — apenas as duas correções assinaladas no iPhone */
+@media(max-width:760px){
+  .mobile-bottom-nav{
+    left:0!important;
+    right:0!important;
+    bottom:0!important;
+    width:100%!important;
+    border-radius:0!important;
+    margin:0!important;
+    padding:6px 7px calc(6px + env(safe-area-inset-bottom))!important;
+  }
+}
+
+/* v10.11 — APENAS login sem faixa branca + barra inferior compacta no iPhone */
+@media(max-width:760px){
+  /* Enquanto o login está aberto, cobre também qualquer zona extra que o WebKit
+     possa deixar fora da viewport visual. A regra desaparece ao iniciar sessão. */
+  body.auth-locked{
+    padding-bottom:0!important;
+    background:#03060a!important;
+  }
+  body.auth-locked::after{
+    content:"";
+    position:fixed;
+    left:0;right:0;bottom:-90px;
+    height:180px;
+    background:#03060a;
+    z-index:99999;
+    pointer-events:none;
+  }
+  body.auth-locked .auth-gate{z-index:100000}
+
+  /* Após login: barra realmente encostada ao fundo e sem o bloco extra
+     criado pelo safe-area-inset-bottom. */
+  body:not(.auth-locked){padding-bottom:66px!important}
+  .mobile-bottom-nav{
+    left:0!important;right:0!important;bottom:0!important;
+    width:100%!important;height:64px!important;min-height:64px!important;
+    padding:6px 7px!important;
+    border-radius:0!important;margin:0!important;
+    align-items:stretch!important;
+  }
+  .mobile-bottom-nav button{
+    min-height:52px!important;height:52px!important;
+    padding:3px 2px!important;
+  }
+}
+
 </style>
 </head>
 <body class="auth-locked">
@@ -662,7 +713,7 @@ body:not(.auth-locked) .auth-gate{opacity:0;visibility:hidden;pointer-events:non
   <div class="auth-card">
     <div class="auth-ball"></div>
     <h1 class="auth-title">POKÉDEX <span>XL</span></h1>
-    <div class="auth-sub">National Dex · By Cigas</div>
+    <div class="auth-sub">Master Set · By Cigas</div>
     <form class="auth-form" id="loginForm" autocomplete="on">
       <label class="auth-label" for="loginUser">Username</label>
       <input class="auth-input" id="loginUser" name="username" autocomplete="username" spellcheck="false" required>
@@ -2638,7 +2689,11 @@ window.addEventListener('appinstalled',()=>{
 });
 
 if('serviceWorker' in navigator && location.protocol!=='file:'){
-  window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(err=>console.warn('Service Worker:',err)));
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('./sw.js?v=10.10',{updateViaCache:'none'})
+      .then(reg=>reg.update())
+      .catch(err=>console.warn('Service Worker:',err));
+  });
 }
 
 
