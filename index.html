@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="Pokédex XL">
 <link rel="manifest" href="manifest.webmanifest">
-<title>Pokédex XL — Master Set · v12.1 FINAL STABLE</title>
+<title>Pokédex XL — Master Set · v12.2 FINAL AUDITED</title>
 <link rel="apple-touch-icon" href="icon-180.png">
 <style>
 :root{
@@ -943,16 +943,20 @@ body:not(.auth-locked) .auth-gate{opacity:0;visibility:hidden;pointer-events:non
 .v12-webgl-card{overflow:visible!important}
 .v12-webgl-card canvas{overflow:visible!important}
 
+
+/* v12.2 FINAL AUDITED · binder estável: nunca cria dezenas de contextos WebGL. */
+.featured-card-image.binder-static-variant{overflow:hidden!important;isolation:isolate;border-radius:10px}
+.featured-card-image.binder-static-variant>img.binder-featured-img{display:block!important;width:100%!important;height:100%!important;max-width:100%!important;max-height:100%!important;object-fit:contain!important;border-radius:9px!important;position:relative;z-index:1}
+.featured-card-image.binder-static-variant::after{content:"";position:absolute;inset:8% 7%;z-index:2;pointer-events:none;border-radius:7px;opacity:.07;background:radial-gradient(circle at 38% 25%,rgba(255,255,255,.7),transparent 24%),linear-gradient(120deg,transparent 22%,rgba(255,255,255,.22) 45%,transparent 68%);mix-blend-mode:screen}
+.featured-card-image.binder-static-variant[data-variant-effect="normal"]::after{opacity:.035}
+.featured-card-image.binder-static-variant[data-variant-effect="holo"]::after,.featured-card-image.binder-static-variant[data-variant-effect="cosmos"]::after{opacity:.10}
+.featured-card-image.binder-static-variant[data-variant-effect="reverse"]::after,.featured-card-image.binder-static-variant[data-variant-effect="masterball"]::after,.featured-card-image.binder-static-variant[data-variant-effect="pokeball"]::after{opacity:.085}
+.featured-card-image.final-variant-card{overflow:hidden!important}
+
 </style>
 
-<!-- v11.2 · DEX-GRADE FOIL ENGINE (MIT) -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@kongyo2/cards-css@0.5.0/dist/holo-cards.css">
-<script>
-window.__cardsCssModule=null;
-window.__cardsCssReady=import('https://cdn.jsdelivr.net/npm/@kongyo2/cards-css@0.5.0/dist/index.js')
-  .then(m=>{window.__cardsCssModule=m;return m;})
-  .catch(err=>{console.warn('Motor holográfico indisponível:',err);return null;});
-</script>
+<!-- v12.2 · motor visual único: WebGL principal + imagem estável como fallback -->
+<script>window.__cardsCssModule=null;window.__cardsCssReady=Promise.resolve(null);</script>
 </head>
 <body class="auth-locked">
 
@@ -1622,6 +1626,7 @@ function variantImageInfo(card,variant){
   return {url:variantTcgplayerImageUrl(card,variant),label:exact?`${human} · imagem do produto`:`${human} · scan da impressão`,exact,effect};
 }
 let ACTIVE_VARIANT_VISUAL=null;
+let VARIANT_RENDER_TOKEN=0;
 let ACTIVE_VARIANT_ORIENTATION_TARGET=null;
 let VARIANT_MOTION_STATE='unknown';
 let VARIANT_MOTION_PROMISE=null;
@@ -1796,23 +1801,39 @@ function createRealFoilCard(card,v,url,{interactive=true,compact=false}={}){
   return {element:root,destroy:()=>{cleanup();if(ACTIVE_VARIANT_ORIENTATION_TARGET===root)ACTIVE_VARIANT_ORIENTATION_TARGET=null}};
 }
 function plainVariantHero(mount,card,v,url){
+  const token=++VARIANT_RENDER_TOKEN;
   try{ACTIVE_VARIANT_VISUAL?.destroy?.()}catch(e){}ACTIVE_VARIANT_VISUAL=null;
-  renderProFoilInto(mount,card,v,url,{interactive:true,compact:false}).then(visual=>{if(visual)ACTIVE_VARIANT_VISUAL=visual}).catch(()=>{});
+  if(!mount)return;
+  mount.innerHTML='';
+  const img=document.createElement('img');img.className='profoil-fallback';img.alt=`${card?.name||'Carta'} · ${v?.label||'variante'}`;img.src=url||card?.images?.large||card?.images?.small||'';
+  mount.appendChild(img);mount.dataset.renderToken=String(token);
 }
 async function renderVariantHeroVisual(card,v,imageInfo){
   const mount=document.getElementById('variantHoloMount');if(!mount)return;
+  const token=++VARIANT_RENDER_TOKEN;
   try{ACTIVE_VARIANT_VISUAL?.destroy?.()}catch(e){}ACTIVE_VARIANT_VISUAL=null;ACTIVE_VARIANT_ORIENTATION_TARGET=null;
   const url=imageInfo?.url||card?.images?.large||card?.images?.small||'';
-  const visual=await renderProFoilInto(mount,card,v,url,{interactive:true,compact:false});
-  ACTIVE_VARIANT_VISUAL=visual;
+  try{
+    const visual=await createProFoilCard(card,v,url,{interactive:true,compact:false});
+    const stillOpen=document.getElementById('variantModal')?.classList.contains('open');
+    const stillCard=currentVariantCard===card;
+    const stillVariant=String(selectedVariantForModal()?.key||'')===String(v?.key||'');
+    if(token!==VARIANT_RENDER_TOKEN||!stillOpen||!stillCard||!stillVariant){try{visual?.destroy?.()}catch(_){}return;}
+    mount.innerHTML='';mount.appendChild(visual.element);mount.dataset.renderToken=String(token);ACTIVE_VARIANT_VISUAL=visual;
+  }catch(e){
+    if(token!==VARIANT_RENDER_TOKEN)return;
+    plainVariantHero(mount,card,v,url);
+    console.warn('Renderer da variante indisponível:',e);
+  }
 }
 async function enhanceVisibleBinderVariants(){
-  const nodes=[...document.querySelectorAll('.featured-card-image[data-variant-effect]:not([data-variant-ready])')];if(!nodes.length)return;
+  const nodes=[...document.querySelectorAll('.featured-card-image[data-variant-effect]:not([data-variant-ready])')];
   for(const node of nodes){
-    node.dataset.variantReady='1';const url=node.dataset.variantImage||node.querySelector('img')?.src||'';if(!url)continue;
-    const fakeCard={id:node.dataset.variantCardId||'',name:node.dataset.variantAlt||'Carta da coleção',rarity:node.dataset.variantRarity||'',subtypes:(node.dataset.variantSubtypes||'').split('|').filter(Boolean),images:{small:url,large:url}};
-    const fakeVariant={key:node.dataset.variantKey||'default',type:node.dataset.variantType||'normal',foil:node.dataset.variantFoil||'',subtype:node.dataset.variantSubtype||'',label:node.dataset.variantLabel||'Variante'};
-    try{const visual=await renderProFoilInto(node,fakeCard,fakeVariant,url,{interactive:false,compact:true});node.classList.add('final-variant-card');node.__profoil=visual}catch(e){console.warn('Binder foil',e)}
+    node.dataset.variantReady='1';
+    const img=node.querySelector('img');
+    if(!img) continue;
+    img.classList.add('binder-featured-img');
+    node.classList.add('binder-static-variant','final-variant-card');
   }
 }
 function bestTcgPrice(p){
@@ -1827,6 +1848,8 @@ function variantExplicitTcgplayerPrice(v){
 function variantTcgplayerPrice(card,variant){
   const v=variant||defaultVariantForCard(card);
   const direct=variantExplicitTcgplayerPrice(v); if(Number.isFinite(direct.value)) return direct;
+  // Uma foil especial (Master Ball, Poké Ball, Cosmos, etc.) nunca herda o preço genérico de Reverse/Holo.
+  if(v?.foil) return {value:Infinity,label:'sem preço específico',source:null};
   const keys=v?.type==='reverse'?['reverse-holofoil','reverseHolofoil','reverse']:v?.type==='holo'?['holofoil','holo']:['normal'];
   const feeds=[card.__tcgdexTcgplayer||{},card.tcgplayer?.prices||{}];
   for(const feed of feeds){
@@ -1852,11 +1875,20 @@ function cardSnapshot(card,variant=null){
   const v=variant||defaultVariantForCard(card);
   const price=variantCardmarketPrice(card,v);
   const checkedAt=new Date().toISOString();
+  const canonicalSmall=String(card.images?.small||card.images?.large||'');
+  const canonicalLarge=String(card.images?.large||card.images?.small||'');
+  const variantVisual=variantImageInfo(card,v);
   return {
+    snapshotVersion:2,
     id:String(card.id||''),
     name:String(card.name||''),
-    imageSmall:String(variantImageInfo(card,v).url||card.images?.small||card.images?.large||''),
-    imageLarge:String(variantImageInfo(card,v).url||card.images?.large||card.images?.small||''),
+    imageSmall:canonicalSmall,
+    imageLarge:canonicalLarge,
+    canonicalImageSmall:canonicalSmall,
+    canonicalImageLarge:canonicalLarge,
+    variantImage:String(variantVisual.url||canonicalLarge||canonicalSmall||''),
+    supertype:String(card.supertype||''),
+    subtypes:Array.isArray(card.subtypes)?card.subtypes.map(String):[],
     setName:String(card.set?.name||''),
     setCode:String(card.set?.ptcgoCode||card.set?.id||''),
     number:String(card.number||''),
@@ -2305,11 +2337,15 @@ function snapshotNeedsPriceRefresh(snap){
   const last=Date.parse(snap.priceCheckedAt||'');
   return !Number.isFinite(Number(snap.marketPrice)) || !Number.isFinite(last) || (Date.now()-last)>86400000;
 }
+function snapshotNeedsVisualRepair(snap){
+  return !snap?.id || Number(snap.snapshotVersion||0)<2 || !String(snap.canonicalImageLarge||snap.imageLarge||'');
+}
 function pseudoCardFromSnapshot(snap){
   return {
-    id:String(snap.id||''),name:String(snap.name||''),number:String(snap.number||''),rarity:String(snap.rarity||''),
+    id:String(snap.id||''),name:String(snap.name||''),number:String(snap.number||''),rarity:String(snap.rarity||''),supertype:String(snap.supertype||'Pokémon'),
+    subtypes:Array.isArray(snap.subtypes)?snap.subtypes:[],
     set:{id:String(snap.setCode||''),name:String(snap.setName||'')},
-    images:{small:String(snap.imageSmall||''),large:String(snap.imageLarge||'')},
+    images:{small:String(snap.canonicalImageSmall||snap.imageSmall||''),large:String(snap.canonicalImageLarge||snap.imageLarge||'')},
     cardmarket:snap.marketUrl?{url:String(snap.marketUrl),prices:{}}:null,
     __marketUrl:String(snap.marketUrl||''),__source:String(snap.source||'Coleção')
   };
@@ -2320,7 +2356,7 @@ async function refreshOwnedCardPriceCache(){
   Object.entries(store||{}).forEach(([pokemonId,raw])=>{
     const d=normalizeCardDetails(raw);
     Object.entries(d.owned||{}).forEach(([itemKey,snap])=>{
-      if(!snapshotNeedsPriceRefresh(snap)) return;
+      if(!snapshotNeedsPriceRefresh(snap) && !snapshotNeedsVisualRepair(snap)) return;
       const cardId=String(snap?.id||''); if(!cardId) return;
       if(!byCard.has(cardId)) byCard.set(cardId,{snap,items:[]});
       byCard.get(cardId).items.push({pokemonId:Number(pokemonId),itemKey,snap});
@@ -2537,6 +2573,7 @@ async function enrichMissingVisiblePrices(cards){
       if(d.wishlist[id]){d.wishlist[id]=mergeSnapshotWithCard(d.wishlist[id],card,defaultVariantForCard(card));changed=true;}
     });
     if(changed){saveCardDetailStore();updateCollectionValueUI();persistCardDetails(pokemonId).catch(()=>{});}
+    try{if(typeof v12CatalogPut==='function')await v12CatalogPut(pokemonId,currentModalCards,{touchCatalog:false});}catch(_){}
     renderModalCards(false,true);
   }
 }
@@ -2825,8 +2862,8 @@ function renderModalCards(resetLimit=false,skipEnrich=false){
     await openVariantModal(card,currentModalPokemon);
   };
   body.querySelectorAll('[data-open-variants]').forEach(el=>{
-    el.addEventListener('click',()=>{requestProFoilMotionPermission();openVariantFromElement(el)});
-    el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();requestProFoilMotionPermission();openVariantFromElement(el);}});
+    el.addEventListener('click',()=>{requestV12MotionPermission();openVariantFromElement(el)});
+    el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();requestV12MotionPermission();openVariantFromElement(el);}});
   });
   body.querySelectorAll('[data-wish-card]').forEach(btn=>{
     btn.addEventListener('click',async()=>{
@@ -2870,7 +2907,7 @@ function renderVariantModal(){
   document.getElementById('variantModalTitle').textContent=card.name;
   document.getElementById('variantModalSub').textContent=`${card.set?.name||'Set'} · #${card.number||'—'} · variante física`;
   document.getElementById('variantImageBadge').textContent=image.label;
-  renderVariantHeroVisual(card,v,image);
+  renderVariantHeroVisual(card,v,image).catch(e=>console.warn('Visual da variante:',e));
   document.getElementById('variantIdentity').innerHTML=`<strong>${escapeHtml(card.name)}</strong><span>${escapeHtml(card.set?.name||'')} · ${escapeHtml(card.set?.ptcgoCode||card.set?.id||'')} #${escapeHtml(card.number||'—')}<br>${escapeHtml(card.rarity||'Carta Pokémon')}</span><em>${vars.length} variante${vars.length===1?'':'s'} encontrada${vars.length===1?'':'s'}</em>`;
   document.getElementById('variantSelector').innerHTML=vars.map(x=>`<button type="button" class="variant-choice ${String(x.key)===String(v.key)?'active':''} ${isSpecificCardOwned(pokemon.id,card.id,x.key)?'owned':''}" data-variant-select="${escapeHtml(x.key)}">${escapeHtml(x.label)}</button>`).join('');
   document.getElementById('variantSelectedName').textContent=v.label;
@@ -2887,7 +2924,7 @@ function renderVariantModal(){
   const meta=[`<strong>Tipo:</strong> ${escapeHtml(v.type||'normal')}`,v.foil?`<strong>Foil:</strong> ${escapeHtml(foilPretty(v.foil))}`:'',v.subtype?`<strong>Subtipo:</strong> ${escapeHtml(v.subtype.replace(/-/g,' '))}`:'',v.stamps?.length?`<strong>Selo:</strong> ${escapeHtml(v.stamps.join(', ').replace(/-/g,' '))}`:'',v.cardmarketId?`<strong>Cardmarket:</strong> #${v.cardmarketId}`:'',v.tcgplayerId?`<strong>TCGPlayer:</strong> #${v.tcgplayerId}`:''].filter(Boolean).join('<br>');
   document.getElementById('variantMetaCard').innerHTML=meta||'Versão física desta carta.';
   document.getElementById('variantDataNote').innerHTML=`<b>Visual físico:</b> todas as variantes respondem ao rato/dedo e ao movimento do iPhone quando autorizado. ${image.effect==='normal'?'A variante Normal tem apenas reflexo de superfície, sem holografia.':image.effect==='holo'?'Na Holo, o foil fica concentrado na janela da ilustração.':image.effect==='reverse'?'Na Reverse Holo, o foil fica no corpo da carta à volta da ilustração.':'O padrão especial é aplicado de acordo com o tipo de foil identificado.'}`;
-  document.querySelectorAll('[data-variant-select]').forEach(btn=>btn.addEventListener('click',()=>{currentVariantSelectedKey=btn.dataset.variantSelect;requestVariantMotionPermission();renderVariantModal();}));
+  document.querySelectorAll('[data-variant-select]').forEach(btn=>btn.addEventListener('click',()=>{currentVariantSelectedKey=btn.dataset.variantSelect;requestV12MotionPermission();renderVariantModal();}));
   ownBtn.onclick=async()=>{
     const wasOwned=isSpecificCardOwned(pokemon.id,card.id,v.key);
     if(!wasOwned) await ensurePokemonOwnedFromSpecificCard(pokemon.id);
@@ -2900,7 +2937,7 @@ function renderVariantModal(){
 async function openVariantModal(card,pokemon){
   currentVariantCard=card; currentVariantPokemon=pokemon; currentVariantSelectedKey=null;
   const modal=document.getElementById('variantModal'); modal.classList.add('open'); modal.setAttribute('aria-hidden','false');
-  try{ requestVariantMotionPermission(); }catch(_){}
+  try{ requestV12MotionPermission(); }catch(_){}
   document.getElementById('variantModalTitle').textContent=card.name;
   document.getElementById('variantModalSub').textContent='A carregar variantes, imagem e mercados…';
   plainVariantHero(document.getElementById('variantHoloMount'),card,defaultVariantForCard(card),card.images?.large||card.images?.small||'');
@@ -2914,6 +2951,7 @@ async function openVariantModal(card,pokemon){
   if(currentVariantCard===card) renderVariantModal();
 }
 function closeVariantModal(){
+  VARIANT_RENDER_TOKEN++;
   try{ACTIVE_VARIANT_VISUAL?.destroy?.()}catch(e){}ACTIVE_VARIANT_VISUAL=null;ACTIVE_VARIANT_ORIENTATION_TARGET=null;
   const modal=document.getElementById('variantModal');modal.classList.remove('open');modal.setAttribute('aria-hidden','true');currentVariantCard=null;currentVariantPokemon=null;currentVariantSelectedKey=null;
 }
@@ -3035,7 +3073,7 @@ function makeCard(p){
     <div class="card-top"><div class="dex-number">#${String(p.id).padStart(3,'0')}</div><div class="card-ball"></div></div>
     <div class="art-star-badge" title="ART obtida">★</div>
     ${featured?`<div class="featured-card-label">★ ${escapeHtml(featured.variantLabel||'CARTA DA COLEÇÃO')}</div>`:''}
-    <div class="card-image ${featured?'featured-card-image':''}" ${featured?`data-variant-effect="${escapeHtml(variantVisualEffect(variantFromSnapshot(featured)))}" data-variant-image="${escapeHtml(featured.imageSmall||featured.imageLarge||'')}" data-variant-alt="${escapeHtml(`${featured.name} · ${featured.variantLabel||'variante'}`)}" data-variant-card-id="${escapeHtml(featured.id||'')}" data-variant-key="${escapeHtml(featured.variantKey||'default')}" data-variant-label="${escapeHtml(featured.variantLabel||'Variante')}" data-variant-type="${escapeHtml(featured.variantType||'normal')}" data-variant-foil="${escapeHtml(featured.variantFoil||'')}" data-variant-subtype="${escapeHtml(featured.variantSubtype||'')}" data-variant-rarity="${escapeHtml(featured.rarity||'')}"`:''}><img loading="lazy" src="${featured?escapeHtml(featured.imageSmall||featured.imageLarge):artworkUrl(p.id)}" alt="${featured?escapeHtml(featured.name):pretty(p.name)}" onerror="this.onerror=null;this.src='${fallbackArtworkUrl(p.id)}'"></div>
+    <div class="card-image ${featured?'featured-card-image':''}" ${featured?`data-variant-effect="${escapeHtml(variantVisualEffect(variantFromSnapshot(featured)))}" data-variant-image="${escapeHtml(featured.canonicalImageSmall||featured.canonicalImageLarge||featured.imageSmall||featured.imageLarge||'')}" data-variant-alt="${escapeHtml(`${featured.name} · ${featured.variantLabel||'variante'}`)}" data-variant-card-id="${escapeHtml(featured.id||'')}" data-variant-key="${escapeHtml(featured.variantKey||'default')}" data-variant-label="${escapeHtml(featured.variantLabel||'Variante')}" data-variant-type="${escapeHtml(featured.variantType||'normal')}" data-variant-foil="${escapeHtml(featured.variantFoil||'')}" data-variant-subtype="${escapeHtml(featured.variantSubtype||'')}" data-variant-rarity="${escapeHtml(featured.rarity||'')}"`:''}><img loading="lazy" src="${featured?escapeHtml(featured.canonicalImageSmall||featured.canonicalImageLarge||featured.imageSmall||featured.imageLarge):artworkUrl(p.id)}" alt="${featured?escapeHtml(featured.name):pretty(p.name)}" onerror="this.onerror=null;this.src='${fallbackArtworkUrl(p.id)}'"></div>
     <div class="completion-badge">EM FALTA</div>
     <div class="type-row" data-id="${p.id}">${typeMarkup(p.id)}</div>
     <h3 class="dex-name">${pretty(p.name)}</h3>
@@ -3527,7 +3565,7 @@ window.addEventListener('appinstalled',()=>{
 
 if('serviceWorker' in navigator && location.protocol!=='file:'){
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('./sw.js?v=10.16',{updateViaCache:'none'})
+    navigator.serviceWorker.register('./sw.js?v=12.2',{updateViaCache:'none'})
       .then(reg=>reg.update())
       .catch(err=>console.warn('Service Worker:',err));
   });
@@ -3867,7 +3905,7 @@ function showScannerCandidates(candidates,pokemon){
 }
 async function identifyScannedCard(blob,{auto=false}={}){
   const session=scannerSession;
-  if(!auto){clearScannerAuto();const preview=document.getElementById('scannerPreview'),video=document.getElementById('scannerVideo');preview.src=URL.createObjectURL(blob);preview.hidden=false;video.hidden=true;}
+  if(!auto){clearScannerAuto();const preview=document.getElementById('scannerPreview'),video=document.getElementById('scannerVideo');if(video)video.hidden=true;if(preview&&!document.getElementById('scannerModal')?.classList.contains('photo-search')){try{if(preview.dataset.objectUrl)URL.revokeObjectURL(preview.dataset.objectUrl)}catch(_){}const u=URL.createObjectURL(blob);preview.dataset.objectUrl=u;preview.src=u;preview.hidden=false;}}
   try{
     const worker=await ensureScannerOCRWorker();if(session!==scannerSession&&auto)return false;
     if(!auto)setScannerStatus('A ler a carta…','A procurar nome, número e código do set.','working');
@@ -3957,6 +3995,7 @@ const V12_CATALOG_TTL=6*60*60*1000;
 const V12_DB_NAME='pokedex-xl-catalog-v12';
 const V12_DB_STORE='pokemonCards';
 const V12_REFRESHING=new Map();
+const V12_MEMORY_STAMP=new Map();
 let V12_DB_PROMISE=null;
 function v12OpenDB(){
   if(V12_DB_PROMISE)return V12_DB_PROMISE;
@@ -3972,9 +4011,14 @@ async function v12CatalogGet(pokemonId){
   const db=await v12OpenDB();if(!db)return null;
   return await new Promise(resolve=>{try{const tx=db.transaction(V12_DB_STORE,'readonly');const r=tx.objectStore(V12_DB_STORE).get(Number(pokemonId));r.onsuccess=()=>resolve(r.result||null);r.onerror=()=>resolve(null)}catch(_){resolve(null)}});
 }
-async function v12CatalogPut(pokemonId,cards){
+async function v12CatalogPut(pokemonId,cards,{touchCatalog=true}={}){
   const db=await v12OpenDB();if(!db||!Array.isArray(cards)||!cards.length)return;
-  try{await new Promise(resolve=>{const tx=db.transaction(V12_DB_STORE,'readwrite');tx.objectStore(V12_DB_STORE).put({pokemonId:Number(pokemonId),updatedAt:Date.now(),cards});tx.oncomplete=resolve;tx.onerror=resolve;tx.onabort=resolve})}catch(e){console.warn('Cache catálogo',e)}
+  let previous=null;
+  if(!touchCatalog) previous=await v12CatalogGet(pokemonId);
+  const now=Date.now();
+  const record={pokemonId:Number(pokemonId),catalogUpdatedAt:touchCatalog?now:Number(previous?.catalogUpdatedAt||previous?.updatedAt||now),priceUpdatedAt:now,cards};
+  V12_MEMORY_STAMP.set(Number(pokemonId),record.catalogUpdatedAt);
+  try{await new Promise(resolve=>{const tx=db.transaction(V12_DB_STORE,'readwrite');tx.objectStore(V12_DB_STORE).put(record);tx.oncomplete=resolve;tx.onerror=resolve;tx.onabort=resolve})}catch(e){console.warn('Cache catálogo',e)}
 }
 const V12_NETWORK_FETCH_ALL=fetchAllCardsForPokemon;
 async function v12RefreshPokemonCatalog(p){
@@ -3984,7 +4028,7 @@ async function v12RefreshPokemonCatalog(p){
     try{
       CARD_BROWSER_CACHE.delete(id);
       const fresh=await V12_NETWORK_FETCH_ALL(p,null);
-      if(Array.isArray(fresh)&&fresh.length){CARD_BROWSER_CACHE.set(id,fresh);await v12CatalogPut(id,fresh);if(currentModalPokemon?.id===id){currentModalCards=fresh;renderModalCards(false,true);const s=document.getElementById('artModalSummary');if(s)s.innerHTML=`${fresh.length} cartas <span class="cache-live-note">✓ ATUALIZADO</span>`;}return fresh}
+      if(Array.isArray(fresh)&&fresh.length){CARD_BROWSER_CACHE.set(id,fresh);await v12CatalogPut(id,fresh,{touchCatalog:true});if(currentModalPokemon?.id===id){currentModalCards=fresh;renderModalCards(false,true);const s=document.getElementById('artModalSummary');if(s)s.innerHTML=`${fresh.length} cartas <span class="cache-live-note">✓ ATUALIZADO</span>`;}return fresh}
     }catch(e){console.warn('Atualização silenciosa catálogo',e);if(previous)CARD_BROWSER_CACHE.set(id,previous)}
     return previous||[];
   })().finally(()=>V12_REFRESHING.delete(id));
@@ -3992,16 +4036,22 @@ async function v12RefreshPokemonCatalog(p){
 }
 fetchAllCardsForPokemon=async function(p,onRetry){
   const id=Number(p.id);
-  if(CARD_BROWSER_CACHE.has(id))return CARD_BROWSER_CACHE.get(id);
+  if(CARD_BROWSER_CACHE.has(id)){
+    const stamp=Number(V12_MEMORY_STAMP.get(id)||0);
+    if(stamp&&Date.now()-stamp>V12_CATALOG_TTL&&!V12_REFRESHING.has(id))setTimeout(()=>v12RefreshPokemonCatalog(p),50);
+    return CARD_BROWSER_CACHE.get(id);
+  }
   const stored=await v12CatalogGet(id);
   if(stored?.cards?.length){
     CARD_BROWSER_CACHE.set(id,stored.cards);
-    const stale=Date.now()-Number(stored.updatedAt||0)>V12_CATALOG_TTL;
-    setTimeout(()=>v12RefreshPokemonCatalog(p),stale?80:1200);
+    const stamp=Number(stored.catalogUpdatedAt||stored.updatedAt||0);
+    V12_MEMORY_STAMP.set(id,stamp);
+    const stale=Date.now()-stamp>V12_CATALOG_TTL;
+    if(stale)setTimeout(()=>v12RefreshPokemonCatalog(p),80);
     return stored.cards;
   }
   const fresh=await V12_NETWORK_FETCH_ALL(p,onRetry);
-  if(fresh?.length)v12CatalogPut(id,fresh);
+  if(fresh?.length)await v12CatalogPut(id,fresh,{touchCatalog:true});
   return fresh;
 };
 
@@ -4072,7 +4122,7 @@ function v12ShowVisualCandidates(result,pokemon){if(!result?.top?.length)return;
 
 identifyScannedCard=async function(blob,{auto=false}={}){
   const session=scannerSession;
-  if(!auto){clearScannerAuto();const preview=document.getElementById('scannerPreview'),video=document.getElementById('scannerVideo');preview.src=URL.createObjectURL(blob);preview.hidden=false;video.hidden=true}
+  if(!auto){clearScannerAuto();const preview=document.getElementById('scannerPreview'),video=document.getElementById('scannerVideo');if(video)video.hidden=true;if(preview&&!document.getElementById('scannerModal')?.classList.contains('photo-search')){try{if(preview.dataset.objectUrl)URL.revokeObjectURL(preview.dataset.objectUrl)}catch(_){}const u=URL.createObjectURL(blob);preview.dataset.objectUrl=u;preview.src=u;preview.hidden=false;}}
   try{
     const worker=await ensureScannerOCRWorker();if(session!==scannerSession&&auto)return false;
     setScannerStatus('A identificar carta…','Nome, número e imagem são analisados em conjunto.','working');
@@ -4101,6 +4151,24 @@ startScannerCamera=async function(){
   try{const track=scannerStream?.getVideoTracks?.()[0];const caps=track?.getCapabilities?.()||{};const adv={};if(caps.focusMode?.includes?.('continuous'))adv.focusMode='continuous';if(caps.exposureMode?.includes?.('continuous'))adv.exposureMode='continuous';if(caps.whiteBalanceMode?.includes?.('continuous'))adv.whiteBalanceMode='continuous';if(Object.keys(adv).length)await track.applyConstraints({advanced:[adv]})}catch(e){console.debug('Autofoco não disponível',e)}
 };
 
+
+let V12_MOTION_PERMISSION='unknown';
+function requestV12MotionPermission(){
+  try{
+    if(typeof DeviceOrientationEvent==='undefined'){V12_MOTION_PERMISSION='unavailable';return Promise.resolve(false)}
+    if(typeof DeviceOrientationEvent.requestPermission==='function'){
+      if(V12_MOTION_PERMISSION==='granted')return Promise.resolve(true);
+      return DeviceOrientationEvent.requestPermission().then(r=>{V12_MOTION_PERMISSION=r==='granted'?'granted':'denied';return r==='granted'}).catch(()=>{V12_MOTION_PERMISSION='denied';return false});
+    }
+    V12_MOTION_PERMISSION='granted';return Promise.resolve(true);
+  }catch(_){V12_MOTION_PERMISSION='denied';return Promise.resolve(false)}
+}
+function v12StableImageCard(card,v,url,{compact=false}={}){
+  const host=document.createElement('div');host.className='v12-webgl-card'+(compact?' compact':'')+' v12-webgl-fallback';
+  const img=document.createElement('img');img.className='profoil-fallback';img.alt=`${card?.name||'Carta'} · ${v?.label||'variante'}`;img.src=url||card?.images?.large||card?.images?.small||'';host.appendChild(img);
+  return {element:host,destroy:()=>{}};
+}
+
 // ---------- WebGL/GLSL renderer inspirado na arquitetura MIT do Pokebox ----------
 window.__v12ThreeReady=import('https://cdn.jsdelivr.net/npm/three@0.182.0/build/three.module.js').catch(e=>{console.warn('Three.js indisponível',e);return null});
 const V12_SHADER_BASE='https://raw.githubusercontent.com/selop/pokebox/main/src/shaders/';
@@ -4120,25 +4188,25 @@ async function v12WebGLCard(card,v,url,{interactive=true,compact=false}={}){
   const mask=v12CanvasTexture(THREE,'mask',card,v),noise=v12CanvasTexture(THREE,'noise');const uniforms=v12UniformDefaults(THREE,frag,cardTex,mask,noise);if(!uniforms.uPointer)uniforms.uPointer={value:new THREE.Vector2(.5,.5)};if(!uniforms.uBackground)uniforms.uBackground={value:new THREE.Vector2(.5,.5)};if(!uniforms.uFade)uniforms.uFade={value:1};
   const mat=new THREE.ShaderMaterial({vertexShader:vert,fragmentShader:frag,uniforms,transparent:true,side:THREE.DoubleSide});const mesh=new THREE.Mesh(new THREE.PlaneGeometry(1,1.4),mat);scene.add(mesh);
   let mx=.5,my=.5,tx=0,ty=0,raf=0,dead=false,last=performance.now();
-  const CARD_SAFE_MARGIN=.073;
-  const resize=()=>{const r=host.getBoundingClientRect(),w=Math.max(2,Math.round(r.width)),h=Math.max(2,Math.round(r.height));renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()};
+  const CARD_SAFE_MARGIN=.073;let lastW=0,lastH=0;
+  const resize=()=>{const r=host.getBoundingClientRect(),w=Math.max(2,Math.round(r.width)),h=Math.max(2,Math.round(r.height));if(w===lastW&&h===lastH)return;lastW=w;lastH=h;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()};
   const pose=(x,y)=>{mx=Math.max(0,Math.min(1,x));my=Math.max(0,Math.min(1,y));tx=(.5-my)*.19;ty=(mx-.5)*.22};
   const pointer=e=>{const r=host.getBoundingClientRect();if(!r.width||!r.height)return;const rawX=(e.clientX-r.left)/r.width,rawY=(e.clientY-r.top)/r.height;const x=(rawX-CARD_SAFE_MARGIN)/(1-CARD_SAFE_MARGIN*2);const y=(rawY-CARD_SAFE_MARGIN)/(1-CARD_SAFE_MARGIN*2);pose(x,1-y)};if(interactive){host.addEventListener('pointerdown',pointer);host.addEventListener('pointermove',e=>{if(e.pointerType==='mouse'||e.buttons)pointer(e)})}
-  let orient=null;if(interactive){try{if(typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function')await DeviceOrientationEvent.requestPermission().catch(()=>null)}catch(_){}orient=e=>{const g=Number(e.gamma),b=Number(e.beta);if(Number.isFinite(g)&&Number.isFinite(b))pose(.5+Math.max(-28,Math.min(28,g))/70,.5-Math.max(-25,Math.min(25,b-45))/65)};window.addEventListener('deviceorientation',orient,{passive:true})}
+  let orient=null;if(interactive){orient=e=>{if(V12_MOTION_PERMISSION!=='granted'&&typeof DeviceOrientationEvent?.requestPermission==='function')return;const g=Number(e.gamma),b=Number(e.beta);if(Number.isFinite(g)&&Number.isFinite(b))pose(.5+Math.max(-28,Math.min(28,g))/70,.5-Math.max(-25,Math.min(25,b-45))/65)};window.addEventListener('deviceorientation',orient,{passive:true})}
   const loop=now=>{if(dead)return;resize();mesh.rotation.x+=(tx-mesh.rotation.x)*.12;mesh.rotation.y+=(ty-mesh.rotation.y)*.12;uniforms.uPointer?.value?.set?.(mx,my);uniforms.uBackground?.value?.set?.(.37+mx*.26,.37+my*.26);if(uniforms.uPointerFromCenter)uniforms.uPointerFromCenter.value=Math.hypot(mx-.5,my-.5)*2;if(uniforms.uTime)uniforms.uTime.value+=(now-last)/1000;last=now;renderer.render(scene,camera);raf=requestAnimationFrame(loop)};raf=requestAnimationFrame(loop);
   return {element:host,destroy:()=>{dead=true;cancelAnimationFrame(raf);if(orient)window.removeEventListener('deviceorientation',orient);try{cardTex.dispose();mask.dispose();noise.dispose();mat.dispose();mesh.geometry.dispose();renderer.dispose()}catch(_){}}}
 }
-const V12_OLD_PROFOIL=createProFoilCard;
 createProFoilCard=async function(card,v,url,opts={}){
-  try{return await v12WebGLCard(card,v,url,opts)}catch(e){console.warn('WebGL PRO fallback',e);return V12_OLD_PROFOIL(card,v,url,opts)}
+  try{return await v12WebGLCard(card,v,url,opts)}catch(e){console.warn('WebGL indisponível; a usar imagem estável:',e);return v12StableImageCard(card,v,url,opts)}
 };
+requestProFoilMotionPermission=requestV12MotionPermission;
 
 // Pré-aquecimento: o scanner e os shaders ficam prontos antes do primeiro uso.
 window.addEventListener('load',()=>{
   setTimeout(()=>{ensureScannerOCRWorker().catch(()=>{});v12OpenDB().catch?.(()=>{});},900);
   setTimeout(()=>{Promise.allSettled([window.__v12ThreeReady,v12LoadShader('holo.vert'),v12LoadShader('regular-holo.frag'),v12LoadShader('reverse-holo.frag'),v12LoadShader('master-ball.frag')]);},1500);
 });
-console.info('POKÉDEX XL v12.1 FINAL STABLE carregada');
+console.info('POKÉDEX XL v12.2 FINAL AUDITED carregada');
 
 document.getElementById('resetGenBtn').addEventListener('click',()=>{state.generation=null;state.page=1;renderCurrentPage()});
 </script>

@@ -1,4 +1,4 @@
-const CACHE_NAME='pokedex-xl-v12-1-final-stable';
+const CACHE_NAME='pokedex-xl-v12-2-final-audited';
 const SHELL=['./','./index.html','./manifest.webmanifest','./icon-180.png','./icon-192.png','./icon-512.png'];
 
 self.addEventListener('install',event=>{
