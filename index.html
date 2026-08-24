@@ -8,8 +8,9 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="Pokédex XL">
 <link rel="manifest" href="manifest.webmanifest">
-<title>Pokédex XL — Master Set · v10.16</title>
+<title>Pokédex XL — Master Set · v10.17 RealFoil</title>
 <link rel="apple-touch-icon" href="icon-180.png">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@kongyo2/cards-css@0.5.0/dist/holo-cards.css">
 <style>
 :root{
   --bg:#04080d;
@@ -801,6 +802,19 @@ body:not(.auth-locked) .auth-gate{opacity:0;visibility:hidden;pointer-events:non
   .scanner-candidates{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.scanner-candidate-info{padding:6px}.scanner-candidate-info strong{font-size:8px}.scanner-candidate-info span{font-size:6px}
 }
 
+
+/* ===== v10.17 · VARIANTES VISUAIS PROFISSIONAIS ===== */
+.variant-holo-mount{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:17px}
+.variant-holo-mount>img{width:100%;height:100%;object-fit:contain;display:block}
+.variant-holo-mount>.holo-card,.variant-holo-mount .holo-card{width:100%!important;max-width:100%!important;height:100%!important;max-height:100%!important;margin:0!important}
+.variant-holo-mount .holo-card__rotator,.variant-holo-mount .holo-card__front{width:100%!important;height:100%!important}
+.variant-holo-mount .holo-card__front{background-size:contain!important;background-position:center!important;background-repeat:no-repeat!important}
+.variant-image-shell.variant-loading:after{content:'A aplicar acabamento…';position:absolute;left:50%;top:50%;z-index:12;transform:translate(-50%,-50%);padding:7px 10px;border-radius:10px;background:rgba(5,10,16,.86);color:#dce6ee;font-size:8px;font-weight:950;pointer-events:none}
+.featured-card-image.variant-featured{isolation:isolate}
+.featured-card-image.variant-featured .holo-card{width:100%!important;height:100%!important;max-width:100%!important;max-height:100%!important;margin:0!important}
+.featured-card-image.variant-featured .holo-card__rotator,.featured-card-image.variant-featured .holo-card__front{width:100%!important;height:100%!important}
+.featured-card-image.variant-featured .holo-card__front{background-size:contain!important;background-position:center!important;background-repeat:no-repeat!important}
+@media(max-width:760px){.variant-holo-mount{border-radius:13px}}
 </style>
 </head>
 <body class="auth-locked">
@@ -963,8 +977,8 @@ body:not(.auth-locked) .auth-gate{opacity:0;visibility:hidden;pointer-events:non
     </div>
     <div class="variant-pro-body">
       <section class="variant-showcase">
-        <div class="variant-image-shell">
-          <img id="variantHeroImage" alt="Carta selecionada">
+        <div class="variant-image-shell" id="variantImageShell">
+          <div class="variant-holo-mount" id="variantHoloMount"><img id="variantHeroImage" alt="Carta selecionada"></div>
           <div class="variant-image-badge" id="variantImageBadge">Imagem da carta</div>
         </div>
         <div class="variant-identity" id="variantIdentity"></div>
@@ -993,7 +1007,7 @@ body:not(.auth-locked) .auth-gate{opacity:0;visibility:hidden;pointer-events:non
 <div class="scanner-modal" id="scannerModal" aria-hidden="true">
   <div class="scanner-panel" role="dialog" aria-modal="true" aria-labelledby="scannerTitle">
     <div class="scanner-head">
-      <div><h3 id="scannerTitle">Scanear carta</h3><p>Aponta para a carta inteira. Vamos identificar Pokémon + número e abrir a impressão certa.</p></div>
+      <div><h3 id="scannerTitle">Scanear carta</h3><p>Aponta para a carta inteira. A leitura é automática e abre diretamente a impressão certa quando a identificação é segura.</p></div>
       <button class="scanner-close" id="scannerClose" aria-label="Fechar">×</button>
     </div>
     <div class="scanner-body">
@@ -1005,12 +1019,12 @@ body:not(.auth-locked) .auth-gate{opacity:0;visibility:hidden;pointer-events:non
       </div>
       <div class="scanner-status" id="scannerStatus"><strong>Pronto para scanear</strong><span>A leitura é feita no dispositivo. Tenta evitar reflexos fortes sobre a carta.</span></div>
       <div class="scanner-actions">
-        <button type="button" class="scanner-capture" id="scannerCapture">📸 Capturar</button>
+        <button type="button" class="scanner-capture" id="scannerCapture">◎ Forçar leitura</button>
         <button type="button" class="scanner-photo" id="scannerPhotoBtn">🖼 Escolher foto</button>
       </div>
       <input type="file" id="scannerFile" accept="image/*" capture="environment" hidden>
       <div class="scanner-candidates" id="scannerCandidates"></div>
-      <div class="scanner-privacy">O scanner usa OCR local no browser. Se a identificação não for única, escolhes visualmente a carta certa antes de abrir as variantes.</div>
+      <div class="scanner-privacy">O scanner analisa automaticamente a imagem no dispositivo. Só mostra candidatos quando não consegue decidir com segurança.</div>
     </div>
   </div>
 </div>
@@ -1268,6 +1282,60 @@ const FIRST_PARTNER_30TH_PROMOS={
 
 
 
+
+// MEP BLACK STAR PROMOS — 064–093
+// Garantia local para promos recentes que podem demorar a chegar às APIs generalistas.
+// 092 é Trainer e por isso não entra numa Pokédex organizada por Pokémon.
+const MEP_RECENT_PROMOS=[
+  {mep:'064',name:'Serperior',pokemonId:497},
+  {mep:'065',name:'Barbaracle',pokemonId:689},
+  {mep:'066',name:'Tyrantrum',pokemonId:697},
+  {mep:'067',name:'Doublade',pokemonId:680},
+  {mep:'068',name:'Makuhita',pokemonId:296},
+  {mep:'069',name:'Chikorita',pokemonId:152},
+  {mep:'070',name:'Tyrunt',pokemonId:696},
+  {mep:'071',name:'Mega Zygarde ex',pokemonId:718},
+  {mep:'072',name:'Mega Clefable ex',pokemonId:36},
+  {mep:'073',name:'Mega Gengar ex',pokemonId:94},
+  {mep:'074',name:'Delphox',pokemonId:655},
+  {mep:'075',name:'Ampharos',pokemonId:181},
+  {mep:'076',name:'Crobat',pokemonId:169},
+  {mep:'077',name:'Goodra',pokemonId:706},
+  {mep:'078',name:'Toxel',pokemonId:848},
+  {mep:'079',name:'Charmeleon',pokemonId:5},
+  {mep:'080',name:'Fennekin',pokemonId:653},
+  {mep:'081',name:'Mega Greninja ex',pokemonId:658},
+  {mep:'082',name:'Miraidon',pokemonId:1008},
+  {mep:'083',name:'Slowbro',pokemonId:80},
+  {mep:'084',name:'Dhelmise',pokemonId:781},
+  {mep:'085',name:'Bastiodon',pokemonId:411},
+  {mep:'086',name:'Slowpoke',pokemonId:79},
+  {mep:'087',name:'Binacle',pokemonId:688},
+  {mep:'088',name:'Zarude',pokemonId:893},
+  {mep:'089',name:'Mega Zeraora ex',pokemonId:807,releaseDate:'2026-08-28'},
+  {mep:'090',name:'Mega Darkrai ex',pokemonId:491,releaseDate:'2026-08-28'},
+  {mep:'091',name:'Mega Dragonite ex',pokemonId:149,releaseDate:'2026-08-28'},
+  {mep:'093',name:'Pikachu',pokemonId:25,releaseDate:'2026-08-21'}
+];
+const MEP_RECENT_BY_POKEMON=new Map();
+MEP_RECENT_PROMOS.forEach(x=>{if(!MEP_RECENT_BY_POKEMON.has(x.pokemonId))MEP_RECENT_BY_POKEMON.set(x.pokemonId,[]);MEP_RECENT_BY_POKEMON.get(x.pokemonId).push(x)});
+function recentMepCardsForPokemon(pokemonId){
+  return (MEP_RECENT_BY_POKEMON.get(Number(pokemonId))||[]).map(raw=>{
+    const imageBase=`https://assets.tcgdex.net/en/me/mep/${raw.mep}`;
+    const marketName=raw.name.replace(/[^A-Za-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+    return {
+      id:`mep-${raw.mep}`,name:raw.name,number:raw.mep,supertype:'Pokémon',subtypes:['Pokémon'],rarity:'Promo',
+      nationalPokedexNumbers:[raw.pokemonId],
+      set:{id:'mep',name:'MEP Black Star Promos',series:'Mega Evolution',ptcgoCode:'MEP',releaseDate:raw.releaseDate||''},
+      images:{small:`${imageBase}/low.webp`,large:`${imageBase}/high.webp`},cardmarket:null,
+      __marketUrl:`https://www.cardmarket.com/en/Pokemon/Products/Singles/MEP-Black-Star-Promos/${marketName}-MEP${raw.mep}`,
+      __source:'TCGdex · MEP Black Star Promos · garantia local',
+      __mepRecent:true,__upcoming30:raw.releaseDate?isCardUpcoming({releaseDate:raw.releaseDate}):false,
+      __tcgdexPriceChecked:false,__tcgdexVariantsChecked:false,__tcgdexCardmarket:null,__tcgdexPriceUpdated:null
+    };
+  });
+}
+
 // 30TH CELEBRATION — CARTAS REVELADAS / PRÉ-LANÇAMENTO
 // Snapshot preparado em 23-08-2026. O set principal é 30C (lançamento 16-09-2026).
 // As imagens das cartas ainda não indexadas nas APIs vêm das scans públicas compiladas
@@ -1413,7 +1481,86 @@ function variantTcgplayerImageUrl(card,variant){
 }
 function variantImageInfo(card,variant){
   const id=Number(variant?.tcgplayerId)||null;
-  return {url:variantTcgplayerImageUrl(card,variant),label:id?'Imagem do produto TCGPlayer':'Scan da impressão base',exact:!!id};
+  const effect=variantVisualEffect(variant);
+  return {url:variantTcgplayerImageUrl(card,variant),label:effect==='none'?(id?'Imagem da impressão':'Scan da impressão base'):`${variant?.label||'Variante'} · acabamento interativo`,exact:!!id,effect};
+}
+let VARIANT_HOLO_LIB_PROMISE=null;
+let ACTIVE_VARIANT_HOLO=null;
+let VARIANT_HERO_TOKEN=0;
+let VARIANT_MOTION_PERMISSION_TRIED=false;
+async function requestVariantMotionPermission(){
+  if(VARIANT_MOTION_PERMISSION_TRIED)return;
+  VARIANT_MOTION_PERMISSION_TRIED=true;
+  try{
+    const lib=await loadVariantHoloLib();
+    if(typeof lib?.requestOrientationPermission==='function') await lib.requestOrientationPermission();
+  }catch(e){console.debug('Movimento iOS não autorizado; o efeito continua por toque.',e);}
+}
+function variantVisualEffect(v){
+  const type=String(v?.type||'normal').toLowerCase();
+  const foil=String(v?.foil||'').toLowerCase();
+  const sub=String(v?.subtype||'').toLowerCase();
+  const all=`${foil} ${sub}`;
+  if(/masterball|master-ball/.test(all)) return 'prism';
+  if(/pokeball|poke-ball|greatball|great-ball|ultraball|ultra-ball|loveball|friendball|quickball|duskball/.test(all)) return 'mosaic';
+  if(/cosmos|galaxy/.test(all)) return 'cosmos';
+  if(/cracked-ice|cracked ice|ice/.test(all)) return 'crystal';
+  if(/rainbow/.test(all)) return 'rainbow';
+  if(/gold/.test(all)) return 'gold';
+  if(/glitter|sparkle|tinsel/.test(all)) return 'glitter';
+  if(/metal/.test(all)||type==='metal') return 'metal';
+  if(/radiant/.test(all)) return 'radiant';
+  if(type==='reverse') return 'reverse';
+  if(type==='holo') return 'holo';
+  return 'none';
+}
+function variantTextureSeed(card,v){
+  const s=`${card?.id||''}|${v?.key||''}`;let h=2166136261;
+  for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}
+  return Math.abs(h>>>0)||1;
+}
+async function loadVariantHoloLib(){
+  if(!VARIANT_HOLO_LIB_PROMISE) VARIANT_HOLO_LIB_PROMISE=import('https://cdn.jsdelivr.net/npm/@kongyo2/cards-css@0.5.0/dist/index.js').catch(err=>{console.warn('Foil engine indisponível',err);return null});
+  return VARIANT_HOLO_LIB_PROMISE;
+}
+function plainVariantHero(mount,card,v,url){
+  mount.innerHTML='';const img=document.createElement('img');img.id='variantHeroImage';img.alt=`${card?.name||'Carta'} · ${v?.label||'variante'}`;img.src=url||card?.images?.large||card?.images?.small||'';
+  img.onerror=()=>{img.onerror=null;img.src=card?.images?.large||card?.images?.small||''};mount.appendChild(img);
+}
+async function renderVariantHeroVisual(card,v,imageInfo){
+  const shell=document.getElementById('variantImageShell'),mount=document.getElementById('variantHoloMount');if(!mount||!shell)return;
+  const token=++VARIANT_HERO_TOKEN;const url=imageInfo?.url||card?.images?.large||card?.images?.small||'';const effect=imageInfo?.effect||variantVisualEffect(v);
+  try{ACTIVE_VARIANT_HOLO?.destroy?.()}catch(e){} ACTIVE_VARIANT_HOLO=null;
+  plainVariantHero(mount,card,v,url);
+  if(effect==='none') return;
+  shell.classList.add('variant-loading');
+  const lib=await loadVariantHoloLib();
+  if(token!==VARIANT_HERO_TOKEN||String(selectedVariantForModal()?.key)!==String(v?.key)){shell.classList.remove('variant-loading');return;}
+  if(!lib?.createHoloCard){shell.classList.remove('variant-loading');return;}
+  try{
+    const holo=lib.createHoloCard({
+      image:url,imageAlt:`${card.name} · ${v.label}`,effect,interactive:true,
+      gyroscope:{rangeX:18,rangeY:18,sensitivity:1.05},
+      textureSeed:variantTextureSeed(card,v),
+      showcase:{delay:60,duration:1900,loop:false,speed:.92,intensity:.94,respectReducedMotion:false},
+      physics:{maxTilt:15,parallax:.34,glareRange:1.15,returnDelay:70},
+      visual:{brightness:1.06,contrast:1.035,saturate:1.08,glareOpacity:.62,shineOpacity:.93,lineSpace:5,lineAngle:118,glitterSize:1.1}
+    });
+    mount.innerHTML='';mount.appendChild(holo.element);ACTIVE_VARIANT_HOLO=holo;
+  }catch(err){console.warn('Não foi possível aplicar foil',err);plainVariantHero(mount,card,v,url)}
+  finally{shell.classList.remove('variant-loading')}
+}
+async function enhanceVisibleBinderVariants(){
+  const nodes=[...document.querySelectorAll('.featured-card-image[data-variant-effect]:not([data-variant-ready])')];if(!nodes.length)return;
+  const lib=await loadVariantHoloLib();if(!lib?.createHoloCard)return;
+  for(const node of nodes){
+    const effect=node.dataset.variantEffect||'none';node.dataset.variantReady='1';if(effect==='none')continue;
+    const url=node.dataset.variantImage||node.querySelector('img')?.src||'';if(!url)continue;
+    try{
+      const holo=lib.createHoloCard({image:url,imageAlt:node.dataset.variantAlt||'Carta da coleção',effect,interactive:false,gyroscope:false,textureSeed:Number(node.dataset.variantSeed)||1,visual:{brightness:1.01,contrast:1.01,saturate:1.02,glareOpacity:.18,shineOpacity:.34}});
+      node.innerHTML='';node.appendChild(holo.element);node.classList.add('variant-featured');
+    }catch(e){}
+  }
 }
 function bestTcgPrice(p){
   if(!p) return {value:Infinity,label:'sem preço'};
@@ -2205,6 +2352,20 @@ async function fetchAllCardsForPokemon(p,onRetry){
       }
     }
 
+    // Garante também as MEP 064–093 associadas a Pokémon.
+    for(const manual of recentMepCardsForPokemon(id)){
+      const idx=all.findIndex(c=>String(c?.id||'').toLowerCase()===manual.id.toLowerCase() || (String(c?.set?.id||'').toLowerCase()==='mep' && normalizeLocalCardNumber(c?.number)===normalizeLocalCardNumber(manual.number)));
+      if(idx>=0){
+        const existing=all[idx];
+        all[idx]={...manual,...existing,
+          images:(existing.images?.small||existing.images?.large)?existing.images:manual.images,
+          __marketUrl:existing.cardmarket?.url||manual.__marketUrl,
+          __mepRecent:true,
+          __source:`${existing.__source||'Pokémon TCG API'} · MEP garantida`
+        };
+      }else all.unshift(manual);
+    }
+
     // Junta cartas 30C reveladas que ainda podem faltar nas APIs. Se a API já tiver
     // a mesma carta, aproveita os dados dela (incluindo Cardmarket) e mantém a scan/metadata.
     for(const manual of preRelease30CardsForPokemon(id)){
@@ -2377,7 +2538,7 @@ function renderModalCards(resetLimit=false,skipEnrich=false){
   const more=filtered.length>shown.length
     ? `<div class="load-more-wrap"><button class="load-more-btn" id="loadMoreCards">Mostrar mais ${Math.min(MODAL_PAGE_STEP,filtered.length-shown.length)} cartas</button></div>`:'';
 
-  body.innerHTML=controls+cardsHtml+more+`<div class="art-modal-note">A pesquisa combina <strong>número da Pokédex + nome do Pokémon</strong> e inclui de forma garantida as <strong>27 promos First Partner do 30.º aniversário (MEP 037–063)</strong>. O botão Cardmarket aparece sempre. Carrega diretamente na <strong>imagem da carta</strong> para escolher a variante física exata, ver preços e decidir qual queres usar no binder. A Wishlist continua ao nível da impressão da carta.</div>`;
+  body.innerHTML=controls+cardsHtml+more+`<div class="art-modal-note">A pesquisa combina <strong>número da Pokédex + nome do Pokémon</strong> e inclui de forma garantida as <strong>promos MEP recentes (037–093, quando associadas a Pokémon)</strong>. O botão Cardmarket aparece sempre. Carrega diretamente na <strong>imagem da carta</strong> para escolher a variante física exata, ver preços e decidir qual queres usar no binder. A Wishlist continua ao nível da impressão da carta.</div>`;
 
   // restore UI values after rerender
   const searchEl=document.getElementById('cardBrowserSearch');
@@ -2455,8 +2616,8 @@ function renderVariantModal(){
   const cmUrl=variantCardmarketUrl(card,v),tpUrl=variantTcgplayerUrl(card,v),viUrl=vintedVariantUrl(card,v),olxUrl=olxVariantUrl(card,v);
   document.getElementById('variantModalTitle').textContent=card.name;
   document.getElementById('variantModalSub').textContent=`${card.set?.name||'Set'} · #${card.number||'—'} · variante física`;
-  const hero=document.getElementById('variantHeroImage'); hero.src=image.url||card.images?.large||card.images?.small||''; hero.alt=`${card.name} · ${v.label}`; hero.onerror=()=>{hero.onerror=null;hero.src=card.images?.large||card.images?.small||'';document.getElementById('variantImageBadge').textContent='Scan da impressão base';};
   document.getElementById('variantImageBadge').textContent=image.label;
+  renderVariantHeroVisual(card,v,image);
   document.getElementById('variantIdentity').innerHTML=`<strong>${escapeHtml(card.name)}</strong><span>${escapeHtml(card.set?.name||'')} · ${escapeHtml(card.set?.ptcgoCode||card.set?.id||'')} #${escapeHtml(card.number||'—')}<br>${escapeHtml(card.rarity||'Carta Pokémon')}</span><em>${vars.length} variante${vars.length===1?'':'s'} encontrada${vars.length===1?'':'s'}</em>`;
   document.getElementById('variantSelector').innerHTML=vars.map(x=>`<button type="button" class="variant-choice ${String(x.key)===String(v.key)?'active':''} ${isSpecificCardOwned(pokemon.id,card.id,x.key)?'owned':''}" data-variant-select="${escapeHtml(x.key)}">${escapeHtml(x.label)}</button>`).join('');
   document.getElementById('variantSelectedName').textContent=v.label;
@@ -2472,8 +2633,8 @@ function renderVariantModal(){
     marketCardHtml('olx','O','OLX','<strong>Pesquisa</strong><small>anúncios atuais</small>','A API oficial não permite ler anúncios de outros utilizadores; abre pesquisa específica',olxUrl,'Ver anúncios');
   const meta=[`<strong>Tipo:</strong> ${escapeHtml(v.type||'normal')}`,v.foil?`<strong>Foil:</strong> ${escapeHtml(foilPretty(v.foil))}`:'',v.subtype?`<strong>Subtipo:</strong> ${escapeHtml(v.subtype.replace(/-/g,' '))}`:'',v.stamps?.length?`<strong>Selo:</strong> ${escapeHtml(v.stamps.join(', ').replace(/-/g,' '))}`:'',v.cardmarketId?`<strong>Cardmarket:</strong> #${v.cardmarketId}`:'',v.tcgplayerId?`<strong>TCGPlayer:</strong> #${v.tcgplayerId}`:''].filter(Boolean).join('<br>');
   document.getElementById('variantMetaCard').innerHTML=meta||'Versão física desta carta.';
-  document.getElementById('variantDataNote').innerHTML=image.exact?'<b>Imagem:</b> usamos a imagem do produto TCGPlayer associada a esta variante. Mesmo assim, o brilho/foil físico pode ser pouco visível numa scan estática.':'<b>Imagem:</b> não existe uma imagem de produto separada exposta para esta variante; mostramos a scan da impressão base. Não simulamos um foil falso.';
-  document.querySelectorAll('[data-variant-select]').forEach(btn=>btn.addEventListener('click',()=>{currentVariantSelectedKey=btn.dataset.variantSelect;renderVariantModal();}));
+  document.getElementById('variantDataNote').innerHTML=image.effect==='none'?'<b>Imagem:</b> variante sem acabamento holográfico adicional.':'<b>Visual RealFoil:</b> inclina o telemóvel ou passa o dedo sobre a carta para veres o brilho desta variante. Quando a base só disponibiliza uma scan comum, o acabamento Holo/Reverse/foil é renderizado por cima da própria carta.';
+  document.querySelectorAll('[data-variant-select]').forEach(btn=>btn.addEventListener('click',()=>{currentVariantSelectedKey=btn.dataset.variantSelect;requestVariantMotionPermission();renderVariantModal();}));
   ownBtn.onclick=async()=>{
     const wasOwned=isSpecificCardOwned(pokemon.id,card.id,v.key);
     if(!wasOwned) await ensurePokemonOwnedFromSpecificCard(pokemon.id);
@@ -2488,8 +2649,8 @@ async function openVariantModal(card,pokemon){
   const modal=document.getElementById('variantModal'); modal.classList.add('open'); modal.setAttribute('aria-hidden','false');
   document.getElementById('variantModalTitle').textContent=card.name;
   document.getElementById('variantModalSub').textContent='A carregar variantes, imagem e mercados…';
-  document.getElementById('variantHeroImage').src=card.images?.large||card.images?.small||'';
-  document.getElementById('variantImageBadge').textContent='A confirmar imagem…';
+  plainVariantHero(document.getElementById('variantHoloMount'),card,defaultVariantForCard(card),card.images?.large||card.images?.small||'');
+  document.getElementById('variantImageBadge').textContent='A confirmar variante…';
   document.getElementById('variantIdentity').innerHTML=`<strong>${escapeHtml(card.name)}</strong><span>${escapeHtml(card.set?.name||'')} · #${escapeHtml(card.number||'—')}</span>`;
   document.getElementById('variantSelector').innerHTML='<div class="art-loading"><div class="art-spinner"></div></div>';
   document.getElementById('variantMarketGrid').innerHTML='<div class="art-loading"><div class="art-spinner"></div><div>A consultar Cardmarket e TCGPlayer…</div></div>';
@@ -2619,7 +2780,7 @@ function makeCard(p){
     <div class="card-top"><div class="dex-number">#${String(p.id).padStart(3,'0')}</div><div class="card-ball"></div></div>
     <div class="art-star-badge" title="ART obtida">★</div>
     ${featured?`<div class="featured-card-label">★ ${escapeHtml(featured.variantLabel||'CARTA DA COLEÇÃO')}</div>`:''}
-    <div class="card-image ${featured?'featured-card-image':''}"><img loading="lazy" src="${featured?escapeHtml(featured.imageSmall||featured.imageLarge):artworkUrl(p.id)}" alt="${featured?escapeHtml(featured.name):pretty(p.name)}" onerror="this.onerror=null;this.src='${fallbackArtworkUrl(p.id)}'"></div>
+    <div class="card-image ${featured?'featured-card-image':''}" ${featured?`data-variant-effect="${escapeHtml(variantVisualEffect(variantFromSnapshot(featured)))}" data-variant-image="${escapeHtml(featured.imageSmall||featured.imageLarge||'')}" data-variant-alt="${escapeHtml(`${featured.name} · ${featured.variantLabel||'variante'}`)}" data-variant-seed="${variantTextureSeed({id:featured.id},variantFromSnapshot(featured))}"`:''}><img loading="lazy" src="${featured?escapeHtml(featured.imageSmall||featured.imageLarge):artworkUrl(p.id)}" alt="${featured?escapeHtml(featured.name):pretty(p.name)}" onerror="this.onerror=null;this.src='${fallbackArtworkUrl(p.id)}'"></div>
     <div class="completion-badge">EM FALTA</div>
     <div class="type-row" data-id="${p.id}">${typeMarkup(p.id)}</div>
     <h3 class="dex-name">${pretty(p.name)}</h3>
@@ -2816,6 +2977,7 @@ function renderCurrentPage(refreshCounts=true){
   const list=document.getElementById('list');
   list.innerHTML='';
   pageData.forEach(p=>list.appendChild(makeCard(p)));
+  enhanceVisibleBinderVariants().catch(()=>{});
 
   if(refreshCounts) updateCounts();
   renderPagination(totalPages);
@@ -3313,15 +3475,23 @@ document.getElementById('installBtn').addEventListener('click',async()=>{
 
 
 
-// ===== v10.15 · SCANNER DE CARTAS =====
+// ===== v10.17 · SCANNER AUTOMÁTICO DE CARTAS =====
 let scannerStream=null;
 let scannerCandidateContext=[];
+let scannerAutoTimer=null;
+let scannerAutoBusy=false;
+let scannerSession=0;
+let scannerStableKey='';
+let scannerStableHits=0;
+let scannerOCRWorkerPromise=null;
 function setScannerStatus(title,detail='',kind=''){
   const el=document.getElementById('scannerStatus'); if(!el) return;
   el.className='scanner-status'+(kind?' '+kind:'');
   el.innerHTML=`<strong>${escapeHtml(title)}</strong><span>${escapeHtml(detail)}</span>`;
 }
+function clearScannerAuto(){if(scannerAutoTimer){clearTimeout(scannerAutoTimer);scannerAutoTimer=null}scannerAutoBusy=false;scannerStableKey='';scannerStableHits=0;scannerSession++;}
 function stopScannerCamera(){
+  clearScannerAuto();
   if(scannerStream){scannerStream.getTracks().forEach(t=>t.stop());scannerStream=null;}
   const video=document.getElementById('scannerVideo'); if(video) video.srcObject=null;
 }
@@ -3329,18 +3499,21 @@ async function startScannerCamera(){
   const video=document.getElementById('scannerVideo'),preview=document.getElementById('scannerPreview');
   if(preview) preview.hidden=true; if(video) video.hidden=false;
   stopScannerCamera();
-  if(!navigator.mediaDevices?.getUserMedia){setScannerStatus('Câmara não disponível','Usa “Escolher foto” para fotografar a carta com a câmara do iPhone.','bad');return;}
+  const mySession=scannerSession;
+  if(!navigator.mediaDevices?.getUserMedia){setScannerStatus('Câmara não disponível','Usa “Escolher foto” para fotografar a carta.','bad');return;}
   try{
     scannerStream=await navigator.mediaDevices.getUserMedia({audio:false,video:{facingMode:{ideal:'environment'},width:{ideal:1440},height:{ideal:1920}}});
+    if(mySession!==scannerSession){scannerStream?.getTracks().forEach(t=>t.stop());return;}
     video.srcObject=scannerStream; await video.play();
-    setScannerStatus('Enquadra a carta inteira','Mantém o telemóvel direito e evita reflexos fortes.');
+    setScannerStatus('Leitura automática ativa','Mantém a carta dentro da moldura. Assim que a identificação for segura, abrimos a carta diretamente.','working');
+    scheduleScannerAuto(650);
   }catch(e){
     console.warn('Scanner camera',e);setScannerStatus('Não foi possível abrir a câmara','Podes usar “Escolher foto” — no iPhone abre a câmara/galeria nativa.','bad');
   }
 }
 function openScanner(){
   const modal=document.getElementById('scannerModal');modal.classList.add('open');modal.setAttribute('aria-hidden','false');
-  document.getElementById('scannerCandidates').innerHTML='';scannerCandidateContext=[];
+  document.getElementById('scannerCandidates').innerHTML='';scannerCandidateContext=[];scannerStableKey='';scannerStableHits=0;
   startScannerCamera();
 }
 function closeScanner(){
@@ -3351,6 +3524,12 @@ async function ensureScannerOCR(){
   setScannerStatus('A preparar reconhecimento…','Na primeira utilização é necessário carregar o motor OCR.','working');
   await new Promise((resolve,reject)=>{const sc=document.createElement('script');sc.src='https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js';sc.async=true;sc.onload=resolve;sc.onerror=()=>reject(new Error('Não foi possível carregar o OCR'));document.head.appendChild(sc);});
   return window.Tesseract;
+}
+async function ensureScannerOCRWorker(){
+  if(!scannerOCRWorkerPromise){
+    scannerOCRWorkerPromise=(async()=>{const T=await ensureScannerOCR();return await T.createWorker('eng',1,{logger:m=>{if(m.status==='recognizing text'&&document.getElementById('scannerModal')?.classList.contains('open')){const pct=Math.round((m.progress||0)*100);setScannerStatus('A reconhecer automaticamente…',`${pct}% · mantém a carta quieta`,'working')}}})})().catch(e=>{scannerOCRWorkerPromise=null;throw e});
+  }
+  return scannerOCRWorkerPromise;
 }
 function scanNorm(v){return String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();}
 function scanCompact(v){return scanNorm(v).replace(/\s+/g,'');}
@@ -3364,68 +3543,103 @@ function pokemonFromScanText(text){
   }
   return bestScore>=65?best:null;
 }
-function collectorNumberFromScanText(text){
-  const upper=String(text||'').toUpperCase();
-  const slash=[...upper.matchAll(/\b([A-Z]{0,3}\s*-?\s*\d{1,3})\s*[\/|]\s*(\d{1,3})\b/g)];
-  if(slash.length){const raw=slash[slash.length-1][1].replace(/\s+/g,'');const m=raw.match(/(\d{1,3})$/);return m?String(Number(m[1])):raw;}
-  const promo=upper.match(/\b(?:MEP|SVP|SWSH|SM)\s*[- ]?\s*(\d{2,3})\b/);if(promo)return String(Number(promo[1]));
+function scanSetCode(text){
+  const upper=String(text||'').toUpperCase().replace(/[|]/g,'I');
+  const known=upper.match(/\b(MEP|SVP|SWSH|SM|SMP|XYP|BWP|DP|HGSS)\s*[- ]?\s*\d{2,3}\b/);if(known)return known[1];
   return null;
 }
-function cardScanScore(card,text,targetNum){
+function collectorNumberFromScanText(text){
+  const upper=String(text||'').toUpperCase();
+  const promo=upper.match(/\b(?:MEP|SVP|SWSH|SM|SMP|XYP|BWP|DP|HGSS)\s*[- ]?\s*(\d{2,3})\b/);if(promo)return String(Number(promo[1]));
+  const slash=[...upper.matchAll(/\b([A-Z]{0,3}\s*-?\s*\d{1,3})\s*[\/|]\s*(\d{1,3})\b/g)];
+  if(slash.length){const raw=slash[slash.length-1][1].replace(/\s+/g,'');const m=raw.match(/(\d{1,3})$/);return m?String(Number(m[1])):raw;}
+  return null;
+}
+function tcgdexDetailToCard(d){
+  if(!d?.id)return null;const base=String(d.image||'');
+  return {id:d.id,name:d.name||'',number:String(d.localId||''),supertype:'Pokémon',subtypes:[d.stage||'Pokémon'],rarity:d.rarity||'Pokémon',artist:d.illustrator||'',nationalPokedexNumbers:Array.isArray(d.dexId)?d.dexId:[],set:{id:d.set?.id||'',name:d.set?.name||'Set',ptcgoCode:String(d.set?.id||'').toUpperCase(),series:'Pokémon TCG'},images:{small:base?`${base}/low.webp`:'',large:base?`${base}/high.webp`:''},cardmarket:null,tcgplayer:null,__source:'TCGdex · scanner direto',__tcgdexPriceChecked:true,__tcgdexVariantsChecked:true,__tcgdexCardmarket:d.pricing?.cardmarket||null,__tcgdexPriceUpdated:d.pricing?.cardmarket?.updated||null,__tcgdexTcgplayer:d.pricing?.tcgplayer||null,__tcgdexVariantsDetailed:Array.isArray(d.variants_detailed)?d.variants_detailed:(Array.isArray(d.variants)?d.variants:null),__tcgdexVariantsLegacy:(!Array.isArray(d.variants)&&d.variants&&typeof d.variants==='object')?d.variants:null,__tcgdexMatchedId:d.id};
+}
+async function directPromoFromScan(setCode,num){
+  if(!setCode||!num)return null;const code=String(setCode).toLowerCase();
+  // MEP/SVP seguem IDs previsíveis na TCGdex e permitem saltar completamente a lista de candidatos.
+  if(!['mep','svp','swsh','smp','xyp','bwp','dp','hgss'].includes(code))return null;
+  const padded=/^(mep|svp)$/.test(code)?String(num).padStart(3,'0'):String(num);
+  try{const d=await fetchTcgdexJson(`https://api.tcgdex.net/v2/en/cards/${encodeURIComponent(`${code}-${padded}`)}`);const card=tcgdexDetailToCard(d);if(!card)return null;const pid=Number(card.nationalPokedexNumbers?.[0]);const pokemon=(window.__all||[]).find(x=>Number(x.id)===pid)||null;return pokemon?{card,pokemon}:null}catch(e){return null}
+}
+function cardScanScore(card,text,targetNum,setCode){
   const norm=scanNorm(text);let score=0;
   if(targetNum&&normalizeLocalCardNumber(card.number)===normalizeLocalCardNumber(targetNum))score+=120;
   const name=scanNorm(card.name);if(name&&norm.includes(name))score+=70;
   const setWords=scanNorm(card.set?.name).split(' ').filter(w=>w.length>=4);score+=Math.min(30,setWords.filter(w=>norm.includes(w)).length*8);
   const code=scanNorm(card.set?.ptcgoCode||card.set?.id);if(code&&norm.includes(code))score+=18;
+  if(setCode&&scanCompact(code)===scanCompact(setCode))score+=90;
   const rarity=scanNorm(card.rarity);if(rarity&&rarity.length>4&&norm.includes(rarity))score+=5;
   return score;
 }
 async function preprocessScannerBlob(blob){
   let source=null,w=0,h=0,cleanup=()=>{};
-  if(typeof createImageBitmap==='function'){
-    const bmp=await createImageBitmap(blob);source=bmp;w=bmp.width;h=bmp.height;cleanup=()=>bmp.close?.();
-  }else{
-    const url=URL.createObjectURL(blob);const img=new Image();await new Promise((res,rej)=>{img.onload=res;img.onerror=rej;img.src=url});source=img;w=img.naturalWidth;h=img.naturalHeight;cleanup=()=>URL.revokeObjectURL(url);
-  }
-  const maxW=1500,scale=Math.min(1,maxW/w);const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(w*scale));canvas.height=Math.max(1,Math.round(h*scale));const ctx=canvas.getContext('2d',{willReadFrequently:true});ctx.drawImage(source,0,0,canvas.width,canvas.height);cleanup();
-  const id=ctx.getImageData(0,0,canvas.width,canvas.height),d=id.data;for(let i=0;i<d.length;i+=4){const y=.299*d[i]+.587*d[i+1]+.114*d[i+2];const v=Math.max(0,Math.min(255,(y-128)*1.35+128));d[i]=d[i+1]=d[i+2]=v;}ctx.putImageData(id,0,0);return canvas;
+  if(typeof createImageBitmap==='function'){const bmp=await createImageBitmap(blob);source=bmp;w=bmp.width;h=bmp.height;cleanup=()=>bmp.close?.();}
+  else{const url=URL.createObjectURL(blob);const img=new Image();await new Promise((res,rej)=>{img.onload=res;img.onerror=rej;img.src=url});source=img;w=img.naturalWidth;h=img.naturalHeight;cleanup=()=>URL.revokeObjectURL(url);}
+  const maxW=1100,scale=Math.min(1,maxW/w);const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(w*scale));canvas.height=Math.max(1,Math.round(h*scale));const ctx=canvas.getContext('2d',{willReadFrequently:true});ctx.drawImage(source,0,0,canvas.width,canvas.height);cleanup();
+  const id=ctx.getImageData(0,0,canvas.width,canvas.height),d=id.data;for(let i=0;i<d.length;i+=4){const y=.299*d[i]+.587*d[i+1]+.114*d[i+2];const v=Math.max(0,Math.min(255,(y-128)*1.28+128));d[i]=d[i+1]=d[i+2]=v;}ctx.putImageData(id,0,0);return canvas;
 }
-async function identifyScannedCard(blob){
-  stopScannerCamera();
-  const preview=document.getElementById('scannerPreview'),video=document.getElementById('scannerVideo');preview.src=URL.createObjectURL(blob);preview.hidden=false;video.hidden=true;
+function showScannerCandidates(candidates,pokemon){
+  scannerCandidateContext=candidates.map(x=>({card:x.card,pokemon,score:x.score}));
+  const box=document.getElementById('scannerCandidates');box.innerHTML=scannerCandidateContext.map((x,i)=>`<button type="button" class="scanner-candidate ${i===0?'best':''}" data-scan-candidate="${i}"><img src="${escapeHtml(x.card.images?.small||x.card.images?.large||'')}" alt="${escapeHtml(x.card.name)}"><div class="scanner-candidate-info"><strong>${escapeHtml(x.card.name)} #${escapeHtml(x.card.number||'—')}</strong><span>${escapeHtml(x.card.set?.name||'Set')}</span></div></button>`).join('');
+  box.querySelectorAll('[data-scan-candidate]').forEach(btn=>btn.addEventListener('click',async()=>{const x=scannerCandidateContext[Number(btn.dataset.scanCandidate)];if(!x)return;closeScanner();await openVariantModal(x.card,x.pokemon);}));
+}
+async function identifyScannedCard(blob,{auto=false}={}){
+  const session=scannerSession;
+  if(!auto){clearScannerAuto();const preview=document.getElementById('scannerPreview'),video=document.getElementById('scannerVideo');preview.src=URL.createObjectURL(blob);preview.hidden=false;video.hidden=true;}
   try{
-    const T=await ensureScannerOCR();setScannerStatus('A ler a carta…','A procurar nome, número e pistas do set.','working');
-    const canvas=await preprocessScannerBlob(blob);
-    const result=await T.recognize(canvas,'eng',{logger:m=>{if(m.status==='recognizing text')setScannerStatus('A ler a carta…',`${Math.round((m.progress||0)*100)}%`,'working')}});
-    const text=result?.data?.text||'';const pokemon=pokemonFromScanText(text);const num=collectorNumberFromScanText(text);
-    if(!pokemon){setScannerStatus('Não consegui identificar o Pokémon','Tenta outra foto mais direita, com a carta inteira e menos reflexos.','bad');return;}
-    setScannerStatus(`Encontrei ${pretty(pokemon.name)}`,num?`Número provável: ${num}. A confirmar a impressão…`:'A confirmar qual é a impressão…','working');
-    let cards=await fetchAllCardsForPokemon(pokemon);
-    const scored=cards.map(card=>({card,score:cardScanScore(card,text,num)})).sort((a,b)=>b.score-a.score);
-    let candidates=scored.filter(x=>!num||normalizeLocalCardNumber(x.card.number)===normalizeLocalCardNumber(num));if(!candidates.length)candidates=scored;candidates=candidates.slice(0,9);
-    if(!candidates.length){setScannerStatus('Pokémon encontrado, mas não encontrei a carta','Podes abrir o Pokémon manualmente e escolher a impressão.','bad');return;}
-    scannerCandidateContext=candidates.map(x=>({card:x.card,pokemon,score:x.score}));
-    const top=candidates[0],second=candidates[1];
-    // Só abre automaticamente quando a correspondência é realmente inequívoca.
-    if(num&&top.score>=180&&(!second||top.score-second.score>=35)){
-      setScannerStatus('Carta identificada',`${top.card.set?.name||'Set'} · #${top.card.number}. A abrir variantes…`,'good');
-      closeScanner();await openVariantModal(top.card,pokemon);return;
+    const worker=await ensureScannerOCRWorker();if(session!==scannerSession&&auto)return false;
+    if(!auto)setScannerStatus('A ler a carta…','A procurar nome, número e código do set.','working');
+    const canvas=await preprocessScannerBlob(blob);const result=await worker.recognize(canvas);const text=result?.data?.text||'';
+    const setCode=scanSetCode(text),num=collectorNumberFromScanText(text);
+    // Primeiro tenta o identificador mais forte possível: código do set + número.
+    if(setCode&&num){
+      const direct=await directPromoFromScan(setCode,num);
+      if(direct){
+        setScannerStatus('Carta identificada',`${direct.card.set?.name||setCode} · #${direct.card.number}. A abrir variantes…`,'good');
+        closeScanner();await openVariantModal(direct.card,direct.pokemon);return true;
+      }
     }
-    setScannerStatus(`${candidates.length} hipótese${candidates.length===1?'':'s'} encontrada${candidates.length===1?'':'s'}`,'Toca na imagem da tua carta para abrir imediatamente as variantes.','good');
-    const box=document.getElementById('scannerCandidates');box.innerHTML=scannerCandidateContext.map((x,i)=>`<button type="button" class="scanner-candidate ${i===0?'best':''}" data-scan-candidate="${i}"><img src="${escapeHtml(x.card.images?.small||x.card.images?.large||'')}" alt="${escapeHtml(x.card.name)}"><div class="scanner-candidate-info"><strong>${escapeHtml(x.card.name)} #${escapeHtml(x.card.number||'—')}</strong><span>${escapeHtml(x.card.set?.name||'Set')}</span></div></button>`).join('');
-    box.querySelectorAll('[data-scan-candidate]').forEach(btn=>btn.addEventListener('click',async()=>{const x=scannerCandidateContext[Number(btn.dataset.scanCandidate)];if(!x)return;closeScanner();await openVariantModal(x.card,x.pokemon);}));
-  }catch(e){console.error('Scanner',e);setScannerStatus('O scanner falhou',e?.message||'Tenta novamente ou escolhe uma fotografia.','bad');}
+    const pokemon=pokemonFromScanText(text);
+    if(!pokemon){if(!auto)setScannerStatus('Não consegui identificar o Pokémon','Tenta outra foto mais direita e sem reflexos.','bad');return false;}
+    if(auto)setScannerStatus(`A confirmar ${pretty(pokemon.name)}…`,num?`Número provável ${num}${setCode?` · ${setCode}`:''}`:'Mantém a carta quieta mais um instante.','working');
+    let cards=await fetchAllCardsForPokemon(pokemon);const scored=cards.map(card=>({card,score:cardScanScore(card,text,num,setCode)})).sort((a,b)=>b.score-a.score);
+    let candidates=scored.filter(x=>(!num||normalizeLocalCardNumber(x.card.number)===normalizeLocalCardNumber(num))&&(!setCode||scanCompact(x.card.set?.ptcgoCode||x.card.set?.id)===scanCompact(setCode)));
+    if(!candidates.length)candidates=scored.filter(x=>!num||normalizeLocalCardNumber(x.card.number)===normalizeLocalCardNumber(num));if(!candidates.length)candidates=scored;candidates=candidates.slice(0,9);
+    if(!candidates.length){if(!auto)setScannerStatus('Pokémon encontrado, mas não encontrei a carta','Abre o Pokémon manualmente e escolhe a impressão.','bad');return false;}
+    const top=candidates[0],second=candidates[1];const key=String(top.card.id||`${top.card.set?.id}-${top.card.number}`);
+    const unequivocal=(setCode&&num&&top.score>=240)|| (num&&top.score>=190&&(!second||top.score-second.score>=45));
+    if(unequivocal){setScannerStatus('Carta identificada',`${top.card.set?.name||'Set'} · #${top.card.number}. A abrir variantes…`,'good');closeScanner();await openVariantModal(top.card,pokemon);return true;}
+    if(auto){
+      if(key===scannerStableKey)scannerStableHits++;else{scannerStableKey=key;scannerStableHits=1;}
+      if(scannerStableHits>=2&&top.score>=145&&(!second||top.score-second.score>=20)){
+        setScannerStatus('Carta confirmada',`${top.card.set?.name||'Set'} · #${top.card.number}. A abrir variantes…`,'good');closeScanner();await openVariantModal(top.card,pokemon);return true;
+      }
+      return false;
+    }
+    setScannerStatus(`${candidates.length} hipótese${candidates.length===1?'':'s'} encontrada${candidates.length===1?'':'s'}`,'Toca na imagem da tua carta.','good');showScannerCandidates(candidates,pokemon);return false;
+  }catch(e){console.error('Scanner',e);if(!auto)setScannerStatus('O scanner falhou',e?.message||'Tenta novamente ou escolhe uma fotografia.','bad');return false;}
+}
+function scannerFrameBlob(){
+  return new Promise(resolve=>{const video=document.getElementById('scannerVideo');if(!video?.videoWidth){resolve(null);return;}const canvas=document.getElementById('scannerCanvas');const targetW=Math.min(1100,video.videoWidth);const scale=targetW/video.videoWidth;canvas.width=Math.round(video.videoWidth*scale);canvas.height=Math.round(video.videoHeight*scale);canvas.getContext('2d').drawImage(video,0,0,canvas.width,canvas.height);canvas.toBlob(resolve,'image/jpeg',.88);});
+}
+function scheduleScannerAuto(delay=2200){
+  if(scannerAutoTimer)clearTimeout(scannerAutoTimer);const session=scannerSession;
+  scannerAutoTimer=setTimeout(async()=>{if(session!==scannerSession||!document.getElementById('scannerModal')?.classList.contains('open'))return;if(scannerAutoBusy){scheduleScannerAuto(700);return;}scannerAutoBusy=true;try{const blob=await scannerFrameBlob();if(blob)await identifyScannedCard(blob,{auto:true});}finally{scannerAutoBusy=false;if(session===scannerSession&&document.getElementById('scannerModal')?.classList.contains('open'))scheduleScannerAuto(1400);}},delay);
 }
 async function captureScannerFrame(){
-  const video=document.getElementById('scannerVideo');if(!video?.videoWidth){document.getElementById('scannerFile').click();return;}
-  const canvas=document.getElementById('scannerCanvas');canvas.width=video.videoWidth;canvas.height=video.videoHeight;canvas.getContext('2d').drawImage(video,0,0);canvas.toBlob(blob=>{if(blob)identifyScannedCard(blob)},'image/jpeg',.94);
+  const blob=await scannerFrameBlob();if(!blob){document.getElementById('scannerFile').click();return;}await identifyScannedCard(blob,{auto:false});
 }
 document.getElementById('mobileScanBtn')?.addEventListener('click',openScanner);
 document.getElementById('scannerClose')?.addEventListener('click',closeScanner);
 document.getElementById('scannerModal')?.addEventListener('click',e=>{if(e.target===e.currentTarget)closeScanner()});
 document.getElementById('scannerCapture')?.addEventListener('click',captureScannerFrame);
 document.getElementById('scannerPhotoBtn')?.addEventListener('click',()=>document.getElementById('scannerFile').click());
-document.getElementById('scannerFile')?.addEventListener('change',e=>{const f=e.target.files?.[0];if(f)identifyScannedCard(f);e.target.value='';});
+document.getElementById('scannerFile')?.addEventListener('change',e=>{const f=e.target.files?.[0];if(f)identifyScannedCard(f,{auto:false});e.target.value='';});
 
 document.getElementById('resetGenBtn').addEventListener('click',()=>{state.generation=null;state.page=1;renderCurrentPage()});
 </script>
