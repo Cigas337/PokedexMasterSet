@@ -1,4 +1,4 @@
-const CACHE_NAME='pokedex-xl-v10-9-iphone14pro';
+const CACHE_NAME='pokedex-xl-v10-10-iphone14pro';
 const SHELL=['./','./index.html','./manifest.webmanifest','./icon-180.png','./icon-192.png','./icon-512.png'];
 
 self.addEventListener('install',event=>{
@@ -26,7 +26,7 @@ self.addEventListener('fetch',event=>{
   // Navegação: rede primeiro, ficheiro local como fallback offline.
   if(req.mode==='navigate'){
     event.respondWith(
-      fetch(req).then(res=>{
+      fetch(req,{cache:'no-store'}).then(res=>{
         const copy=res.clone();
         caches.open(CACHE_NAME).then(cache=>cache.put('./index.html',copy));
         return res;
