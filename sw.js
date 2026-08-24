@@ -1,4 +1,4 @@
-const CACHE_NAME='pokedex-xl-v12-3-3-binder-inspect';
+const CACHE_NAME='pokedex-xl-v12-3-4-clean-binder';
 const SHELL=['./','./index.html','./manifest.webmanifest','./icon-180.png','./icon-192.png','./icon-512.png','./assets/charmeleon-mep-079.jpg'];
 
 self.addEventListener('install',event=>{

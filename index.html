@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="Pokédex XL">
 <link rel="manifest" href="manifest.webmanifest">
-<title>Pokédex XL — Master Set · v12.3.3 BINDER INSPECT</title>
+<title>Pokédex XL — Master Set · v12.3.4 CLEAN BINDER</title>
 <link rel="apple-touch-icon" href="icon-180.png">
 <style>
 :root{
@@ -960,6 +960,31 @@ body:not(.auth-locked) .auth-gate{opacity:0;visibility:hidden;pointer-events:non
 .binder-inspect-btn:active{transform:translateY(0)}
 @media(max-width:760px){.binder-inspect-btn{min-height:28px;width:100%;gap:4px;font-size:7px;letter-spacing:.28px;margin-top:0}}
 @media print{.binder-inspect-btn{display:none!important}}
+
+/* v12.3.4 · binder limpo: nenhuma etiqueta ou estado cobre a carta física. */
+.dex-card.has-featured-tcg{padding:12px;min-height:0}
+.dex-card.has-featured-tcg .featured-card-label{display:none!important}
+.dex-card.has-featured-tcg .card-image{height:205px;margin:3px 0 8px;overflow:hidden!important;border-radius:12px;background:linear-gradient(145deg,rgba(255,255,255,.42),rgba(205,214,225,.58));border:1px solid rgba(13,24,36,.08);box-shadow:inset 0 1px 0 rgba(255,255,255,.55)}
+.dex-card.has-featured-tcg .card-image img{max-height:199px!important;max-width:100%!important;border-radius:10px!important;box-shadow:0 9px 17px rgba(0,0,0,.20)!important}
+.dex-card.has-featured-tcg .art-star-badge{top:9px;right:42px;width:25px;height:25px;border-width:1px;font-size:16px}
+.binder-card-meta{position:relative;z-index:6;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:3px 7px;align-items:center;min-height:46px;padding:7px 8px;border-radius:11px;background:linear-gradient(145deg,#18232e,#0c141d);border:1px solid rgba(0,0,0,.18);box-shadow:inset 0 1px 0 rgba(255,255,255,.07)}
+.binder-card-meta strong{min-width:0;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;color:#fff0b2;font-size:9px;font-weight:1000;line-height:1.12;letter-spacing:.15px}
+.binder-card-meta span{grid-column:1/-1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#8fa0b0;font-size:7px;font-weight:900;letter-spacing:.45px;text-transform:uppercase}
+.binder-card-meta .completion-badge{position:static;left:auto;top:auto;transform:none;margin:0;padding:4px 6px;font-size:7px;letter-spacing:.32px;backdrop-filter:none}
+.dex-card.has-featured-tcg .binder-inspect-btn{width:100%;min-height:31px;margin:7px 0 3px;background:linear-gradient(180deg,#fff4bd,#dfad2e)}
+.dex-card.has-featured-tcg .type-row{margin-top:5px;margin-bottom:3px}
+.dex-card.has-featured-tcg .dex-name{min-height:26px;font-size:13px}
+.dex-card.has-featured-tcg .dex-sub,.dex-card.has-featured-tcg .art-availability,.dex-card.has-featured-tcg .art-help{display:none}
+.dex-card.has-featured-tcg .card-actions{margin-top:9px}
+@media(max-width:760px){
+  .dex-card.has-featured-tcg{padding:9px}
+  .dex-card.has-featured-tcg .card-image{height:174px;margin:3px 0 6px}
+  .dex-card.has-featured-tcg .card-image img{max-height:168px!important}
+  .binder-card-meta{min-height:43px;padding:6px;gap:2px 5px}
+  .binder-card-meta strong{font-size:8px}.binder-card-meta span{font-size:6px}
+  .binder-card-meta .completion-badge{font-size:6px;padding:3px 5px}
+  .dex-card.has-featured-tcg .binder-inspect-btn{margin-top:6px}
+}
 .featured-card-image.final-variant-card{overflow:hidden!important}
 
 
@@ -3147,6 +3172,8 @@ function makeCard(p){
   if(featured) el.classList.add('has-featured-tcg');
   const featuredImage=featured?String(featured.canonicalImageSmall||featured.canonicalImageLarge||featured.imageSmall||featured.imageLarge||''):'';
   const featuredFallbacks=featured?Array.from(new Set([...(Array.isArray(featured.imageFallbacks)?featured.imageFallbacks:[]),artworkUrl(p.id),fallbackArtworkUrl(p.id)].filter(Boolean))):[];
+  const featuredSetLabel=featured?String(featured.setCode||featured.setName||'Coleção'):'';
+  const featuredPrintLabel=featured?[featuredSetLabel,featured.number?`#${featured.number}`:''].filter(Boolean).join(' · '):'';
 
   const availability=artAvailability(p.id);
   el.dataset.artAvailability=availability;
@@ -3157,10 +3184,8 @@ function makeCard(p){
   el.innerHTML=`
     <div class="card-top"><div class="dex-number">#${String(p.id).padStart(3,'0')}</div><div class="card-ball"></div></div>
     <div class="art-star-badge" title="ART obtida">★</div>
-    ${featured?`<div class="featured-card-label">★ ${escapeHtml(featured.variantLabel||'CARTA DA COLEÇÃO')}</div>`:''}
     <div class="card-image ${featured?'featured-card-image':''}" ${featured?`data-variant-effect="${escapeHtml(variantVisualEffect(variantFromSnapshot(featured)))}" data-variant-image="${escapeHtml(featuredImage)}" data-variant-alt="${escapeHtml(`${featured.name} · ${featured.variantLabel||'variante'}`)}" data-variant-card-id="${escapeHtml(featured.id||'')}" data-variant-key="${escapeHtml(featured.variantKey||'default')}" data-variant-label="${escapeHtml(featured.variantLabel||'Variante')}" data-variant-type="${escapeHtml(featured.variantType||'normal')}" data-variant-foil="${escapeHtml(featured.variantFoil||'')}" data-variant-subtype="${escapeHtml(featured.variantSubtype||'')}" data-variant-rarity="${escapeHtml(featured.rarity||'')}"`:''}><img loading="lazy" src="${featured?escapeHtml(featuredImage):artworkUrl(p.id)}" ${featured?`data-image-fallbacks="${escapeHtml(encodedImageFallbacks(featuredFallbacks))}" onerror="advanceCardImageFallback(this)"`:`onerror="this.onerror=null;this.src='${fallbackArtworkUrl(p.id)}'"`} alt="${featured?escapeHtml(featured.name):pretty(p.name)}"></div>
-    ${featured?`<button type="button" class="binder-inspect-btn" data-inspect-binder-card aria-label="Inspecionar ${escapeHtml(featured.name)} · ${escapeHtml(featured.variantLabel||'variante')}">Inspecionar carta</button>`:''}
-    <div class="completion-badge">EM FALTA</div>
+    ${featured?`<div class="binder-card-meta" title="${escapeHtml(`${featured.variantLabel||'Variante'} · ${featuredPrintLabel}`)}"><strong>${escapeHtml(featured.variantLabel||'Carta escolhida')}</strong><div class="completion-badge">EM FALTA</div><span>${escapeHtml(featuredPrintLabel||'Impressão guardada')}</span></div><button type="button" class="binder-inspect-btn" data-inspect-binder-card aria-label="Inspecionar ${escapeHtml(featured.name)} · ${escapeHtml(featured.variantLabel||'variante')}">Inspecionar</button>`:`<div class="completion-badge">EM FALTA</div>`}
     <div class="type-row" data-id="${p.id}">${typeMarkup(p.id)}</div>
     <h3 class="dex-name">${pretty(p.name)}</h3>
     <div class="dex-sub">National Dex</div>
@@ -3657,7 +3682,7 @@ window.addEventListener('appinstalled',()=>{
 
 if('serviceWorker' in navigator && location.protocol!=='file:'){
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('./sw.js?v=12.3.3',{updateViaCache:'none'})
+    navigator.serviceWorker.register('./sw.js?v=12.3.4',{updateViaCache:'none'})
       .then(reg=>reg.update())
       .catch(err=>console.warn('Service Worker:',err));
   });
@@ -4553,7 +4578,7 @@ fetchAllCardsForPokemon=async function(p,onRetry){
 const V123_RENDER_MODAL=renderModalCards;
 renderModalCards=function(...args){const r=V123_RENDER_MODAL.apply(this,args);try{const p=currentModalPokemon;if(p){let current=false;try{const m=JSON.parse(localStorage.getItem(V123_DONE_PREFIX+Number(p.id))||'null');current=m?.version===V123_SUPPLEMENT_VERSION&&(Date.now()-Number(m.updatedAt||0))<V123_SUPPLEMENT_TTL}catch(_){}if(!current){const s=document.getElementById('artModalSummary');if(s&&!s.textContent.includes('catálogo especial'))s.innerHTML+=` <span class="cache-live-note catalog-plus">· a completar catálogo especial…</span>`}}}catch(_){}return r};
 
-console.info('POKÉDEX XL v12.3.3 BINDER INSPECT carregada');
+console.info('POKÉDEX XL v12.3.4 CLEAN BINDER carregada');
 
 document.getElementById('resetGenBtn').addEventListener('click',()=>{state.generation=null;state.page=1;renderCurrentPage()});
 </script>
