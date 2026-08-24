@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="Pokédex XL">
 <link rel="manifest" href="manifest.webmanifest">
-<title>Pokédex XL — Master Set · v12.3.4 CLEAN BINDER</title>
+<title>Pokédex XL — Master Set · v12.4.2 FULL CARD VIEWER</title>
 <link rel="apple-touch-icon" href="icon-180.png">
 <style>
 :root{
@@ -808,7 +808,7 @@ body:not(.auth-locked) .auth-gate{opacity:0;visibility:hidden;pointer-events:non
 .variant-holo-mount>.holo-card,.variant-holo-mount .holo-card{width:100%!important;max-width:100%!important;height:100%!important;max-height:100%!important;margin:0!important}
 .variant-holo-mount .holo-card__rotator,.variant-holo-mount .holo-card__front{width:100%!important;height:100%!important}
 .variant-holo-mount .holo-card__front{background-size:contain!important;background-position:center!important;background-repeat:no-repeat!important}
-.variant-image-shell.variant-loading:after{content:'A aplicar acabamento…';position:absolute;left:50%;top:50%;z-index:12;transform:translate(-50%,-50%);padding:7px 10px;border-radius:10px;background:rgba(5,10,16,.86);color:#dce6ee;font-size:8px;font-weight:950;pointer-events:none}
+.variant-image-shell.variant-loading:after{content:'A preparar movimento…';position:absolute;left:50%;top:50%;z-index:12;transform:translate(-50%,-50%);padding:7px 10px;border-radius:10px;background:rgba(5,10,16,.86);color:#dce6ee;font-size:8px;font-weight:950;pointer-events:none}
 .featured-card-image.variant-featured{isolation:isolate}
 .featured-card-image.variant-featured .holo-card{width:100%!important;height:100%!important;max-width:100%!important;max-height:100%!important;margin:0!important}
 .featured-card-image.variant-featured .holo-card__rotator,.featured-card-image.variant-featured .holo-card__front{width:100%!important;height:100%!important}
@@ -993,6 +993,50 @@ body:not(.auth-locked) .auth-gate{opacity:0;visibility:hidden;pointer-events:non
 .art-result-tag.trick-catalog{background:rgba(239,128,37,.14);border:1px solid rgba(255,151,63,.32);color:#ffc17c}
 .art-result-tag.mcd-catalog{background:rgba(225,46,39,.13);border:1px solid rgba(255,95,84,.30);color:#ffaaa3}
 .cache-live-note.catalog-plus{color:#a9cdf8}
+
+/* ===== v12.4 · WORLD PRINTS + STOCK PORTUGAL ===== */
+.card-browser-controls{grid-template-columns:minmax(205px,1.35fr) repeat(3,minmax(140px,.72fr))}
+.world-language-select{min-height:46px;padding:0 38px 0 12px;border:1px solid rgba(91,151,230,.28)!important;border-radius:13px;background:linear-gradient(180deg,#132238,#0a1420)!important;color:#eaf4ff;font-size:11px;font-weight:900;letter-spacing:.2px}
+.world-language-status{display:inline-flex;align-items:center;gap:5px;color:#9fb4ca;font-size:9px;font-weight:800;line-height:1.3}
+.language-tag{background:rgba(71,139,226,.14)!important;border-color:rgba(91,157,241,.30)!important;color:#acd2ff!important}
+.physical-print-tag{background:rgba(20,161,86,.13)!important;border-color:rgba(32,197,109,.28)!important;color:#9ee5bd!important}
+.no-scan-card{width:100%;height:100%;min-height:260px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;padding:24px;text-align:center;border-radius:13px;background:radial-gradient(circle at 50% 22%,rgba(69,126,191,.22),transparent 34%),linear-gradient(150deg,#142231,#071019);border:1px solid rgba(255,255,255,.10);color:#dce7f2}
+.no-scan-card .no-scan-mark{width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#e54036 0 46%,#111923 46% 54%,#f6f9fc 54% 100%);border:3px solid #05090d;color:transparent;box-shadow:0 9px 20px rgba(0,0,0,.35)}
+.no-scan-card strong{font-size:10px;font-weight:1000;letter-spacing:.8px;text-transform:uppercase}.no-scan-card span{max-width:180px;color:#8fa3b7;font-size:9px;line-height:1.45;font-weight:800}
+.art-result.no-scan .art-result-img{padding:14px}.variant-holo-mount .no-scan-card{min-height:100%;border-radius:15px}
+.binder-card-meta{display:none!important}
+.dex-card.has-featured-tcg .card-image{height:224px}.dex-card.has-featured-tcg .card-image img{max-height:218px!important}
+.dex-card.has-featured-tcg .binder-inspect-btn{margin-top:2px}
+
+.stock-modal{position:fixed;inset:0;z-index:10020;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.80);backdrop-filter:blur(9px)}
+.stock-modal.open{display:flex}.stock-panel{width:min(1440px,100%);height:min(92vh,980px);display:flex;flex-direction:column;overflow:hidden;border-radius:28px;background:linear-gradient(180deg,#0c1621,#050a10);border:1px solid rgba(255,255,255,.12);box-shadow:0 30px 90px rgba(0,0,0,.72)}
+.stock-head{display:grid;grid-template-columns:1fr auto;align-items:start;gap:18px;padding:20px 22px;background:linear-gradient(135deg,#12442b,#0d6a3a 52%,#07331f);border-bottom:1px solid rgba(255,255,255,.09)}
+.stock-head h2{margin:0;font-size:27px}.stock-head p{margin:6px 0 0;color:#bee6ce;font-size:12px;line-height:1.45}.stock-close{width:46px;height:46px;border:0;border-radius:50%;background:rgba(255,255,255,.12);color:#fff;font-size:27px}
+.stock-toolbar{display:grid;grid-template-columns:minmax(230px,1.7fr) repeat(2,minmax(170px,.7fr));gap:10px;padding:14px 18px;background:#09121b;border-bottom:1px solid rgba(255,255,255,.07)}
+.stock-toolbar input,.stock-toolbar select{min-height:46px;width:100%;padding:0 13px;border:1px solid rgba(255,255,255,.10);border-radius:13px;background:#101b27;color:#eef4fa;outline:none}.stock-body{overflow:auto;padding:18px}.stock-summary{margin-bottom:13px;color:#9dabb9;font-size:11px;font-weight:800}
+.stock-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(245px,1fr));gap:16px}.stock-card{overflow:hidden;border-radius:18px;background:linear-gradient(180deg,#f3f6f9,#dfe6ed);color:#0e151c;border:1px solid rgba(255,255,255,.55);box-shadow:0 12px 26px rgba(0,0,0,.31)}
+.stock-card-img{height:190px;padding:13px;background:#fff;display:flex;align-items:center;justify-content:center}.stock-card-img img{width:100%;height:100%;object-fit:contain}.stock-card-info{padding:13px}.stock-card-top{display:flex;align-items:center;justify-content:space-between;gap:7px}.stock-store{font-size:8px;font-weight:1000;letter-spacing:.7px;text-transform:uppercase;color:#536170}.stock-local{padding:4px 6px;border-radius:999px;background:#dff5e8;color:#087039;font-size:7px;font-weight:1000}.stock-card h3{min-height:34px;margin:9px 0 8px;font-size:13px;line-height:1.28}.stock-card-bottom{display:flex;align-items:center;justify-content:space-between;gap:8px}.stock-price{font-size:19px;font-weight:1000}.stock-state{display:inline-flex;padding:5px 7px;border-radius:999px;font-size:7px;font-weight:1000;letter-spacing:.45px}.stock-state.in{background:#d8f4e4;color:#08733b}.stock-state.out{background:#f5dddd;color:#9b211c}.stock-state.pre{background:#fff0c9;color:#895b00}.stock-open{display:block;margin-top:10px;padding:10px 12px;border-radius:11px;background:#101923;color:#fff;text-align:center;text-decoration:none;font-size:9px;font-weight:1000;letter-spacing:.55px;text-transform:uppercase}.stock-note{margin-top:16px;padding:12px 14px;border-radius:13px;background:rgba(56,135,205,.08);border:1px solid rgba(76,155,226,.16);color:#8799aa;font-size:9px;line-height:1.5}
+@media(max-width:760px){.stock-modal{padding:0}.stock-panel{width:100%;height:100dvh;max-height:none;border-radius:0}.stock-head{padding:15px}.stock-head h2{font-size:21px}.stock-toolbar{grid-template-columns:1fr 1fr;padding:10px}.stock-toolbar input{grid-column:1/-1}.stock-body{padding:11px}.stock-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.stock-card-img{height:150px}.stock-card-info{padding:9px}.stock-card h3{font-size:10px}.stock-price{font-size:15px}.world-language-select{width:100%}.dex-card.has-featured-tcg .card-image{height:190px}.dex-card.has-featured-tcg .card-image img{max-height:184px!important}}
+@media(max-width:430px){.stock-grid{grid-template-columns:1fr}.stock-card-img{height:210px}}
+
+/* ===== v12.4.1 · MOTION ONLY =====
+   A digitalização original permanece intacta: sem brilho, glare, padrões ou
+   filtros holográficos. Mantém-se exclusivamente a inclinação 3D. */
+.realfoil-gloss,.realfoil-full,.realfoil-art,.realfoil-rev{display:none!important;opacity:0!important;background:none!important;filter:none!important}
+.featured-card-image.binder-static-variant::after{display:none!important;content:none!important;opacity:0!important;background:none!important}
+
+/* ===== v12.4.2 · VISUALIZADOR DA CARTA EM ECRÃ INTEIRO ===== */
+.variant-image-shell[data-full-image-available="1"]{cursor:zoom-in;outline:none}
+.variant-image-shell[data-full-image-available="1"]:focus-visible{box-shadow:0 0 0 3px rgba(246,193,63,.55),0 24px 55px rgba(0,0,0,.42)}
+.full-card-modal{position:fixed;inset:0;z-index:30000;display:none;align-items:center;justify-content:center;padding:48px 28px;background:rgba(0,0,0,.93);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+.full-card-modal.open{display:flex}
+.full-card-stage{position:relative;width:min(92vw,calc((100dvh - 96px)*.7142857),720px);aspect-ratio:2.5/3.5;display:flex;align-items:center;justify-content:center;perspective:1100px}
+.full-card-mount{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:visible}
+.full-card-mount>.realfoil-card{width:100%;height:100%}
+.full-card-close{position:fixed;top:max(14px,env(safe-area-inset-top));right:max(14px,env(safe-area-inset-right));z-index:3;width:48px;height:48px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.16);border-radius:50%;background:rgba(18,25,33,.86);color:#fff;font-size:30px;line-height:1;cursor:pointer;box-shadow:0 10px 24px rgba(0,0,0,.34);backdrop-filter:blur(10px)}
+.full-card-close:hover{background:rgba(43,55,67,.96)}
+.full-card-close:focus-visible{outline:3px solid rgba(246,193,63,.62);outline-offset:3px}
+@media(max-width:760px){.full-card-modal{padding:44px 4vw}.full-card-stage{width:min(92vw,calc((100dvh - 88px)*.7142857));}.full-card-close{width:44px;height:44px;font-size:27px}}
 </style>
 
 <!-- v12.2 · motor visual único: WebGL principal + imagem estável como fallback -->
@@ -1088,6 +1132,7 @@ body:not(.auth-locked) .auth-gate{opacity:0;visibility:hidden;pointer-events:non
         <option value="name-desc">Nome (Z → A)</option>
       </select>
     </div>
+    <button class="action-btn" id="productStockBtn" type="button">📦 Produtos / Stock</button>
     <div class="collection-menu-wrap" id="collectionMenuWrap">
       <button class="action-btn collection-menu-btn" id="collectionMenuBtn" type="button">🗂 Coleção <span class="menu-caret">▾</span></button>
       <div class="collection-menu" id="collectionMenu">
@@ -1121,7 +1166,7 @@ body:not(.auth-locked) .auth-gate{opacity:0;visibility:hidden;pointer-events:non
     <div class="pagination-shell" id="pagination"></div>
   </section>
 
-  <div class="footer">O controlo <strong>ART</strong> continua independente e mantém as tuas marcações atuais. Ao abrir um Pokémon, a pesquisa combina <strong>número da Pokédex + nome</strong> para encontrar mais cartas. Podes abrir cada carta para escolher a <strong>variante física</strong> (Normal, Holo, Reverse e foils especiais como Poké Ball/Master Ball quando a base os identifica), guardar objetivos na <strong>Wishlist</strong> e escolher exatamente essa variante para aparecer no binder. Os preços automáticos vêm de Cardmarket e TCGPlayer quando existe correspondência da variante. Vinted e OLX abrem pesquisas específicas dessa carta/variante, sem scraping de anúncios. A galeria inclui também cartas 30C já reveladas mesmo antes de as APIs as indexarem; nessas cartas o preço só aparece quando o mercado correto estiver ativo. Nos separadores das gerações, o primeiro crachá acende quando tens pelo menos uma CARTA de todos os Pokémon da região; o crachá dourado ★ é o nível ART Master e só acende quando todos os Pokémon dessa geração estão marcados como ART.</div>
+  <div class="footer">O binder mantém o foco na carta escolhida; usa <strong>Inspecionar carta</strong> para abrir variantes, dados e mercados. Ao abrir um Pokémon, o catálogo mundial começa em <strong>inglês</strong> e pode mudar para os restantes idiomas oficiais disponíveis no TCGdex. Cada reimpressão física mantém a sua identidade de set, idioma e número — incluindo McDonald’s e Trick or Trade. A área <strong>Produtos / Stock</strong> é independente da coleção e consulta o stock português em tempo real. As tuas marcações CARTA / ART, Wishlist e sincronização Supabase continuam intactas.</div>
 </div>
 
 <nav class="mobile-bottom-nav" id="mobileBottomNav" aria-label="Navegação móvel">
@@ -1143,7 +1188,7 @@ body:not(.auth-locked) .auth-gate{opacity:0;visibility:hidden;pointer-events:non
     </div>
     <div class="art-modal-toolbar">
       <div class="art-modal-summary" id="artModalSummary">A carregar…</div>
-      <div class="art-modal-source">Pokémon TCG API + TCGdex · Cardmarket + TCGPlayer · Vinted/OLX por pesquisa</div>
+      <div class="art-modal-source">TCGdex mundial + Pokémon TCG API · scans físicos confirmados · Cardmarket + TCGPlayer</div>
     </div>
     <div class="art-modal-body" id="artModalBody"></div>
   </div>
@@ -1181,6 +1226,28 @@ body:not(.auth-locked) .auth-gate{opacity:0;visibility:hidden;pointer-events:non
         <div class="variant-data-note" id="variantDataNote"></div>
       </section>
     </div>
+  </div>
+</div>
+
+<div class="full-card-modal" id="fullCardModal" role="dialog" aria-modal="true" aria-label="Carta em tamanho grande" aria-hidden="true">
+  <button type="button" class="full-card-close" id="fullCardClose" aria-label="Fechar carta ampliada">×</button>
+  <div class="full-card-stage">
+    <div class="full-card-mount" id="fullCardMount"></div>
+  </div>
+</div>
+
+<div class="stock-modal" id="stockModal" aria-hidden="true">
+  <div class="stock-panel" role="dialog" aria-modal="true" aria-labelledby="stockTitle">
+    <div class="stock-head">
+      <div><h2 id="stockTitle">Produtos Pokémon · Stock Portugal</h2><p>Área separada do binder. Disponível, esgotado e pré-venda em lojas portuguesas, com destaque para a loja local de Braga.</p></div>
+      <button class="stock-close" id="stockClose" type="button" aria-label="Fechar">×</button>
+    </div>
+    <div class="stock-toolbar">
+      <input id="stockSearch" type="search" placeholder="Pesquisar ETB, booster box, coleção…" autocomplete="off">
+      <select id="stockStore" aria-label="Filtrar loja"><option value="all">Todas as lojas</option></select>
+      <select id="stockStatus" aria-label="Filtrar estado"><option value="all">Todos os estados</option><option value="in">Em stock</option><option value="pre">Pré-venda</option><option value="out">Esgotado</option></select>
+    </div>
+    <div class="stock-body" id="stockBody"><div class="art-loading"><div class="art-spinner"></div><div>A consultar lojas portuguesas…</div></div></div>
   </div>
 </div>
 
@@ -1698,6 +1765,8 @@ function variantImageInfo(card,variant){
 }
 let ACTIVE_VARIANT_VISUAL=null;
 let VARIANT_RENDER_TOKEN=0;
+let ACTIVE_FULLSCREEN_VISUAL=null;
+let FULLSCREEN_RENDER_TOKEN=0;
 let ACTIVE_VARIANT_ORIENTATION_TARGET=null;
 let VARIANT_MOTION_STATE='unknown';
 let VARIANT_MOTION_PROMISE=null;
@@ -1862,11 +1931,7 @@ function createRealFoilCard(card,v,url,{interactive=true,compact=false}={}){
   const root=document.createElement('div');root.className=`realfoil-card${compact?' compact':''}`;root.dataset.finish=effect;root.dataset.frame=frame;
   const tilt=document.createElement('div');tilt.className='realfoil-tilt';
   const img=document.createElement('img');img.className='realfoil-img';img.alt=`${card?.name||'Carta'} · ${v?.label||'variante'}`;setCardImageWithFallback(img,card,url);
-  tilt.appendChild(img);
-  const full=document.createElement('div');full.className='realfoil-full';tilt.appendChild(full);
-  const art=document.createElement('div');art.className='realfoil-art';tilt.appendChild(art);
-  for(const c of ['rtop','rbottom','rleft','rright']){const d=document.createElement('div');d.className=`realfoil-rev ${c}`;tilt.appendChild(d)}
-  const gloss=document.createElement('div');gloss.className='realfoil-gloss';tilt.appendChild(gloss);root.appendChild(tilt);
+  tilt.appendChild(img);root.appendChild(tilt);
   setRealFoilPose(root,.5,.45,{tilt:true});
   let cleanup=()=>{};if(interactive){cleanup=bindRealFoilInteraction(root);ACTIVE_VARIANT_ORIENTATION_TARGET=root}
   return {element:root,destroy:()=>{cleanup();if(ACTIVE_VARIANT_ORIENTATION_TARGET===root)ACTIVE_VARIANT_ORIENTATION_TARGET=null}};
@@ -1896,6 +1961,34 @@ async function renderVariantHeroVisual(card,v,imageInfo){
     plainVariantHero(mount,card,v,url);
     console.warn('Renderer da variante indisponível:',e);
   }
+}
+async function openFullCardViewer(){
+  const card=currentVariantCard,v=selectedVariantForModal();if(!card||!v)return;
+  const image=variantImageInfo(card,v),urls=cardImageCandidates(card,image?.url||'');if(!urls.length)return;
+  const modal=document.getElementById('fullCardModal'),mount=document.getElementById('fullCardMount');if(!modal||!mount)return;
+  const token=++FULLSCREEN_RENDER_TOKEN;
+  try{ACTIVE_FULLSCREEN_VISUAL?.destroy?.()}catch(_){}ACTIVE_FULLSCREEN_VISUAL=null;
+  modal.classList.add('open');modal.setAttribute('aria-hidden','false');document.getElementById('variantModal')?.setAttribute('aria-hidden','true');mount.innerHTML='';
+  try{requestV12MotionPermission()}catch(_){}
+  try{
+    const visual=await createProFoilCard(card,v,urls[0],{interactive:true,compact:false});
+    const valid=token===FULLSCREEN_RENDER_TOKEN&&modal.classList.contains('open')&&currentVariantCard===card&&String(selectedVariantForModal()?.key||'')===String(v.key||'');
+    if(!valid){try{visual?.destroy?.()}catch(_){}return;}
+    mount.appendChild(visual.element);ACTIVE_FULLSCREEN_VISUAL=visual;
+  }catch(e){
+    if(token!==FULLSCREEN_RENDER_TOKEN)return;
+    const img=document.createElement('img');img.className='profoil-fallback';img.alt=`${card.name||'Carta'} · ${v.label||'variante'}`;setCardImageWithFallback(img,card,urls[0]);mount.appendChild(img);
+    console.warn('Visualizador ampliado indisponível:',e);
+  }
+  document.getElementById('fullCardClose')?.focus({preventScroll:true});
+}
+function closeFullCardViewer({restoreFocus=true}={}){
+  FULLSCREEN_RENDER_TOKEN++;
+  try{ACTIVE_FULLSCREEN_VISUAL?.destroy?.()}catch(_){}ACTIVE_FULLSCREEN_VISUAL=null;
+  const modal=document.getElementById('fullCardModal'),mount=document.getElementById('fullCardMount');modal?.classList.remove('open');modal?.setAttribute('aria-hidden','true');if(mount)mount.innerHTML='';
+  const variantModal=document.getElementById('variantModal');if(variantModal?.classList.contains('open'))variantModal.setAttribute('aria-hidden','false');
+  ACTIVE_VARIANT_ORIENTATION_TARGET=ACTIVE_VARIANT_VISUAL?.element||null;
+  if(restoreFocus)document.getElementById('variantImageShell')?.focus({preventScroll:true});
 }
 async function enhanceVisibleBinderVariants(){
   const nodes=[...document.querySelectorAll('.featured-card-image[data-variant-effect]:not([data-variant-ready])')];
@@ -3014,7 +3107,9 @@ function renderVariantModal(){
   const cmUrl=variantCardmarketUrl(card,v),tpUrl=variantTcgplayerUrl(card,v),viUrl=vintedVariantUrl(card,v),olxUrl=olxVariantUrl(card,v);
   document.getElementById('variantModalTitle').textContent=card.name;
   document.getElementById('variantModalSub').textContent=`${card.set?.name||'Set'} · #${card.number||'—'} · variante física`;
-  document.getElementById('variantImageBadge').textContent=image.label;
+  const imageShell=document.getElementById('variantImageShell'),hasFullImage=cardImageCandidates(card,image?.url||'').length>0;
+  imageShell.dataset.fullImageAvailable=hasFullImage?'1':'0';imageShell.setAttribute('aria-disabled',hasFullImage?'false':'true');
+  document.getElementById('variantImageBadge').textContent=hasFullImage?`Carregar para ampliar · ${image.label}`:image.label;
   renderVariantHeroVisual(card,v,image).catch(e=>console.warn('Visual da variante:',e));
   document.getElementById('variantIdentity').innerHTML=`<strong>${escapeHtml(card.name)}</strong><span>${escapeHtml(card.set?.name||'')} · ${escapeHtml(card.set?.ptcgoCode||card.set?.id||'')} #${escapeHtml(card.number||'—')}<br>${escapeHtml(card.rarity||'Carta Pokémon')}</span><em>${vars.length} variante${vars.length===1?'':'s'} encontrada${vars.length===1?'':'s'}</em>`;
   document.getElementById('variantSelector').innerHTML=vars.map(x=>`<button type="button" class="variant-choice ${String(x.key)===String(v.key)?'active':''} ${isSpecificCardOwned(pokemon.id,card.id,x.key)?'owned':''}" data-variant-select="${escapeHtml(x.key)}">${escapeHtml(x.label)}</button>`).join('');
@@ -3031,7 +3126,7 @@ function renderVariantModal(){
     marketCardHtml('olx','O','OLX','<strong>Pesquisa</strong><small>anúncios atuais</small>','A API oficial não permite ler anúncios de outros utilizadores; abre pesquisa específica',olxUrl,'Ver anúncios');
   const meta=[`<strong>Tipo:</strong> ${escapeHtml(v.type||'normal')}`,v.foil?`<strong>Foil:</strong> ${escapeHtml(foilPretty(v.foil))}`:'',v.subtype?`<strong>Subtipo:</strong> ${escapeHtml(v.subtype.replace(/-/g,' '))}`:'',v.stamps?.length?`<strong>Selo:</strong> ${escapeHtml(v.stamps.join(', ').replace(/-/g,' '))}`:'',v.cardmarketId?`<strong>Cardmarket:</strong> #${v.cardmarketId}`:'',v.tcgplayerId?`<strong>TCGPlayer:</strong> #${v.tcgplayerId}`:''].filter(Boolean).join('<br>');
   document.getElementById('variantMetaCard').innerHTML=meta||'Versão física desta carta.';
-  document.getElementById('variantDataNote').innerHTML=`<b>Visual físico:</b> todas as variantes respondem ao rato/dedo e ao movimento do iPhone quando autorizado. ${image.effect==='normal'?'A variante Normal tem apenas reflexo de superfície, sem holografia.':image.effect==='holo'?'Na Holo, o foil fica concentrado na janela da ilustração.':image.effect==='reverse'?'Na Reverse Holo, o foil fica no corpo da carta à volta da ilustração.':'O padrão especial é aplicado de acordo com o tipo de foil identificado.'}`;
+  document.getElementById('variantDataNote').innerHTML='<b>Movimento 3D:</b> a digitalização original é apresentada sem filtros holográficos. A carta responde ao rato, ao dedo e ao movimento do iPhone quando autorizado.';
   document.querySelectorAll('[data-variant-select]').forEach(btn=>btn.addEventListener('click',()=>{currentVariantSelectedKey=btn.dataset.variantSelect;requestV12MotionPermission();renderVariantModal();}));
   ownBtn.onclick=async()=>{
     const wasOwned=isSpecificCardOwned(pokemon.id,card.id,v.key);
@@ -3048,6 +3143,7 @@ async function openVariantModal(card,pokemon){
   try{ requestV12MotionPermission(); }catch(_){}
   document.getElementById('variantModalTitle').textContent=card.name;
   document.getElementById('variantModalSub').textContent='A carregar variantes, imagem e mercados…';
+  document.getElementById('variantImageShell').dataset.fullImageAvailable='0';
   plainVariantHero(document.getElementById('variantHoloMount'),card,defaultVariantForCard(card),card.images?.large||card.images?.small||'');
   document.getElementById('variantImageBadge').textContent='A confirmar variante…';
   document.getElementById('variantIdentity').innerHTML=`<strong>${escapeHtml(card.name)}</strong><span>${escapeHtml(card.set?.name||'')} · #${escapeHtml(card.number||'—')}</span>`;
@@ -3059,6 +3155,7 @@ async function openVariantModal(card,pokemon){
   if(currentVariantCard===card) renderVariantModal();
 }
 function closeVariantModal(){
+  if(document.getElementById('fullCardModal')?.classList.contains('open'))closeFullCardViewer({restoreFocus:false});
   VARIANT_RENDER_TOKEN++;
   try{ACTIVE_VARIANT_VISUAL?.destroy?.()}catch(e){}ACTIVE_VARIANT_VISUAL=null;ACTIVE_VARIANT_ORIENTATION_TARGET=null;
   const modal=document.getElementById('variantModal');modal.classList.remove('open');modal.setAttribute('aria-hidden','true');currentVariantCard=null;currentVariantPokemon=null;currentVariantSelectedKey=null;
@@ -3185,7 +3282,7 @@ function makeCard(p){
     <div class="card-top"><div class="dex-number">#${String(p.id).padStart(3,'0')}</div><div class="card-ball"></div></div>
     <div class="art-star-badge" title="ART obtida">★</div>
     <div class="card-image ${featured?'featured-card-image':''}" ${featured?`data-variant-effect="${escapeHtml(variantVisualEffect(variantFromSnapshot(featured)))}" data-variant-image="${escapeHtml(featuredImage)}" data-variant-alt="${escapeHtml(`${featured.name} · ${featured.variantLabel||'variante'}`)}" data-variant-card-id="${escapeHtml(featured.id||'')}" data-variant-key="${escapeHtml(featured.variantKey||'default')}" data-variant-label="${escapeHtml(featured.variantLabel||'Variante')}" data-variant-type="${escapeHtml(featured.variantType||'normal')}" data-variant-foil="${escapeHtml(featured.variantFoil||'')}" data-variant-subtype="${escapeHtml(featured.variantSubtype||'')}" data-variant-rarity="${escapeHtml(featured.rarity||'')}"`:''}><img loading="lazy" src="${featured?escapeHtml(featuredImage):artworkUrl(p.id)}" ${featured?`data-image-fallbacks="${escapeHtml(encodedImageFallbacks(featuredFallbacks))}" onerror="advanceCardImageFallback(this)"`:`onerror="this.onerror=null;this.src='${fallbackArtworkUrl(p.id)}'"`} alt="${featured?escapeHtml(featured.name):pretty(p.name)}"></div>
-    ${featured?`<div class="binder-card-meta" title="${escapeHtml(`${featured.variantLabel||'Variante'} · ${featuredPrintLabel}`)}"><strong>${escapeHtml(featured.variantLabel||'Carta escolhida')}</strong><div class="completion-badge">EM FALTA</div><span>${escapeHtml(featuredPrintLabel||'Impressão guardada')}</span></div><button type="button" class="binder-inspect-btn" data-inspect-binder-card aria-label="Inspecionar ${escapeHtml(featured.name)} · ${escapeHtml(featured.variantLabel||'variante')}">Inspecionar</button>`:`<div class="completion-badge">EM FALTA</div>`}
+    ${featured?`<button type="button" class="binder-inspect-btn" data-inspect-binder-card aria-label="Inspecionar ${escapeHtml(featured.name)} · ${escapeHtml(featured.variantLabel||'variante')}">Inspecionar carta</button>`:`<div class="completion-badge">EM FALTA</div>`}
     <div class="type-row" data-id="${p.id}">${typeMarkup(p.id)}</div>
     <h3 class="dex-name">${pretty(p.name)}</h3>
     <div class="dex-sub">National Dex</div>
@@ -3682,7 +3779,7 @@ window.addEventListener('appinstalled',()=>{
 
 if('serviceWorker' in navigator && location.protocol!=='file:'){
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('./sw.js?v=12.3.4',{updateViaCache:'none'})
+    navigator.serviceWorker.register('./sw.js?v=12.4.2',{updateViaCache:'none'})
       .then(reg=>reg.update())
       .catch(err=>console.warn('Service Worker:',err));
   });
@@ -3692,10 +3789,18 @@ if('serviceWorker' in navigator && location.protocol!=='file:'){
 document.getElementById('artModalClose').addEventListener('click',closeArtModal);
 document.getElementById('variantModalClose').addEventListener('click',closeVariantModal);
 document.getElementById('variantModal').addEventListener('click',e=>{if(e.target===e.currentTarget) closeVariantModal();});
+document.getElementById('variantImageShell').setAttribute('role','button');
+document.getElementById('variantImageShell').setAttribute('tabindex','0');
+document.getElementById('variantImageShell').setAttribute('aria-label','Abrir carta em tamanho grande');
+document.getElementById('variantImageShell').addEventListener('click',()=>openFullCardViewer());
+document.getElementById('variantImageShell').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openFullCardViewer();}});
+document.getElementById('fullCardClose').addEventListener('click',()=>closeFullCardViewer());
+document.getElementById('fullCardModal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeFullCardViewer()});
 document.getElementById('artModal').addEventListener('click',e=>{if(e.target.id==='artModal') closeArtModal()});
 document.addEventListener('keydown',e=>{
   if(e.key!=='Escape') return;
-  if(document.getElementById('variantModal').classList.contains('open')) closeVariantModal();
+  if(document.getElementById('fullCardModal').classList.contains('open')) closeFullCardViewer();
+  else if(document.getElementById('variantModal').classList.contains('open')) closeVariantModal();
   else if(document.getElementById('artModal').classList.contains('open')) closeArtModal();
 });
 
@@ -4291,7 +4396,7 @@ function v12StableImageCard(card,v,url,{compact=false}={}){
 }
 
 // ---------- WebGL/GLSL renderer inspirado na arquitetura MIT do Pokebox ----------
-window.__v12ThreeReady=import('https://cdn.jsdelivr.net/npm/three@0.182.0/build/three.module.js').catch(e=>{console.warn('Three.js indisponível',e);return null});
+window.__v12ThreeReady=Promise.resolve(null);
 const V12_SHADER_BASE='https://raw.githubusercontent.com/selop/pokebox/main/src/shaders/';
 const V12_SHADER_CACHE=new Map();
 async function v12LoadShader(path){if(V12_SHADER_CACHE.has(path))return V12_SHADER_CACHE.get(path);const job=(async()=>{const r=await fetch(V12_SHADER_BASE+path,{cache:'force-cache'});if(!r.ok)throw new Error('shader '+r.status);let s=await r.text();const inc=[...s.matchAll(/#include\s+"([^"]+)"/g)];for(const m of inc)s=s.replace(m[0],await v12LoadShader(m[1]));return s})();V12_SHADER_CACHE.set(path,job);return job}
@@ -4325,7 +4430,6 @@ requestProFoilMotionPermission=requestV12MotionPermission;
 // Pré-aquecimento: o scanner e os shaders ficam prontos antes do primeiro uso.
 window.addEventListener('load',()=>{
   setTimeout(()=>{ensureScannerOCRWorker().catch(()=>{});v12OpenDB().catch?.(()=>{});},900);
-  setTimeout(()=>{Promise.allSettled([window.__v12ThreeReady,v12LoadShader('holo.vert'),v12LoadShader('regular-holo.frag'),v12LoadShader('reverse-holo.frag'),v12LoadShader('master-ball.frag')]);},1500);
 });
 
 // ============================================================================
@@ -4578,7 +4682,417 @@ fetchAllCardsForPokemon=async function(p,onRetry){
 const V123_RENDER_MODAL=renderModalCards;
 renderModalCards=function(...args){const r=V123_RENDER_MODAL.apply(this,args);try{const p=currentModalPokemon;if(p){let current=false;try{const m=JSON.parse(localStorage.getItem(V123_DONE_PREFIX+Number(p.id))||'null');current=m?.version===V123_SUPPLEMENT_VERSION&&(Date.now()-Number(m.updatedAt||0))<V123_SUPPLEMENT_TTL}catch(_){}if(!current){const s=document.getElementById('artModalSummary');if(s&&!s.textContent.includes('catálogo especial'))s.innerHTML+=` <span class="cache-live-note catalog-plus">· a completar catálogo especial…</span>`}}}catch(_){}return r};
 
-console.info('POKÉDEX XL v12.3.4 CLEAN BINDER carregada');
+// ============================================================================
+// v12.4 · WORLD PRINTS
+// Catálogo por idioma, identidade por impressão física, scans McDonald's/Trick
+// or Trade e tracker de produtos Pokémon em Portugal.
+// ============================================================================
+const V124_LANGUAGES=[
+  ['en','English','Inglês'],['ja','日本語','Japonês'],['zh-tw','繁體中文','Chinês tradicional'],['zh-cn','简体中文','Chinês simplificado'],
+  ['pt-pt','Português (Portugal)','Português PT'],['pt-br','Português (Brasil)','Português BR'],['fr','Français','Francês'],['es','Español','Espanhol'],
+  ['it','Italiano','Italiano'],['de','Deutsch','Alemão'],['ko','한국어','Coreano'],['nl','Nederlands','Neerlandês'],['pl','Polski','Polaco'],
+  ['ru','Русский','Russo'],['id','Bahasa Indonesia','Indonésio'],['th','ไทย','Tailandês']
+];
+const V124_LANGUAGE_LABEL=new Map(V124_LANGUAGES.map(x=>[x[0],x[2]]));
+const V124_PARTIAL_LANGUAGES=new Set(['pt-pt','nl','pl','ru','ko','zh-cn']);
+const V124_SPECIES_LANGUAGE={en:'en',fr:'fr',es:'es',it:'it',de:'de',ja:'ja',ko:'ko','zh-tw':'zh-hant','zh-cn':'zh-hans'};
+const V124_WORLD_CACHE=new Map();
+const V124_WORLD_INFLIGHT=new Map();
+const V124_DETAIL_CACHE=new Map();
+const V124_SPECIES_CACHE=new Map();
+let V124_CURRENT_LANGUAGE='en';
+let V124_LANGUAGE_LOADING=false;
+
+function v124WorldNorm(v){return String(v||'').normalize('NFKC').toLocaleLowerCase().replace(/[^\p{L}\p{N}]+/gu,' ').trim()}
+function v124WorldCompact(v){return v124WorldNorm(v).replace(/\s+/g,'')}
+function v124TrickKey(year,name,number=''){return `${year}|${v124WorldCompact(name)}|${normalizeLocalCardNumber(number)}`}
+
+const V124_TRICK_SCAN_ROWS=[["2022","Phantump","16","https://den-cards.pokellector.com/335/Phantump.SWSH8.16.44915.png"],["2022","Trevenant","15","https://den-cards.pokellector.com/292/Trevenant.SWSH2.15.44916.png"],["2022","Litwick","31","https://den-cards.pokellector.com/292/Litwick.SWSH2.31.44917.png"],["2022","Lampent","32","https://den-cards.pokellector.com/292/Lampent.SWSH2.32.44918.png"],["2022","Chandelure","33","https://den-cards.pokellector.com/292/Chandelure.SWSH2.33.44919.png"],["2022","Pikachu","49","https://den-cards.pokellector.com/325/Pikachu.SWSH7.49.44920.png"],["2022","Cubone","69","https://den-cards.pokellector.com/305/Cubone.SWSH05.69.44921.png"],["2022","Gastly","55","https://den-cards.pokellector.com/320/Gastly.CRE.55.44922.png"],["2022","Haunter","56","https://den-cards.pokellector.com/320/Haunter.CRE.56.44923.png"],["2022","Gengar","57","https://den-cards.pokellector.com/320/Gengar.CRE.57.44924.png"],["2022","Mewtwo","56","https://den-cards.pokellector.com/340/Mewtwo.SWSH09.56.44925.png"],["2022","Misdreavus","58","https://den-cards.pokellector.com/345/Misdreavus.SWSH10.58.44926.png"],["2022","Mismagius","59","https://den-cards.pokellector.com/345/Mismagius.SWSH10.59.44927.png"],["2022","Duskull","60","https://den-cards.pokellector.com/340/Duskull.SWSH09.60.44928.png"],["2022","Dusclops","61","https://den-cards.pokellector.com/340/Dusclops.SWSH09.61.44929.png"],["2022","Dusknoir","62","https://den-cards.pokellector.com/340/Dusknoir.SWSH09.62.44930.png"],["2022","Pumpkaboo","76","https://den-cards.pokellector.com/325/Pumpkaboo.SWSH7.76.44931.png"],["2022","Gourgeist","77","https://den-cards.pokellector.com/325/Gourgeist.SWSH7.77.44932.png"],["2022","Mimikyu","81","https://den-cards.pokellector.com/296/Mimikyu.SWSH3.81.44933.png"],["2022","Sinistea","82","https://den-cards.pokellector.com/296/Sinistea.SWSH3.82.44934.png"],["2022","Polteageist","83","https://den-cards.pokellector.com/296/Polteageist.SWSH3.83.44935.png"],["2022","Hatenna","18","https://den-cards.pokellector.com/298/Hatenna.SWSH3.18.44936.png"],["2022","Hattrem","19","https://den-cards.pokellector.com/320/Hattrem.CRE.19.44937.png"],["2022","Hatterene","73","https://den-cards.pokellector.com/320/Hatterene.CRE.73.44938.png"],["2022","Zubat","89","https://den-cards.pokellector.com/305/Zubat.SWSH05.89.44939.png"],["2022","Spinarak","102","https://den-cards.pokellector.com/296/Spinarak.SWSH3.102.44940.png"],["2022","Ariados","103","https://den-cards.pokellector.com/296/Ariados.SWSH3.103.44941.png"],["2022","Murkrow","93","https://den-cards.pokellector.com/305/Murkrow.SWSH05.93.44942.png"],["2022","Darkrai","105","https://den-cards.pokellector.com/296/Darkrai.SWSH3.105.44943.png"],["2022","Nickit","103","https://den-cards.pokellector.com/345/Nickit.SWSH10.103.44944.png"],["2023","Phantump","16","https://den-cards.pokellector.com/350/Phantump.SWSH10.16.49312.png"],["2023","Trevenant","17","https://den-cards.pokellector.com/350/Trevenant.SWSH10.17.49313.png"],["2023","Dhelmise","19","https://den-cards.pokellector.com/299/Dhelmise.SWSH4.19.49314.png"],["2023","Houndoom","34","https://den-cards.pokellector.com/363/Houndoom.SV1EN.34.49315.png"],["2023","Litwick","24","https://den-cards.pokellector.com/350/Litwick.SWSH10.24.49316.png"],["2023","Lampent","25","https://den-cards.pokellector.com/350/Lampent.SWSH10.25.49317.png"],["2023","Chandelure","26","https://den-cards.pokellector.com/350/Chandelure.SWSH10.26.49318.png"],["2023","Pikachu","62","https://den-cards.pokellector.com/367/Pikachu.PAL.62.49319.png"],["2023","Lycanroc","95","https://den-cards.pokellector.com/299/Lycanroc.SWSH4.95.49320.png"],["2023","Galarian Runerigus","102","https://den-cards.pokellector.com/292/Galarian-Runerigus.SWSH2.102.49321.png"],["2023","Gastly","64","https://den-cards.pokellector.com/350/Gastly.SWSH10.64.49322.png"],["2023","Haunter","65","https://den-cards.pokellector.com/350/Haunter.SWSH10.65.49323.png"],["2023","Gengar","66","https://den-cards.pokellector.com/350/Gengar.SWSH10.66.49324.png"],["2023","Duskull","69","https://den-cards.pokellector.com/299/Duskull.SWSH4.69.49325.png"],["2023","Dusclops","70","https://den-cards.pokellector.com/299/Dusclops.SWSH4.70.49326.png"],["2023","Dusknoir","71","https://den-cards.pokellector.com/299/Dusknoir.SWSH4.71.49327.png"],["2023","Shuppet","87","https://den-cards.pokellector.com/363/Shuppet.SV1EN.87.49328.png"],["2023","Banette","73","https://den-cards.pokellector.com/350/Banette.SWSH10.73.49329.png"],["2023","Mismagius","88","https://den-cards.pokellector.com/367/Mismagius.PAL.88.49330.png"],["2023","Drifloon","89","https://den-cards.pokellector.com/363/Drifloon.SV1EN.89.49331.png"],["2023","Drifblim","90","https://den-cards.pokellector.com/363/Drifblim.SV1EN.90.49332.png"],["2023","Mimikyu","97","https://den-cards.pokellector.com/367/Mimikyu.PAL.97.49333.png"],["2023","Marshadow","80","https://den-cards.pokellector.com/325/Marshadow.SWSH7.80.49334.png"],["2023","Spectrier","81","https://den-cards.pokellector.com/350/Spectrier.SWSH10.81.49335.png"],["2023","Sinistea","89","https://den-cards.pokellector.com/286/Sinistea.SH01.89.49336.png"],["2023","Polteageist","90","https://den-cards.pokellector.com/286/Polteageist.SH01.90.49337.png"],["2023","Greavard","104","https://den-cards.pokellector.com/363/Greavard.SV1EN.104.49338.png"],["2023","Houndstone","106","https://den-cards.pokellector.com/363/Houndstone.SV1EN.106.49339.png"],["2023","Zubat","103","https://den-cards.pokellector.com/354/Zubat.SWSH12.103.49340.png"],["2023","Murkrow","131","https://den-cards.pokellector.com/367/Murkrow.PAL.131.49341.png"],["2024","Phantump","12","https://den-cards.pokellector.com/392/Phantump.TWM.12.54054.png"],["2024","Trevenant","13","https://den-cards.pokellector.com/392/Trevenant.TWM.13.54055.png"],["2024","Sprigatito","12","https://den-cards.pokellector.com/367/Sprigatito.PAL.12.54056.png"],["2024","Poltchageist","21","https://den-cards.pokellector.com/392/Poltchageist.TWM.21.54057.png"],["2024","Sinistcha","22","https://den-cards.pokellector.com/392/Sinistcha.TWM.22.54058.png"],["2024","Teal Mask Ogerpon","24","https://den-cards.pokellector.com/392/Teal-Mask-Ogerpon.TWM.24.54059.png"],["2024","Litwick","36","https://den-cards.pokellector.com/392/Litwick.TWM.36.54060.png"],["2024","Lampent","37","https://den-cards.pokellector.com/392/Lampent.TWM.37.54061.png"],["2024","Chandelure","38","https://den-cards.pokellector.com/392/Chandelure.TWM.38.54062.png"],["2024","Fuecoco","23","https://den-cards.pokellector.com/377/Fuecoco.PAR.23.54063.png"],["2024","Quaxly","50","https://den-cards.pokellector.com/367/Quaxly.PAL.50.54064.png"],["2024","Pikachu","18","https://den-cards.pokellector.com/384/Pikachu.PAF.18.54065.png"],["2024","Okidogi","111","https://den-cards.pokellector.com/392/Okidogi.TWM.111.54066.png"],["2024","Pumpkaboo","77","https://den-cards.pokellector.com/377/Pumpkaboo.PAR.77.54067.png"],["2024","Gourgeist","78","https://den-cards.pokellector.com/377/Gourgeist.PAR.78.54068.png"],["2024","Mimikyu","37","https://den-cards.pokellector.com/384/Mimikyu.PAF.37.54069.png"],["2024","Greavard","42","https://den-cards.pokellector.com/384/Greavard.PAF.42.54070.png"],["2024","Houndstone","43","https://den-cards.pokellector.com/384/Houndstone.PAF.43.54071.png"],["2024","Scream Tail","77","https://den-cards.pokellector.com/383/Scream-Tail.TEM.77.54072.png"],["2024","Flutter Mane","78","https://den-cards.pokellector.com/383/Flutter-Mane.TEM.78.54073.png"],["2024","Munkidori","95","https://den-cards.pokellector.com/392/Munkidori.TWM.95.54074.png"],["2024","Fezandipiti","96","https://den-cards.pokellector.com/392/Fezandipiti.TWM.96.54075.png"],["2024","Gastly","102","https://den-cards.pokellector.com/383/Gastly.TEM.102.54076.png"],["2024","Haunter","103","https://den-cards.pokellector.com/383/Haunter.TEM.103.54077.png"],["2024","Gengar","57","https://den-cards.pokellector.com/384/Gengar.PAF.57.54078.png"],["2024","Umbreon","130","https://den-cards.pokellector.com/373/Umbreon.OBF.130.54079.png"],["2024","Houndour","131","https://den-cards.pokellector.com/373/Houndour.OBF.131.54080.png"],["2024","Houndoom","133","https://den-cards.pokellector.com/373/Houndoom.OBF.133.54081.png"],["2024","Darkrai","136","https://den-cards.pokellector.com/373/Darkrai.OBF.136.54082.png"],["2024","Iron Jugulis","139","https://den-cards.pokellector.com/383/Iron-Jugulis.TEM.139.54083.png"]];
+const V124_TRICK_SCANS=new Map(V124_TRICK_SCAN_ROWS.map(r=>[v124TrickKey(r[0],r[1],r[2]),r[3]]));
+const V124_TRICK_SCANS_BY_NAME=new Map(V124_TRICK_SCAN_ROWS.map(r=>[`${r[0]}|${v124WorldCompact(r[1])}`,r[3]]));
+
+const V124_MCD_IMAGE_SETS={'2011bw':'mcd11','2012bw':'mcd12','2014xy':'mcd14','2015xy':'mcd15','2016xy':'mcd16','2017sm':'mcd17','2018sm':'mcd18','2019sm':'mcd19','2021swsh':'mcd21','2022swsh':'mcd22'};
+const V124_MCD_SPECIAL={
+  '2014xy':{1:'Weedle.MCD4.1',2:'Chespin.MCD4.2',3:'Fennekin.MCD4.3',4:'Froakie.MCD4.4',5:'Pikachu.MCD4.5',6:'Inkay.MCD4.6',7:'Honedge.MCD4.7',8:'Snubbull.MCD4.8',9:'Swirlix.MCD4.9',10:'Bunnelby.MCD4.10',11:'Fletchling.MCD4.11',12:'Furfrou.MCD4.12'},
+  '2015xy':{1:'Treecko.MCD5.1',2:'Lotad.MCD5.2',3:'Torchic.MCD5.3',4:'Staryu.MCD5.4',5:'Mudkip.MCD5.5',6:'Pikachu.MCD5.6',7:'Electrike.MCD5.7',8:'Rhyhorn.MCD5.8',9:'Meditite.MCD5.9',10:'Marill.MCD5.10',11:'Zigzagoon.MCD5.11',12:'Skitty.MCD5.12'},
+  '2017sm':{1:'Rowlet.MCD7.1.18575',2:'Grubbin.MCD7.2.18569',3:'Litten.MCD7.3.18570',4:'Popplio.MCD7.4.18573',5:'Pikachu.MCD7.5.18568',6:'Cosmog.MCD7.6.18567',7:'Crabrawler.MCD7.7.18571',8:'Alolan-Meowth.MCD7.8.18578',9:'Alolan-Diglett.MCD7.9.18566',10:'Cutiefly.MCD7.10.18572',11:'Pikipek.MCD7.11.18574',12:'Yungoose.MCD7.12.18565'},
+  '2018sm':{1:'Growlithe.MCD8.1.24571',2:'Psyduck.MCD8.2.24575',3:'Horsea.MCD8.3.24572',4:'Pikachu.MCD8.4.24573',5:'Slowpoke.MCD8.5.24576',6:'Machop.MCD8.6.24577',7:'Cubone.MCD8.7.24578',8:'Magnemite.MCD8.8.24579',9:'Dratini.MCD8.9.24574',10:'Chansey.MCD8.10.24580',11:'Eevee.MCD8.11.24581',12:'Porygon.MCD8.12.24582'},
+  '2023sv':{1:'Sprigatito.M23EN.1.49024',2:'Fuecoco.M23EN.2.47684',3:'Quaxly.M23EN.3.49025',4:'Cetoddle.M23EN.4.49026',5:'Cetitan.M23EN.5.49027',6:'Pikachu.M23EN.6.49028',7:'Pawmi.M23EN.7.49029',8:'Kilowattrel.M23EN.8.47683',9:'Flittle.M23EN.9.49030',10:'Sandaconda.M23EN.10.47682',11:'Klawf.M23EN.11.49031',12:'Blissey.M23EN.12.47681',13:'Tandemaus.M23EN.13.49032',14:'Cyclizar.M23EN.14.49033',15:'Kirlia.M23EN.15.49034'},
+  '2024sv':{1:'Charizard.M24.1.55522',2:'Pikachu.M24.2.55523',3:'Miraidon.M24.3.55524',4:'Jigglypuff.M24.4.55525',5:'Hatenna.M24.5.55526',6:'Dragapult.M24.6.55527',7:'Quagsire.M24.7.55528',8:'Koraidon.M24.8.55529',9:'Umbreon.M24.9.55530',10:'Hydreigon.M24.10.55531',11:'Roaring-Moon.M24.11.55532',12:'Dragonite.M24.12.55533',13:'Eevee.M24.13.55534',14:'Rayquaza.M24.14.55535',15:'Drampa.M24.15.55536'}
+};
+const V124_MCD_SPECIAL_FOLDER={'2014xy':'158','2015xy':'182','2017sm':'230','2018sm':'265','2023sv':'372','2024sv':'410'};
+const V124_MCD_2013_FR=[
+  [470,'Phyllali','Leafeon',1,'Leafeon.MCD.1'],[136,'Pyroli','Flareon',2,'Flareon.MCD.2'],[134,'Aquali','Vaporeon',3,'Vaporeon.MCD.3'],[471,'Givrali','Glaceon',4,'Glaceon.MCD.4'],
+  [25,'Pikachu','Pikachu',5,'Pikachu.MCD.5'],[135,'Voltali','Jolteon',6,'Jolteon.MCD.6'],[196,'Mentali','Espeon',7,'Espeon.MCD.7'],[532,'Charpenti','Timburr',8,'Timburr.MCD.8'],
+  [197,'Noctali','Umbreon',9,'Umbreon.MCD.9'],[559,'Baggiguane','Scraggy',10,'Scraggy.MCD.10'],[570,'Zorua','Zorua',11,'Zorua.MCD.11'],[133,'Évoli','Eevee',12,'Eevee.MCD.12']
+];
+
+function v124EnglishPhysicalImage(setId,number){
+  const sid=String(setId||'').toLowerCase(),num=String(number||'').replace(/^0+(?=\d)/,'');
+  const file=V124_MCD_SPECIAL[sid]?.[Number(num)];
+  if(file){const url=`https://den-cards.pokellector.com/${V124_MCD_SPECIAL_FOLDER[sid]}/${file}.png`;return {small:url,large:url,source:'Digitalização física McDonald’s · Pokellector'};}
+  const apiSet=V124_MCD_IMAGE_SETS[sid];
+  if(apiSet)return {small:`https://images.pokemontcg.io/${apiSet}/${num}.png`,large:`https://images.pokemontcg.io/${apiSet}/${num}_hires.png`,source:'Pokémon TCG API · scan McDonald’s'};
+  return null;
+}
+function v124NoScanMarkup(card){
+  return `<div class="no-scan-card"><div class="no-scan-mark">●</div><strong>Impressão confirmada</strong><span>Digitalização frontal ainda não disponível nesta fonte · ${escapeHtml(card?.set?.name||'Set')} #${escapeHtml(card?.number||'—')}</span></div>`;
+}
+
+const V124_ORIGINAL_IMAGE_CANDIDATES=cardImageCandidates;
+cardImageCandidates=function(card,preferred=''){
+  const candidates=[preferred,card?.images?.small,card?.images?.large,...(Array.isArray(card?.__imageFallbacks)?card.__imageFallbacks:[])];
+  if(card?.__allowPokemonArtworkFallback){const pid=Number(card?.nationalPokedexNumbers?.[0])||null;if(pid)candidates.push(artworkUrl(pid),fallbackArtworkUrl(pid));}
+  const seen=new Set();return candidates.map(x=>String(x||'').trim()).filter(x=>x&&!seen.has(x)&&seen.add(x));
+};
+
+async function v124SpeciesAliases(p,lang){
+  if(lang==='en')return pokemonSearchAliases(p);
+  const id=Number(p.id);let species=V124_SPECIES_CACHE.get(id);
+  if(!species){species=fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}`).then(r=>{if(!r.ok)throw new Error('PokeAPI '+r.status);return r.json()});V124_SPECIES_CACHE.set(id,species);}
+  let data=null;try{data=await species}catch(_){data=null}
+  const wanted=V124_SPECIES_LANGUAGE[lang];
+  const localized=(data?.names||[]).find(x=>x?.language?.name===wanted)?.name||'';
+  const aliases=[localized];
+  if(!['ja','ko','zh-tw','zh-cn'].includes(lang))aliases.push(...pokemonSearchAliases(p));
+  if(!aliases.filter(Boolean).length)aliases.push(...pokemonSearchAliases(p));
+  return [...new Set(aliases.map(String).filter(Boolean))].slice(0,6);
+}
+function v124NameMatches(name,aliases){
+  const n=v124WorldCompact(name);return aliases.some(a=>{const x=v124WorldCompact(a);return x&&(n===x||n.includes(x)||x.includes(n))});
+}
+async function v124Detail(lang,id){
+  const key=`${lang}|${id}`;if(V124_DETAIL_CACHE.has(key))return V124_DETAIL_CACHE.get(key);
+  const job=fetchTcgdexJson(`https://api.tcgdex.net/v2/${encodeURIComponent(lang)}/cards/${encodeURIComponent(id)}`).catch(()=>null);V124_DETAIL_CACHE.set(key,job);return job;
+}
+function v124DetailToCard(d,lang){
+  if(!d?.id)return null;
+  const physical=v124EnglishPhysicalImage(d.set?.id,d.localId);
+  const base=String(d.image||'');
+  const images=base?{small:`${base}/low.webp`,large:`${base}/high.webp`}:(lang==='en'&&physical?{small:physical.small,large:physical.large}:{small:'',large:''});
+  const originalId=String(d.id);
+  return {
+    id:lang==='en'?originalId:`${lang}::${originalId}`,name:d.name||'',number:String(d.localId||''),supertype:'Pokémon',subtypes:[d.stage||'Pokémon'],rarity:d.rarity||'Pokémon',artist:d.illustrator||'',nationalPokedexNumbers:Array.isArray(d.dexId)?d.dexId:[],
+    set:{id:d.set?.id||'',name:d.set?.name||'Set',ptcgoCode:String(d.set?.id||'').toUpperCase(),series:d.set?.serie?.name||d.set?.series||'Pokémon TCG',releaseDate:d.set?.releaseDate||''},images,cardmarket:null,tcgplayer:null,
+    __source:physical?.source||`TCGdex · catálogo ${V124_LANGUAGE_LABEL.get(lang)||lang}`,__language:lang,__physicalPrint:true,__scanMissing:!(images.small||images.large),__tcgdexOriginalId:originalId,
+    __tcgdexPriceChecked:true,__tcgdexVariantsChecked:true,__tcgdexCardmarket:d.pricing?.cardmarket||null,__tcgdexPriceUpdated:d.pricing?.cardmarket?.updated||null,__tcgdexTcgplayer:d.pricing?.tcgplayer||null,
+    __tcgdexVariantsDetailed:Array.isArray(d.variants_detailed)?d.variants_detailed:(Array.isArray(d.variants)?d.variants:null),__tcgdexVariantsLegacy:(!Array.isArray(d.variants)&&d.variants&&typeof d.variants==='object')?d.variants:null,__tcgdexMatchedId:originalId
+  };
+}
+function v124CanonicalSetId(card){
+  const raw=String(card?.set?.id||'').toLowerCase();
+  if(V124_MCD_IMAGE_SETS[raw])return V124_MCD_IMAGE_SETS[raw];
+  if(Object.values(V124_MCD_IMAGE_SETS).includes(raw))return raw;
+  return raw||v124WorldCompact(card?.set?.name);
+}
+function v124PhysicalSignature(card){
+  const lang=card?.__language||'en';
+  return [lang,v124CanonicalSetId(card),normalizeLocalCardNumber(card?.number),v124WorldCompact(card?.name)].join('|');
+}
+function v124MergePhysicalCatalog(base,extras){
+  const out=[...(base||[])],byId=new Map(),bySig=new Map();
+  out.forEach((c,i)=>{c.__language=c.__language||'en';byId.set(String(c.id||'').toLowerCase(),i);bySig.set(v124PhysicalSignature(c),i)});
+  for(const extra of extras||[]){
+    const id=String(extra?.id||'').toLowerCase(),sig=v124PhysicalSignature(extra);let pos=byId.get(id);if(pos==null)pos=bySig.get(sig);
+    if(pos==null){out.push(extra);const i=out.length-1;if(id)byId.set(id,i);bySig.set(sig,i);continue;}
+    const main=out[pos];out[pos]={...extra,...main,
+      images:(main.images?.small||main.images?.large)?main.images:extra.images,
+      __scanMissing:!((main.images?.small||main.images?.large)||(extra.images?.small||extra.images?.large)),
+      __tcgdexPriceChecked:extra.__tcgdexPriceChecked??main.__tcgdexPriceChecked,__tcgdexCardmarket:extra.__tcgdexCardmarket??main.__tcgdexCardmarket,__tcgdexTcgplayer:extra.__tcgdexTcgplayer??main.__tcgdexTcgplayer,
+      __tcgdexVariantsDetailed:extra.__tcgdexVariantsDetailed??main.__tcgdexVariantsDetailed,__tcgdexVariantsLegacy:extra.__tcgdexVariantsLegacy??main.__tcgdexVariantsLegacy,__tcgdexMatchedId:extra.__tcgdexMatchedId||main.__tcgdexMatchedId,
+      __source:`${main.__source||'Catálogo principal'} · TCGdex confirmado`,__language:main.__language||extra.__language||'en',__physicalPrint:true
+    };
+  }
+  return out;
+}
+function v124French2013Cards(p){
+  return V124_MCD_2013_FR.filter(x=>Number(x[0])===Number(p.id)).map(x=>{const url=`https://den-cards.pokellector.com/147/${x[4]}.png`;return {
+    id:`fr::mcd13-${x[3]}`,name:x[1],number:String(x[3]),supertype:'Pokémon',subtypes:['Pokémon'],rarity:'Promo',artist:'',nationalPokedexNumbers:[Number(x[0])],
+    set:{id:'mcd13',name:"Collection McDonald’s 2013",ptcgoCode:'MCD13',series:"Collection McDonald’s",releaseDate:'2013-01-01'},images:{small:url,large:url},cardmarket:null,tcgplayer:null,
+    __source:'Digitalização física francesa · Pokellector / TCGdex',__language:'fr',__physicalPrint:true,__tcgdexPriceChecked:true,__tcgdexVariantsChecked:true,__v123ExclusiveManualVariants:true,__v123ManualVariants:[{type:'holo'}]
+  }});
+}
+function v124DetachHiddenTrickVariants(cards){
+  for(const c of cards||[]){if(Array.isArray(c.__v123ManualVariants))c.__v123ManualVariants=c.__v123ManualVariants.filter(v=>!(v?.stamp||v?.stamps||[]).includes?.('trick-or-trade'));}
+  return cards;
+}
+function v124BuildTrickPhysicalCards(p,cards){
+  const source=v124DetachHiddenTrickVariants([...(cards||[])]),prints=[];
+  for(const [year,code,num,name,holo] of V123_TRICK){
+    if(!['2022','2023','2024'].includes(year)||!v123NameMatchesPokemon(p,name))continue;
+    const base=source.find(c=>v124WorldCompact(c?.name)===v124WorldCompact(name)&&normalizeLocalCardNumber(c?.number)===normalizeLocalCardNumber(num)&&v123SetMatches(c,code));
+    if(!base)continue;
+    const scan=V124_TRICK_SCANS.get(v124TrickKey(year,name,num))||V124_TRICK_SCANS_BY_NAME.get(`${year}|${v124WorldCompact(name)}`)||'';
+    const variant={type:holo?'holo':'normal',stamp:['trick-or-trade'],__trickYear:year,__collection:`Trick or Trade ${year}`};
+    prints.push({...base,
+      id:`tot${year.slice(-2)}-${String(code).toLowerCase()}-${normalizeLocalCardNumber(num)}`,set:{id:`tot${year.slice(-2)}`,name:`Trick or Trade ${year}`,ptcgoCode:`TOT${year.slice(-2)}`,series:'Trick or Trade',releaseDate:`${year}-09-01`},
+      images:{small:scan,large:scan},cardmarket:null,tcgplayer:null,rarity:holo?'Promo · Cosmos Holo':'Promo',__marketUrl:'',__language:'en',__physicalPrint:true,__trickPhysicalPrint:true,__scanMissing:!scan,
+      __source:'Digitalização da impressão física estampada · Pokellector',__tcgdexPriceChecked:true,__tcgdexVariantsChecked:true,__tcgdexCardmarket:null,__tcgdexTcgplayer:null,__tcgdexVariantsDetailed:null,__tcgdexVariantsLegacy:null,
+      __v123ExclusiveManualVariants:true,__v123ManualVariants:[variant],__trickOrTradeYears:[year]
+    });
+  }
+  return v124MergePhysicalCatalog(source,prints);
+}
+async function v124DiscoverLanguageCards(p,lang){
+  const aliases=await v124SpeciesAliases(p,lang);let briefs=[],successful=false;
+  // O filtro estrito por National Dex encontra também nomes tailandeses,
+  // indonésios e outras transliterações que a PokeAPI não fornece.
+  for(let page=1;page<=8;page++){
+    try{const rows=await fetchTcgdexJson(`https://api.tcgdex.net/v2/${encodeURIComponent(lang)}/cards?dexId=${encodeURIComponent(`eq:${Number(p.id)}`)}&pagination:page=${page}&pagination:itemsPerPage=250`);if(!Array.isArray(rows))break;successful=true;briefs.push(...rows);if(rows.length<250)break;}
+    catch(e){console.warn('TCGdex por National Dex',lang,p.id,e);break;}
+  }
+  for(const alias of aliases){
+    for(let page=1;page<=8;page++){
+      try{const rows=await fetchTcgdexJson(`https://api.tcgdex.net/v2/${encodeURIComponent(lang)}/cards?name=${encodeURIComponent(alias)}&pagination:page=${page}&pagination:itemsPerPage=250`);if(!Array.isArray(rows))break;successful=true;briefs.push(...rows);if(rows.length<250)break;}
+      catch(e){console.warn('TCGdex por idioma',lang,alias,e);break;}
+    }
+  }
+  if(!successful)throw new Error(`Catálogo ${V124_LANGUAGE_LABEL.get(lang)||lang} temporariamente indisponível`);
+  const seen=new Set();briefs=briefs.filter(b=>b?.id&&!seen.has(String(b.id).toLowerCase())&&seen.add(String(b.id).toLowerCase()));
+  let index=0;const details=[];const workers=Array.from({length:Math.min(8,Math.max(1,briefs.length))},async()=>{while(index<briefs.length){const b=briefs[index++],d=await v124Detail(lang,b.id);if(d)details.push(d)}});await Promise.all(workers);
+  const pid=Number(p.id),cards=[];
+  for(const d of details){const dex=(Array.isArray(d.dexId)?d.dexId:[]).map(Number);if(dex.length&&!dex.includes(pid))continue;if(!dex.length&&!v124NameMatches(d.name,aliases))continue;const c=v124DetailToCard(d,lang);if(c)cards.push(c);}
+  if(lang==='fr')cards.push(...v124French2013Cards(p));
+  return cards;
+}
+
+const V124_ENGLISH_BASE_FETCH=fetchAllCardsForPokemon;
+function v124ImmediateEnglishCatalog(p,baseCards){
+  const cards=(baseCards||[]).map(c=>({...c,__language:'en',__physicalPrint:true,__scanMissing:!(c?.images?.small||c?.images?.large)}));
+  return v124BuildTrickPhysicalCards(p,cards);
+}
+async function v124LoadWorldCatalog(p,lang,{baseCards=null,force=false}={}){
+  const key=`${lang}|${Number(p.id)}`;
+  if(!force&&V124_WORLD_CACHE.has(key))return V124_WORLD_CACHE.get(key);
+  if(V124_WORLD_INFLIGHT.has(key))return V124_WORLD_INFLIGHT.get(key);
+  const job=(async()=>{
+    let base=[];if(lang==='en')base=baseCards||await V124_ENGLISH_BASE_FETCH(p);
+    const extras=await v124DiscoverLanguageCards(p,lang);
+    let cards=lang==='en'?v124MergePhysicalCatalog(base.map(c=>({...c,__language:'en',__physicalPrint:true})),extras):v124MergePhysicalCatalog([],extras);
+    if(lang==='en')cards=v124BuildTrickPhysicalCards(p,cards);
+    V124_WORLD_CACHE.set(key,cards);
+    if(currentModalPokemon?.id===p.id&&V124_CURRENT_LANGUAGE===lang){currentModalCards=cards;renderModalCards(false,lang!=='en');}
+    return cards;
+  })().finally(()=>V124_WORLD_INFLIGHT.delete(key));
+  V124_WORLD_INFLIGHT.set(key,job);return job;
+}
+
+// O antigo suplemento já não pode voltar a fundir ou esconder reimpressões.
+v123CompletePokemonCatalog=async function(p,baseCards){
+  if(V124_CURRENT_LANGUAGE!=='en')return baseCards;
+  try{return await v124LoadWorldCatalog(p,'en',{baseCards})}catch(e){console.warn('Catálogo mundial inglês:',e);return baseCards;}
+};
+
+const V124_BASE_RESULT_HTML=renderPokemonCardResult;
+renderPokemonCardResult=function(card,cheapestId){
+  let html=V124_BASE_RESULT_HTML(card,cheapestId);
+  const lang=card?.__language||'en',langName=V124_LANGUAGE_LABEL.get(lang)||lang;
+  const tags=`<span class="art-result-tag language-tag">🌐 ${escapeHtml(langName)}</span>${card?.__physicalPrint?'<span class="art-result-tag physical-print-tag">✓ Impressão física</span>':''}`;
+  html=html.replace('<div class="art-result-tags">',`<div class="art-result-tags">${tags}`);
+  if(!cardImageCandidates(card).length){
+    html=html.replace('class="art-result ','class="art-result no-scan ');
+    html=html.replace(/<div class="art-result-img"([^>]*)><img[^>]*><\/div>/,`<div class="art-result-img"$1>${v124NoScanMarkup(card)}</div>`);
+  }
+  return html;
+};
+
+function v124CardDateKey(card){
+  const direct=String(card?.set?.releaseDate||'');if(direct)return direct;
+  const text=`${card?.set?.id||''} ${card?.set?.name||''}`;const year=(text.match(/(?:19|20)\d{2}/)||[])[0]||'';return year?`${year}-01-01`:'';
+}
+modalFilteredCards=function(){
+  const search=(document.getElementById('cardBrowserSearch')?.value||window.__modalSearchValue||'').trim();
+  const searchTokens=v124WorldNorm(search).split(/\s+/).filter(Boolean);
+  const filter=document.getElementById('cardBrowserFilter')?.value||window.__modalFilterValue||'all';
+  const sort=document.getElementById('cardBrowserSort')?.value||window.__modalSortValue||'newest';
+  let cards=currentModalCards.filter(card=>{
+    const setName=String(card?.set?.name||'').toLowerCase(),vars=(()=>{try{return cardVariants(card)}catch(_){return []}})();
+    const isTrick=!!card.__trickPhysicalPrint||/trick or trade|pokéween|pokeween/.test(setName)||vars.some(v=>(v.stamps||[]).includes('trick-or-trade'));
+    if(filter==='art'&&!artCategory(card))return false;
+    if(filter==='priced'&&!Number.isFinite(cardmarketPrice(card).value))return false;
+    if(filter==='promo'&&!String(card.rarity||'').toLowerCase().includes('promo')&&!setName.includes('promo'))return false;
+    if(filter==='mcdonalds'&&!/mcdonald/.test(setName))return false;
+    if(filter==='trick'&&!isTrick)return false;
+    if(filter==='missing-scan'&&cardImageCandidates(card).length)return false;
+    if(filter==='owned'&&!isSpecificCardOwned(currentModalPokemon?.id,card.id))return false;
+    if(filter==='wishlist'&&!isSpecificCardWishlisted(currentModalPokemon?.id,card.id))return false;
+    if(!searchTokens.length)return true;
+    const hay=v124WorldNorm([card.name,card.rarity,card.number,card.artist,card.set?.id,card.set?.name,card.set?.series,card.set?.ptcgoCode,artCategory(card),V124_LANGUAGE_LABEL.get(card.__language||'en')].filter(Boolean).join(' '));
+    return searchTokens.every(token=>hay.includes(token));
+  });
+  cards=cards.slice().sort((a,b)=>{
+    if(sort==='oldest')return (v124CardDateKey(a)||'9999').localeCompare(v124CardDateKey(b)||'9999')||String(a.number||'').localeCompare(String(b.number||''),'en',{numeric:true});
+    if(sort==='price-asc'){const pa=cardmarketPrice(a).value,pb=cardmarketPrice(b).value;return (Number.isFinite(pa)?pa:Infinity)-(Number.isFinite(pb)?pb:Infinity)||(v124CardDateKey(b)).localeCompare(v124CardDateKey(a));}
+    if(sort==='price-desc'){const pa=cardmarketPrice(a).value,pb=cardmarketPrice(b).value;return (Number.isFinite(pb)?pb:-1)-(Number.isFinite(pa)?pa:-1)||(v124CardDateKey(b)).localeCompare(v124CardDateKey(a));}
+    if(sort==='name')return String(a.name||'').localeCompare(String(b.name||''),undefined,{numeric:true})||String(a.number||'').localeCompare(String(b.number||''),'en',{numeric:true});
+    return v124CardDateKey(b).localeCompare(v124CardDateKey(a))||String(a.set?.name||'').localeCompare(String(b.set?.name||''));
+  });
+  return cards;
+};
+
+function v124EnhanceCatalogControls(){
+  const controls=document.querySelector('#artModalBody .card-browser-controls');if(!controls)return;
+  const filter=document.getElementById('cardBrowserFilter');
+  if(filter&&!filter.querySelector('option[value="mcdonalds"]')){
+    filter.querySelector('option[value="promo"]')?.insertAdjacentHTML('afterend','<option value="mcdonalds">McDonald’s</option><option value="trick">Trick or Trade</option><option value="missing-scan">Sem scan disponível</option>');
+    filter.value=window.__modalFilterValue||'all';
+  }
+  if(!document.getElementById('cardBrowserLanguage')){
+    const select=document.createElement('select');select.id='cardBrowserLanguage';select.className='world-language-select';select.setAttribute('aria-label','Idioma das cartas');
+    select.innerHTML=V124_LANGUAGES.map(x=>`<option value="${escapeHtml(x[0])}">${escapeHtml(x[1])} · ${escapeHtml(x[2])}${V124_PARTIAL_LANGUAGES.has(x[0])?' · catálogo parcial':''}</option>`).join('');select.value=V124_CURRENT_LANGUAGE;
+    const search=document.getElementById('cardBrowserSearch');controls.insertBefore(select,search?.nextSibling||controls.firstChild);
+    select.addEventListener('change',()=>v124SwitchLanguage(select.value));
+  }
+  const note=document.querySelector('#artModalBody .art-modal-note');if(note)note.innerHTML='Cada resultado representa uma <strong>impressão física</strong> identificada por idioma + coleção + número. Reimpressões com a mesma arte não são fundidas. O idioma começa em inglês; McDonald’s e Trick or Trade têm filtros próprios. Quando a frente ainda não existe no arquivo consultado, a carta continua listada como impressão confirmada e nunca é substituída por uma imagem inventada.';
+}
+
+renderModalCards=function(resetLimit=false,skipEnrich=false){
+  const result=V123_RENDER_MODAL(resetLimit,skipEnrich||V124_CURRENT_LANGUAGE!=='en');
+  v124EnhanceCatalogControls();
+  const label=V124_LANGUAGE_LABEL.get(V124_CURRENT_LANGUAGE)||V124_CURRENT_LANGUAGE;
+  const noScan=currentModalCards.filter(c=>!cardImageCandidates(c).length).length;
+  const mcd=currentModalCards.filter(c=>/mcdonald/.test(String(c?.set?.name||'').toLowerCase())).length;
+  const trick=currentModalCards.filter(c=>c.__trickPhysicalPrint).length;
+  const summary=document.getElementById('artModalSummary');
+  if(summary)summary.innerHTML=`<strong>${currentModalCards.length}</strong> impressões · <strong>${escapeHtml(label)}</strong>${mcd?` · <strong>${mcd}</strong> McDonald’s`:''}${trick?` · <strong>${trick}</strong> Trick or Trade`:''}${noScan?` · <strong>${noScan}</strong> sem scan`:''}${V124_LANGUAGE_LOADING?' <span class="cache-live-note catalog-plus">a sincronizar…</span>':' <span class="cache-live-note">✓ impressão física separada</span>'}`;
+  return result;
+};
+
+async function v124SwitchLanguage(lang){
+  if(!currentModalPokemon||V124_LANGUAGE_LOADING||!V124_LANGUAGE_LABEL.has(lang))return;
+  const p=currentModalPokemon;V124_CURRENT_LANGUAGE=lang;V124_LANGUAGE_LOADING=true;
+  const body=document.getElementById('artModalBody'),summary=document.getElementById('artModalSummary'),sub=document.getElementById('artModalSub');
+  sub.textContent=`A carregar todas as impressões em ${V124_LANGUAGE_LABEL.get(lang)}…`;summary.textContent='A sincronizar catálogo mundial…';body.innerHTML='<div class="art-loading"><div class="art-spinner"></div><div>A consultar cartas, coleções, variantes e scans deste idioma…</div></div>';
+  try{
+    const cards=await v124LoadWorldCatalog(p,lang);if(currentModalPokemon!==p||V124_CURRENT_LANGUAGE!==lang)return;
+    currentModalCards=cards;currentModalVisibleLimit=MODAL_PAGE_STEP;
+    const displayName=cards.find(c=>Number(c?.nationalPokedexNumbers?.[0])===Number(p.id))?.name||pretty(p.name);
+    document.getElementById('artModalTitle').textContent=`#${String(p.id).padStart(3,'0')} ${displayName} · Todas as impressões`;
+    sub.textContent=`Catálogo ${V124_LANGUAGE_LABEL.get(lang)}${V124_PARTIAL_LANGUAGES.has(lang)?' (cobertura parcial na fonte)':''} · cada coleção e reimpressão física aparece separadamente.`;
+    renderModalCards(true,lang!=='en');
+  }catch(e){
+    console.error('Idioma TCG:',e);summary.textContent='Catálogo temporariamente indisponível';body.innerHTML=`<div class="art-empty"><strong>Não foi possível carregar ${escapeHtml(V124_LANGUAGE_LABEL.get(lang)||lang)}.</strong><p>${escapeHtml(e.message||'Erro de ligação')}. As tuas cartas guardadas não foram alteradas.</p><button class="load-more-btn" id="retryLanguage">Tentar novamente</button></div>`;document.getElementById('retryLanguage')?.addEventListener('click',()=>{V124_LANGUAGE_LOADING=false;v124SwitchLanguage(lang)});
+  }finally{V124_LANGUAGE_LOADING=false;}
+}
+
+openArtModal=async function(p){
+  currentModalPokemon=p;currentModalCards=[];currentModalVisibleLimit=MODAL_PAGE_STEP;V124_CURRENT_LANGUAGE='en';V124_LANGUAGE_LOADING=true;
+  window.__modalSearchValue='';window.__modalFilterValue='all';window.__modalSortValue='newest';
+  const modal=document.getElementById('artModal'),body=document.getElementById('artModalBody'),title=document.getElementById('artModalTitle'),sub=document.getElementById('artModalSub'),summary=document.getElementById('artModalSummary');
+  title.textContent=`#${String(p.id).padStart(3,'0')} ${pretty(p.name)} · Todas as impressões`;sub.textContent='Inglês por defeito · catálogo mundial por idioma, coleção e reimpressão física.';summary.textContent='A carregar catálogo inglês…';body.innerHTML='<div class="art-loading"><div class="art-spinner"></div><div>A consultar todas as cartas e impressões físicas deste Pokémon…</div></div>';
+  modal.classList.add('open');modal.setAttribute('aria-hidden','false');document.body.classList.add('modal-open');
+  let base=[],shown=false;
+  try{base=await V124_ENGLISH_BASE_FETCH(p,(attempt,max)=>{if(currentModalPokemon===p)summary.textContent=`Ligação instável · tentativa ${attempt}/${max}`});}catch(e){console.warn('Catálogo principal inglês:',e)}
+  if(currentModalPokemon!==p)return;
+  if(base.length){currentModalCards=v124ImmediateEnglishCatalog(p,base);V124_LANGUAGE_LOADING=false;shown=true;renderModalCards(true,false);}
+  try{
+    if(shown){v124LoadWorldCatalog(p,'en',{baseCards:base}).catch(e=>console.warn('Complemento mundial:',e));}
+    else{const cards=await v124LoadWorldCatalog(p,'en',{baseCards:base});if(currentModalPokemon!==p)return;currentModalCards=cards;V124_LANGUAGE_LOADING=false;renderModalCards(true,false);}
+  }catch(e){
+    V124_LANGUAGE_LOADING=false;if(!shown){summary.textContent='Erro ao carregar';body.innerHTML=`<div class="art-empty"><strong>Não foi possível carregar o catálogo.</strong><p>${escapeHtml(e.message||'Erro de ligação')}.</p><button class="load-more-btn" id="retryCardLoad">Tentar novamente</button></div>`;document.getElementById('retryCardLoad')?.addEventListener('click',()=>openArtModal(p));}
+  }
+};
+
+const V124_BASE_VARIANT_IMAGE_INFO=variantImageInfo;
+variantImageInfo=function(card,variant){
+  const info=V124_BASE_VARIANT_IMAGE_INFO(card,variant),urls=cardImageCandidates(card,info?.url||'');
+  if(!urls.length)return {url:'',label:'Impressão confirmada · scan ainda indisponível',exact:false,effect:variantVisualEffect(variant)};
+  return {...info,url:urls[0]};
+};
+const V124_BASE_PLAIN_HERO=plainVariantHero;
+plainVariantHero=function(mount,card,v,url){
+  if(!cardImageCandidates(card,url).length){const token=++VARIANT_RENDER_TOKEN;try{ACTIVE_VARIANT_VISUAL?.destroy?.()}catch(_){}ACTIVE_VARIANT_VISUAL=null;if(mount){mount.innerHTML=v124NoScanMarkup(card);mount.dataset.renderToken=String(token)}return;}
+  return V124_BASE_PLAIN_HERO(mount,card,v,url);
+};
+const V124_BASE_RENDER_VARIANT_VISUAL=renderVariantHeroVisual;
+renderVariantHeroVisual=async function(card,v,imageInfo){
+  if(!cardImageCandidates(card,imageInfo?.url||'').length){plainVariantHero(document.getElementById('variantHoloMount'),card,v,'');return;}
+  return V124_BASE_RENDER_VARIANT_VISUAL(card,v,imageInfo);
+};
+
+// Um único motor CSS para todas as cartas: movimento consistente, sem contextos
+// WebGL perdidos e com a proporção real da digitalização.
+createProFoilCard=async function(card,v,url,opts={}){
+  const visual=createRealFoilCard(card,v,url,opts),root=visual.element,img=root?.querySelector?.('img');let observer=null;
+  const align=()=>{
+    if(!root||!img?.naturalWidth||!img?.naturalHeight)return;
+    const w=root.clientWidth,h=root.clientHeight;if(!w||!h)return;
+    const imageRatio=img.naturalWidth/img.naturalHeight,boxRatio=w/h;let x=0,y=0,rw=w,rh=h;
+    if(imageRatio>boxRatio){rh=w/imageRatio;y=(h-rh)/2}else{rw=h*imageRatio;x=(w-rw)/2}
+    const box=(selector,bx,by,bw,bh)=>{const el=root.querySelector(selector);if(!el)return;el.style.left=`${bx}px`;el.style.top=`${by}px`;el.style.width=`${bw}px`;el.style.height=`${bh}px`;el.style.right='auto';el.style.bottom='auto'};
+    box('.realfoil-gloss',x,y,rw,rh);box('.realfoil-full',x,y,rw,rh);
+    box('.realfoil-art',x+rw*.077,y+rh*.143,rw*.846,rh*.352);
+    box('.realfoil-rev.rtop',x,y,rw,rh*.1435);box('.realfoil-rev.rbottom',x,y+rh*.4945,rw,rh*.5055);
+    box('.realfoil-rev.rleft',x,y+rh*.1425,rw*.0775,rh*.353);box('.realfoil-rev.rright',x+rw*.9225,y+rh*.1425,rw*.0775,rh*.353);
+  };
+  if(img){if(img.complete)requestAnimationFrame(align);else img.addEventListener('load',()=>requestAnimationFrame(align),{once:true});if(typeof ResizeObserver!=='undefined'){observer=new ResizeObserver(()=>requestAnimationFrame(align));observer.observe(root);}}
+  const destroy=visual.destroy;visual.destroy=()=>{observer?.disconnect?.();destroy?.()};
+  return visual;
+};
+requestV12MotionPermission=function(){
+  ensureOrientationListener();
+  try{
+    if(typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function'){
+      if(VARIANT_MOTION_STATE==='granted')return Promise.resolve(true);
+      return DeviceOrientationEvent.requestPermission().then(r=>{const granted=r==='granted';VARIANT_MOTION_STATE=granted?'granted':'denied';V12_MOTION_PERMISSION=granted?'granted':'denied';return granted}).catch(()=>{VARIANT_MOTION_STATE='denied';V12_MOTION_PERMISSION='denied';return false});
+    }
+    VARIANT_MOTION_STATE='granted';V12_MOTION_PERMISSION='granted';return Promise.resolve(true);
+  }catch(_){VARIANT_MOTION_STATE='denied';V12_MOTION_PERMISSION='denied';return Promise.resolve(false)}
+};
+requestProFoilMotionPermission=requestV12MotionPermission;
+
+// ---------- Produtos Pokémon · stock português em tempo real ----------
+const V124_STOCK_FEED='https://www.pokestockpt.com/seen_products.json';
+let V124_STOCK_ROWS=[];
+let V124_STOCK_UPDATED=0;
+let V124_STOCK_PROMISE=null;
+function v124SafeHttpUrl(value){try{const u=new URL(String(value||''));return /^https?:$/.test(u.protocol)?u.href:''}catch(_){return ''}}
+function v124StockState(row){
+  const text=v124WorldNorm(`${row?.name||''} ${row?.url||''}`);
+  const preorder=/pre.?order|pre.?venda|pré.?venda|reserva|pre lançamento|pré lançamento/.test(text);
+  if(preorder&&row?.in_stock)return 'pre';return row?.in_stock?'in':'out';
+}
+function v124StockStateLabel(state){return state==='pre'?'PRÉ-VENDA':state==='in'?'EM STOCK':'ESGOTADO'}
+function v124StockLocal(row){return /pokejotta/i.test(`${row?.store_name||''} ${row?.url||''}`)}
+function v124StockTimestamp(){
+  const latest=Math.max(0,...V124_STOCK_ROWS.map(x=>Number(x?.last_checked)||0));return latest?new Date(latest*1000):null;
+}
+function v124RenderStock(){
+  const body=document.getElementById('stockBody'),search=v124WorldNorm(document.getElementById('stockSearch')?.value||''),store=document.getElementById('stockStore')?.value||'all',status=document.getElementById('stockStatus')?.value||'all';if(!body)return;
+  let rows=V124_STOCK_ROWS.filter(row=>{
+    if(store!=='all'&&String(row.store_name||'')!==store)return false;
+    if(status!=='all'&&v124StockState(row)!==status)return false;
+    if(search&&!v124WorldNorm(`${row.name||''} ${row.store_name||''} ${row.price||''}`).includes(search))return false;
+    return true;
+  });
+  const rank={pre:0,in:1,out:2};rows.sort((a,b)=>Number(v124StockLocal(b))-Number(v124StockLocal(a))||rank[v124StockState(a)]-rank[v124StockState(b)]||String(a.store_name||'').localeCompare(String(b.store_name||''))||String(a.name||'').localeCompare(String(b.name||'')));
+  const shown=rows.slice(0,180),updated=v124StockTimestamp();
+  const cards=shown.map(row=>{const state=v124StockState(row),url=v124SafeHttpUrl(row.url),img=v124SafeHttpUrl(row.img),local=v124StockLocal(row);return `<article class="stock-card"><div class="stock-card-img">${img?`<img loading="lazy" src="${escapeHtml(img)}" alt="${escapeHtml(row.name||'Produto Pokémon')}" onerror="this.style.display='none'">`:''}</div><div class="stock-card-info"><div class="stock-card-top"><span class="stock-store">${escapeHtml(row.store_name||'Loja')}</span>${local?'<span class="stock-local">BRAGA · LOCAL</span>':''}</div><h3>${escapeHtml(row.name||'Produto Pokémon')}</h3><div class="stock-card-bottom"><span class="stock-price">${escapeHtml(String(row.price||'Consultar'))}</span><span class="stock-state ${state}">${v124StockStateLabel(state)}</span></div>${url?`<a class="stock-open" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">Ver produto na loja ↗</a>`:''}</div></article>`}).join('');
+  body.innerHTML=`<div class="stock-summary"><strong>${rows.length}</strong> produtos neste filtro · a mostrar ${shown.length}${updated?` · verificado ${escapeHtml(updated.toLocaleString('pt-PT'))}`:''}</div>${cards?`<div class="stock-grid">${cards}</div>`:'<div class="art-empty"><strong>Nenhum produto corresponde ao filtro.</strong><p>Experimenta outra loja, estado ou pesquisa.</p></div>'}<div class="stock-note">Stock agregado pelo <a href="https://www.pokestockpt.com/" target="_blank" rel="noopener noreferrer">PokéStockPT</a>, atualizado pelas lojas portuguesas monitorizadas. “Pré-venda” é identificado quando a própria listagem da loja o indica. Confirma sempre preço e disponibilidade na página da loja antes de comprar.</div>`;
+}
+async function v124LoadStock(force=false){
+  if(!force&&V124_STOCK_ROWS.length&&Date.now()-V124_STOCK_UPDATED<5*60*1000)return V124_STOCK_ROWS;
+  if(V124_STOCK_PROMISE)return V124_STOCK_PROMISE;
+  V124_STOCK_PROMISE=(async()=>{const r=await fetch(`${V124_STOCK_FEED}?t=${Date.now()}`,{cache:'no-store'});if(!r.ok)throw new Error(`Stock HTTP ${r.status}`);const data=await r.json();V124_STOCK_ROWS=Object.values(data||{}).filter(x=>x&&x.name&&x.url);V124_STOCK_UPDATED=Date.now();
+    const store=document.getElementById('stockStore'),selected=store?.value||'all',stores=[...new Set(V124_STOCK_ROWS.map(x=>String(x.store_name||'').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+    if(store){store.innerHTML='<option value="all">Todas as lojas</option>'+stores.map(x=>`<option value="${escapeHtml(x)}">${escapeHtml(x)}${/pokejotta/i.test(x)?' · Braga':''}</option>`).join('');store.value=stores.includes(selected)?selected:'all';}
+    return V124_STOCK_ROWS;})().finally(()=>{V124_STOCK_PROMISE=null});return V124_STOCK_PROMISE;
+}
+async function v124OpenStock(){
+  const modal=document.getElementById('stockModal'),body=document.getElementById('stockBody');modal.classList.add('open');modal.setAttribute('aria-hidden','false');document.body.classList.add('modal-open');
+  if(!V124_STOCK_ROWS.length)body.innerHTML='<div class="art-loading"><div class="art-spinner"></div><div>A consultar stock português em tempo real…</div></div>';
+  try{await v124LoadStock();v124RenderStock()}catch(e){console.error('Stock Portugal:',e);body.innerHTML=`<div class="art-empty"><strong>Não foi possível consultar o stock agora.</strong><p>${escapeHtml(e.message||'Erro de ligação')}.</p><button class="load-more-btn" id="retryStock">Tentar novamente</button></div>`;document.getElementById('retryStock')?.addEventListener('click',()=>v124OpenStock());}
+}
+function v124CloseStock(){const modal=document.getElementById('stockModal');modal.classList.remove('open');modal.setAttribute('aria-hidden','true');if(!document.querySelector('.art-modal.open,.variant-modal.open,.scanner-modal.open'))document.body.classList.remove('modal-open');}
+document.getElementById('productStockBtn')?.addEventListener('click',v124OpenStock);
+document.getElementById('stockClose')?.addEventListener('click',v124CloseStock);
+document.getElementById('stockModal')?.addEventListener('click',e=>{if(e.target.id==='stockModal')v124CloseStock()});
+document.getElementById('stockSearch')?.addEventListener('input',v124RenderStock);
+document.getElementById('stockStore')?.addEventListener('change',v124RenderStock);
+document.getElementById('stockStatus')?.addEventListener('change',v124RenderStock);
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElementById('stockModal')?.classList.contains('open'))v124CloseStock()});
+
+console.info('POKÉDEX XL v12.4.2 FULL CARD VIEWER + MOTION ONLY carregada');
 
 document.getElementById('resetGenBtn').addEventListener('click',()=>{state.generation=null;state.page=1;renderCurrentPage()});
 </script>

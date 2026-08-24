@@ -1,4 +1,4 @@
-const CACHE_NAME='pokedex-xl-v12-3-4-clean-binder';
+const CACHE_NAME='pokedex-xl-v12-4-2-full-card-viewer';
 const SHELL=['./','./index.html','./manifest.webmanifest','./icon-180.png','./icon-192.png','./icon-512.png','./assets/charmeleon-mep-079.jpg'];
 
 self.addEventListener('install',event=>{
@@ -20,6 +20,25 @@ self.addEventListener('fetch',event=>{
   // Nunca colocar os dados da coleção/Supabase em cache: têm de vir sempre atualizados.
   if(url.hostname.endsWith('supabase.co')){
     event.respondWith(fetch(req));
+    return;
+  }
+
+  // O stock tenta sempre a rede; conserva a última resposta apenas como
+  // fallback quando o agregador estiver temporariamente indisponível.
+  if(url.hostname==='www.pokestockpt.com' && url.pathname.endsWith('/seen_products.json')){
+    event.respondWith(
+      caches.open(CACHE_NAME).then(async cache=>{
+        try{
+          const fresh=await fetch(req,{cache:'no-store'});
+          if(fresh&&fresh.ok) cache.put(req,fresh.clone()).catch(()=>{});
+          return fresh;
+        }catch(error){
+          const cached=await cache.match(req,{ignoreSearch:true});
+          if(cached)return cached;
+          throw error;
+        }
+      })
+    );
     return;
   }
 
@@ -64,7 +83,9 @@ self.addEventListener('fetch',event=>{
     url.hostname==='pokeapi.co' ||
     url.hostname==='cdn.jsdelivr.net' ||
     url.hostname==='images.pokemontcg.io' ||
-    url.hostname==='assets.tcgdex.net';
+    url.hostname==='assets.tcgdex.net' ||
+    url.hostname==='den-cards.pokellector.com' ||
+    url.hostname==='product-images.tcgplayer.com';
 
   if(cacheable){
     event.respondWith(
