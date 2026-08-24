@@ -1,4 +1,4 @@
-const CACHE_NAME='pokedex-xl-v10-17-auto-scan-realfoil';
+const CACHE_NAME='pokedex-xl-v11-0-final';
 const SHELL=['./','./index.html','./manifest.webmanifest','./icon-180.png','./icon-192.png','./icon-512.png'];
 
 self.addEventListener('install',event=>{
@@ -61,7 +61,8 @@ self.addEventListener('fetch',event=>{
   // App shell e recursos Pokémon: cache primeiro para acelerar e permitir uso offline parcial.
   const cacheable = url.origin===self.location.origin ||
     url.hostname==='raw.githubusercontent.com' ||
-    url.hostname==='pokeapi.co';
+    url.hostname==='pokeapi.co' ||
+    url.hostname==='cdn.jsdelivr.net';
 
   if(cacheable){
     event.respondWith(

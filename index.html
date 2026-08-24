@@ -8,9 +8,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="Pokédex XL">
 <link rel="manifest" href="manifest.webmanifest">
-<title>Pokédex XL — Master Set · v10.17 RealFoil</title>
+<title>Pokédex XL — Master Set · v11.0 FINAL</title>
 <link rel="apple-touch-icon" href="icon-180.png">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@kongyo2/cards-css@0.5.0/dist/holo-cards.css">
 <style>
 :root{
   --bg:#04080d;
@@ -803,7 +802,7 @@ body:not(.auth-locked) .auth-gate{opacity:0;visibility:hidden;pointer-events:non
 }
 
 
-/* ===== v10.17 · VARIANTES VISUAIS PROFISSIONAIS ===== */
+/* ===== v11.0 · VARIANTES VISUAIS PROFISSIONAIS ===== */
 .variant-holo-mount{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:17px}
 .variant-holo-mount>img{width:100%;height:100%;object-fit:contain;display:block}
 .variant-holo-mount>.holo-card,.variant-holo-mount .holo-card{width:100%!important;max-width:100%!important;height:100%!important;max-height:100%!important;margin:0!important}
@@ -815,6 +814,94 @@ body:not(.auth-locked) .auth-gate{opacity:0;visibility:hidden;pointer-events:non
 .featured-card-image.variant-featured .holo-card__rotator,.featured-card-image.variant-featured .holo-card__front{width:100%!important;height:100%!important}
 .featured-card-image.variant-featured .holo-card__front{background-size:contain!important;background-position:center!important;background-repeat:no-repeat!important}
 @media(max-width:760px){.variant-holo-mount{border-radius:13px}}
+
+
+/* ======================================================================
+   v11.0 FINAL · Scanner automático + acabamento físico por zonas
+   ====================================================================== */
+.scanner-actions{display:none!important}
+.scanner-auto-line{max-width:520px;margin:10px auto 0;display:flex;align-items:center;justify-content:center;gap:7px;flex-wrap:wrap;padding:9px 11px;border-radius:12px;background:rgba(16,168,91,.08);border:1px solid rgba(16,168,91,.18);color:#8de9b2;font-size:9px;font-weight:850;text-align:center}
+.scanner-auto-line strong{font-size:9px;letter-spacing:.65px;color:#b4f5cc}.scanner-auto-line>span:last-child{color:#8293a2;font-weight:750}
+.scanner-auto-dot{width:8px;height:8px;border-radius:50%;background:#19ca6d;box-shadow:0 0 0 5px rgba(25,202,109,.10);animation:scannerPulse 1.35s ease-in-out infinite}
+@keyframes scannerPulse{0%,100%{transform:scale(.88);opacity:.65}50%{transform:scale(1);opacity:1}}
+.scanner-fallback-row{max-width:520px;margin:7px auto 0;text-align:center}.scanner-fallback-row .scanner-photo{min-height:34px;padding:5px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.07);background:transparent;color:#687989;font-size:8px;font-weight:850}
+.scanner-camera-shell.auto-scanning{box-shadow:0 18px 42px rgba(0,0,0,.35),0 0 0 1px rgba(25,202,109,.13)}
+.scanner-camera-shell.auto-scanning .scanner-guide{border-color:rgba(163,255,203,.9)}
+.scanner-camera-shell.auto-scanning .scanner-guide:after{content:"";position:absolute!important;left:4%!important;right:4%!important;top:12%!important;width:auto!important;height:2px!important;border:0!important;border-radius:999px!important;background:linear-gradient(90deg,transparent,#6df0a5 18%,#fff 50%,#6df0a5 82%,transparent)!important;box-shadow:0 0 16px rgba(109,240,165,.72)!important;animation:scanSweep 2s ease-in-out infinite!important}
+@keyframes scanSweep{0%,100%{top:12%;opacity:.35}50%{top:86%;opacity:1}}
+
+/* Motor local da carta: funciona sem dependência externa no Safari/iPhone. */
+.variant-holo-mount{perspective:900px;overflow:visible!important;padding:3px}
+.realfoil-card{--mx:50%;--my:42%;--rx:0deg;--ry:0deg;--foil-opacity:.78;position:relative;width:100%;height:100%;border-radius:16px;transform-style:preserve-3d;touch-action:none;user-select:none;-webkit-user-select:none;isolation:isolate}
+.realfoil-tilt{position:relative;width:100%;height:100%;overflow:hidden;border-radius:16px;transform:rotateX(var(--rx)) rotateY(var(--ry)) translateZ(0);transform-style:preserve-3d;transition:transform .16s cubic-bezier(.2,.8,.2,1),filter .18s ease;will-change:transform;box-shadow:0 20px 38px rgba(0,0,0,.34)}
+.realfoil-card.is-active .realfoil-tilt{transition:transform .045s linear}
+.realfoil-img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block;z-index:1;pointer-events:none}
+.realfoil-gloss,.realfoil-full,.realfoil-art,.realfoil-rev{position:absolute;pointer-events:none;z-index:3;mix-blend-mode:screen;background-position:var(--mx) var(--my);will-change:background-position,opacity}
+.realfoil-gloss{inset:0;border-radius:inherit;z-index:5;opacity:.15;background:radial-gradient(circle at var(--mx) var(--my),rgba(255,255,255,.40) 0 2%,rgba(255,255,255,.13) 8%,transparent 27%);mix-blend-mode:soft-light}
+.realfoil-full{inset:0;border-radius:inherit;opacity:0}
+/* Janela de artwork aproximada das cartas standard; Holo fica apenas aqui. */
+.realfoil-art{left:7.7%;right:7.7%;top:14.3%;height:35.2%;border-radius:2.4%;opacity:0;overflow:hidden}
+/* Reverse: quatro zonas que formam um anel e deixam a artwork sem foil. */
+.realfoil-rev{opacity:0}.realfoil-rev.rtop{left:0;right:0;top:0;height:14.35%}.realfoil-rev.rbottom{left:0;right:0;top:49.45%;bottom:0}.realfoil-rev.rleft{left:0;width:7.75%;top:14.25%;height:35.3%}.realfoil-rev.rright{right:0;width:7.75%;top:14.25%;height:35.3%}
+.realfoil-card[data-frame="full"] .realfoil-art{inset:0;border-radius:inherit}.realfoil-card[data-frame="full"] .realfoil-rev{display:none}.realfoil-card[data-frame="full"] .realfoil-full{opacity:var(--foil-opacity)}
+
+/* Base holográfica comum. */
+.realfoil-art,.realfoil-rev,.realfoil-full{background-image:
+  radial-gradient(circle at var(--mx) var(--my),rgba(255,255,255,.98) 0 1.7%,rgba(255,255,255,.38) 7%,transparent 23%),
+  conic-gradient(from 140deg at var(--mx) var(--my),rgba(255,77,77,.36),rgba(255,221,91,.42),rgba(87,255,171,.38),rgba(93,182,255,.45),rgba(185,105,255,.40),rgba(255,77,144,.36),rgba(255,77,77,.36));
+  background-size:100% 100%,165% 165%;filter:saturate(1.26) contrast(1.08)}
+.realfoil-card[data-finish="holo"] .realfoil-art{opacity:.73;mix-blend-mode:color-dodge}
+.realfoil-card[data-finish="reverse"] .realfoil-rev{opacity:.66;mix-blend-mode:color-dodge}
+.realfoil-card[data-finish="normal"] .realfoil-gloss{opacity:.12}
+
+/* Foils especiais: continuam respeitando a zona física da variante. */
+.realfoil-card[data-finish="masterball"] .realfoil-rev,.realfoil-card[data-finish="masterball"] .realfoil-full{opacity:.82;background-image:
+ radial-gradient(circle at var(--mx) var(--my),rgba(255,255,255,.95) 0 1.8%,transparent 20%),
+ radial-gradient(circle at 12px 12px,rgba(187,104,255,.70) 0 4px,transparent 4.6px),
+ linear-gradient(118deg,rgba(70,194,255,.18),rgba(255,255,255,.62),rgba(210,97,255,.26),rgba(255,213,74,.25));background-size:100% 100%,28px 28px,180% 180%;mix-blend-mode:color-dodge}
+.realfoil-card[data-finish="pokeball"] .realfoil-rev,.realfoil-card[data-finish="pokeball"] .realfoil-full{opacity:.69;background-image:
+ radial-gradient(circle at var(--mx) var(--my),rgba(255,255,255,.9),transparent 22%),
+ radial-gradient(circle at 11px 11px,rgba(255,255,255,.42) 0 4px,transparent 4.8px),
+ linear-gradient(130deg,rgba(255,70,70,.2),rgba(100,210,255,.32),rgba(255,255,255,.48),rgba(255,228,85,.24));background-size:100% 100%,25px 25px,180% 180%;mix-blend-mode:color-dodge}
+.realfoil-card[data-finish="cosmos"] .realfoil-art,.realfoil-card[data-finish="cosmos"] .realfoil-full{opacity:.80;background-image:
+ radial-gradient(circle at var(--mx) var(--my),rgba(255,255,255,.96),transparent 22%),
+ radial-gradient(circle at 18% 23%,#fff 0 1.1px,transparent 1.9px),radial-gradient(circle at 71% 36%,#fff 0 1.5px,transparent 2.2px),radial-gradient(circle at 45% 78%,rgba(194,225,255,.95) 0 1.4px,transparent 2.2px),
+ linear-gradient(125deg,rgba(105,143,255,.30),rgba(255,131,224,.33),rgba(255,255,255,.45),rgba(106,255,225,.24));background-size:100% 100%,37px 41px,49px 53px,61px 47px,190% 190%;mix-blend-mode:color-dodge}
+.realfoil-card[data-finish="crystal"] .realfoil-art,.realfoil-card[data-finish="crystal"] .realfoil-full{opacity:.77;background-image:radial-gradient(circle at var(--mx) var(--my),rgba(255,255,255,.92),transparent 23%),repeating-linear-gradient(52deg,rgba(255,255,255,.46) 0 1px,transparent 1px 17px),repeating-linear-gradient(128deg,rgba(104,206,255,.35) 0 1px,transparent 1px 23px),linear-gradient(135deg,rgba(255,117,217,.28),rgba(96,207,255,.35),rgba(255,232,108,.3));mix-blend-mode:color-dodge}
+.realfoil-card[data-finish="rainbow"] .realfoil-full,.realfoil-card[data-finish="gold"] .realfoil-full,.realfoil-card[data-finish="glitter"] .realfoil-full,.realfoil-card[data-finish="radiant"] .realfoil-full,.realfoil-card[data-finish="metal"] .realfoil-full{opacity:.72;mix-blend-mode:color-dodge}
+.realfoil-card[data-finish="gold"] .realfoil-full{background-image:radial-gradient(circle at var(--mx) var(--my),rgba(255,255,255,.86),transparent 24%),linear-gradient(120deg,rgba(114,72,3,.22),rgba(255,222,104,.72),rgba(255,248,196,.68),rgba(195,126,10,.35));filter:saturate(1.35)}
+.realfoil-card[data-finish="metal"] .realfoil-full{background-image:radial-gradient(circle at var(--mx) var(--my),rgba(255,255,255,.88),transparent 23%),linear-gradient(120deg,rgba(115,130,145,.24),rgba(255,255,255,.68),rgba(144,188,221,.35),rgba(255,255,255,.5));filter:saturate(.7)}
+.realfoil-card[data-finish="glitter"] .realfoil-full,.realfoil-card[data-finish="radiant"] .realfoil-full{background-size:100% 100%,14px 14px,180% 180%;background-image:radial-gradient(circle at var(--mx) var(--my),rgba(255,255,255,.95),transparent 22%),radial-gradient(circle,rgba(255,255,255,.72) 0 1px,transparent 1.8px),conic-gradient(from 120deg,rgba(255,91,154,.3),rgba(93,198,255,.38),rgba(255,228,93,.32),rgba(181,108,255,.36),rgba(255,91,154,.3))}
+
+.realfoil-card[data-finish="normal"] .realfoil-art,.realfoil-card[data-finish="normal"] .realfoil-rev,.realfoil-card[data-finish="normal"] .realfoil-full{opacity:0!important}
+.realfoil-card.compact{border-radius:9px}.realfoil-card.compact .realfoil-tilt{border-radius:9px;box-shadow:none}.realfoil-card.compact .realfoil-gloss{opacity:.07}.featured-card-image.final-variant-card{overflow:visible!important}
+
+.variant-image-badge{z-index:10}.variant-image-shell{overflow:visible!important}.variant-holo-mount{z-index:2}.variant-image-shell:after{pointer-events:none}
+.variant-data-note b{color:#d6e2ed}
+@media(max-width:760px){
+  .scanner-fallback-row .scanner-photo{min-height:30px;font-size:7px}
+  .realfoil-card,.realfoil-tilt{border-radius:13px}
+  .variant-image-shell{width:min(335px,88vw)!important;overflow:visible!important}
+  .variant-holo-mount{padding:2px}
+}
+
+
+/* v11.0 FINAL · correção de zonas: nenhum foil especial invade a artwork errada. */
+.realfoil-card[data-frame="full"] .realfoil-full{opacity:0}
+.realfoil-card[data-frame="full"][data-finish="reverse"] .realfoil-full{opacity:.66;mix-blend-mode:color-dodge}
+.realfoil-card[data-frame="standard"][data-finish="masterball"] .realfoil-full,
+.realfoil-card[data-frame="standard"][data-finish="pokeball"] .realfoil-full,
+.realfoil-card[data-frame="standard"][data-finish="cosmos"] .realfoil-full,
+.realfoil-card[data-frame="standard"][data-finish="crystal"] .realfoil-full{opacity:0!important}
+.realfoil-card[data-frame="full"][data-finish="masterball"] .realfoil-full{opacity:.82!important}
+.realfoil-card[data-frame="full"][data-finish="pokeball"] .realfoil-full{opacity:.69!important}
+.realfoil-card[data-frame="full"][data-finish="rainbow"] .realfoil-full,
+.realfoil-card[data-frame="full"][data-finish="gold"] .realfoil-full,
+.realfoil-card[data-frame="full"][data-finish="glitter"] .realfoil-full,
+.realfoil-card[data-frame="full"][data-finish="radiant"] .realfoil-full,
+.realfoil-card[data-frame="full"][data-finish="metal"] .realfoil-full{opacity:.72!important}
+.realfoil-card[data-frame="full"][data-finish="normal"] .realfoil-full{opacity:0!important}
+
 </style>
 </head>
 <body class="auth-locked">
@@ -1012,16 +1099,14 @@ body:not(.auth-locked) .auth-gate{opacity:0;visibility:hidden;pointer-events:non
     </div>
     <div class="scanner-body">
       <div class="scanner-camera-shell" id="scannerCameraShell">
-        <video id="scannerVideo" playsinline muted></video>
+        <video id="scannerVideo" playsinline muted autoplay></video>
         <canvas id="scannerCanvas" hidden></canvas>
         <img id="scannerPreview" alt="Pré-visualização da carta" hidden>
         <div class="scanner-guide" aria-hidden="true"><span></span></div>
       </div>
       <div class="scanner-status" id="scannerStatus"><strong>Pronto para scanear</strong><span>A leitura é feita no dispositivo. Tenta evitar reflexos fortes sobre a carta.</span></div>
-      <div class="scanner-actions">
-        <button type="button" class="scanner-capture" id="scannerCapture">◎ Forçar leitura</button>
-        <button type="button" class="scanner-photo" id="scannerPhotoBtn">🖼 Escolher foto</button>
-      </div>
+      <div class="scanner-auto-line"><span class="scanner-auto-dot"></span><strong>SCAN AUTOMÁTICO</strong><span>Não precisas de carregar em capturar.</span></div>
+      <div class="scanner-fallback-row"><button type="button" class="scanner-photo" id="scannerPhotoBtn">Problemas com a câmara? Usar fotografia</button></div>
       <input type="file" id="scannerFile" accept="image/*" capture="environment" hidden>
       <div class="scanner-candidates" id="scannerCandidates"></div>
       <div class="scanner-privacy">O scanner analisa automaticamente a imagem no dispositivo. Só mostra candidatos quando não consegue decidir com segurança.</div>
@@ -1283,8 +1368,8 @@ const FIRST_PARTNER_30TH_PROMOS={
 
 
 
-// MEP BLACK STAR PROMOS — 064–093
-// Garantia local para promos recentes que podem demorar a chegar às APIs generalistas.
+// MEP BLACK STAR PROMOS — 064–093 oficiais/reveladas (092 é Trainer e não entra na Pokédex)
+// Garantia local para promos oficiais/reveladas recentes que podem demorar a chegar às APIs generalistas.
 // 092 é Trainer e por isso não entra numa Pokédex organizada por Pokémon.
 const MEP_RECENT_PROMOS=[
   {mep:'064',name:'Serperior',pokemonId:497},
@@ -1482,27 +1567,22 @@ function variantTcgplayerImageUrl(card,variant){
 function variantImageInfo(card,variant){
   const id=Number(variant?.tcgplayerId)||null;
   const effect=variantVisualEffect(variant);
-  return {url:variantTcgplayerImageUrl(card,variant),label:effect==='none'?(id?'Imagem da impressão':'Scan da impressão base'):`${variant?.label||'Variante'} · acabamento interativo`,exact:!!id,effect};
+  const exact=!!id;
+  const human={normal:'Normal',holo:'Holo',reverse:'Reverse Holo',masterball:'Master Ball',pokeball:'Poké Ball',cosmos:'Cosmos Holo',crystal:'Cracked Ice',rainbow:'Rainbow',gold:'Gold',glitter:'Glitter',metal:'Metal',radiant:'Radiant'}[effect]||variant?.label||'Variante';
+  return {url:variantTcgplayerImageUrl(card,variant),label:exact?`${human} · imagem do produto`:`${human} · scan da impressão`,exact,effect};
 }
-let VARIANT_HOLO_LIB_PROMISE=null;
-let ACTIVE_VARIANT_HOLO=null;
-let VARIANT_HERO_TOKEN=0;
-let VARIANT_MOTION_PERMISSION_TRIED=false;
-async function requestVariantMotionPermission(){
-  if(VARIANT_MOTION_PERMISSION_TRIED)return;
-  VARIANT_MOTION_PERMISSION_TRIED=true;
-  try{
-    const lib=await loadVariantHoloLib();
-    if(typeof lib?.requestOrientationPermission==='function') await lib.requestOrientationPermission();
-  }catch(e){console.debug('Movimento iOS não autorizado; o efeito continua por toque.',e);}
-}
+let ACTIVE_VARIANT_VISUAL=null;
+let ACTIVE_VARIANT_ORIENTATION_TARGET=null;
+let VARIANT_MOTION_STATE='unknown';
+let VARIANT_MOTION_PROMISE=null;
+let VARIANT_MOTION_LISTENER=false;
 function variantVisualEffect(v){
   const type=String(v?.type||'normal').toLowerCase();
   const foil=String(v?.foil||'').toLowerCase();
   const sub=String(v?.subtype||'').toLowerCase();
   const all=`${foil} ${sub}`;
-  if(/masterball|master-ball/.test(all)) return 'prism';
-  if(/pokeball|poke-ball|greatball|great-ball|ultraball|ultra-ball|loveball|friendball|quickball|duskball/.test(all)) return 'mosaic';
+  if(/masterball|master-ball|master ball/.test(all)) return 'masterball';
+  if(/pokeball|poke-ball|poke ball|greatball|great-ball|ultraball|ultra-ball|loveball|friendball|quickball|duskball/.test(all)) return 'pokeball';
   if(/cosmos|galaxy/.test(all)) return 'cosmos';
   if(/cracked-ice|cracked ice|ice/.test(all)) return 'crystal';
   if(/rainbow/.test(all)) return 'rainbow';
@@ -1512,54 +1592,93 @@ function variantVisualEffect(v){
   if(/radiant/.test(all)) return 'radiant';
   if(type==='reverse') return 'reverse';
   if(type==='holo') return 'holo';
-  return 'none';
+  return 'normal';
 }
 function variantTextureSeed(card,v){
   const s=`${card?.id||''}|${v?.key||''}`;let h=2166136261;
   for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}
   return Math.abs(h>>>0)||1;
 }
-async function loadVariantHoloLib(){
-  if(!VARIANT_HOLO_LIB_PROMISE) VARIANT_HOLO_LIB_PROMISE=import('https://cdn.jsdelivr.net/npm/@kongyo2/cards-css@0.5.0/dist/index.js').catch(err=>{console.warn('Foil engine indisponível',err);return null});
-  return VARIANT_HOLO_LIB_PROMISE;
+function variantFrameMode(card,v){
+  const rarity=String(card?.rarity||'').toLowerCase();
+  const subs=(card?.subtypes||[]).join(' ').toLowerCase();
+  const name=String(card?.name||'').toLowerCase();
+  const eff=variantVisualEffect(v);
+  // Full-art / special finishes naturally cover the whole face rather than a classic artwork box.
+  if(/illustration|full art|ultra rare|hyper rare|secret|rainbow|gold|radiant|amazing|shiny rare|special/.test(rarity)) return 'full';
+  if(/vmax|vstar|v-union|break/.test(subs)||/ vmax| vstar| break/.test(name)) return 'full';
+  if(['rainbow','gold','glitter','radiant','metal'].includes(eff)) return 'full';
+  return 'standard';
+}
+function setRealFoilPose(root,nx=.5,ny=.45,{tilt=true}={}){
+  if(!root)return;nx=Math.max(0,Math.min(1,nx));ny=Math.max(0,Math.min(1,ny));
+  const ry=tilt?(nx-.5)*20:0,rx=tilt?(.5-ny)*17:0;
+  root.style.setProperty('--mx',`${(nx*100).toFixed(1)}%`);root.style.setProperty('--my',`${(ny*100).toFixed(1)}%`);
+  root.style.setProperty('--rx',`${rx.toFixed(2)}deg`);root.style.setProperty('--ry',`${ry.toFixed(2)}deg`);
+}
+function ensureOrientationListener(){
+  if(VARIANT_MOTION_LISTENER)return;VARIANT_MOTION_LISTENER=true;
+  window.addEventListener('deviceorientation',e=>{
+    const root=ACTIVE_VARIANT_ORIENTATION_TARGET;if(!root||VARIANT_MOTION_STATE!=='granted')return;
+    const gamma=Number(e.gamma),beta=Number(e.beta);if(!Number.isFinite(gamma)||!Number.isFinite(beta))return;
+    const nx=.5+Math.max(-28,Math.min(28,gamma))/56*.46;
+    const centeredBeta=Math.max(-24,Math.min(24,beta-45));const ny=.46+centeredBeta/48*.42;
+    setRealFoilPose(root,nx,ny,{tilt:true});
+  },{passive:true});
+}
+function requestVariantMotionPermission(){
+  ensureOrientationListener();
+  if(VARIANT_MOTION_STATE==='granted'||VARIANT_MOTION_STATE==='denied')return Promise.resolve(VARIANT_MOTION_STATE);
+  if(VARIANT_MOTION_PROMISE)return VARIANT_MOTION_PROMISE;
+  try{
+    if(typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function'){
+      VARIANT_MOTION_STATE='pending';
+      VARIANT_MOTION_PROMISE=DeviceOrientationEvent.requestPermission().then(r=>{VARIANT_MOTION_STATE=r==='granted'?'granted':'denied';return VARIANT_MOTION_STATE}).catch(()=>{VARIANT_MOTION_STATE='denied';return 'denied'}).finally(()=>{VARIANT_MOTION_PROMISE=null});
+      return VARIANT_MOTION_PROMISE;
+    }
+    VARIANT_MOTION_STATE='granted';return Promise.resolve('granted');
+  }catch(e){VARIANT_MOTION_STATE='denied';return Promise.resolve('denied')}
+}
+function bindRealFoilInteraction(root){
+  let dragging=false;
+  const move=e=>{const r=root.getBoundingClientRect();if(!r.width||!r.height)return;setRealFoilPose(root,(e.clientX-r.left)/r.width,(e.clientY-r.top)/r.height,{tilt:true});};
+  const down=e=>{dragging=true;root.classList.add('is-active');try{root.setPointerCapture?.(e.pointerId)}catch(_){ }move(e)};
+  const onMove=e=>{if(e.pointerType==='mouse'||dragging)move(e)};
+  const up=e=>{dragging=false;root.classList.remove('is-active');try{root.releasePointerCapture?.(e.pointerId)}catch(_){ }if(VARIANT_MOTION_STATE!=='granted')setRealFoilPose(root,.5,.45,{tilt:true})};
+  const leave=e=>{if(e.pointerType==='mouse'&&!dragging)setRealFoilPose(root,.5,.45,{tilt:true})};
+  root.addEventListener('pointerdown',down);root.addEventListener('pointermove',onMove);root.addEventListener('pointerup',up);root.addEventListener('pointercancel',up);root.addEventListener('pointerleave',leave);
+  return ()=>{root.removeEventListener('pointerdown',down);root.removeEventListener('pointermove',onMove);root.removeEventListener('pointerup',up);root.removeEventListener('pointercancel',up);root.removeEventListener('pointerleave',leave);if(ACTIVE_VARIANT_ORIENTATION_TARGET===root)ACTIVE_VARIANT_ORIENTATION_TARGET=null};
+}
+function createRealFoilCard(card,v,url,{interactive=true,compact=false}={}){
+  const effect=variantVisualEffect(v),frame=variantFrameMode(card,v);
+  const root=document.createElement('div');root.className=`realfoil-card${compact?' compact':''}`;root.dataset.finish=effect;root.dataset.frame=frame;
+  const tilt=document.createElement('div');tilt.className='realfoil-tilt';
+  const img=document.createElement('img');img.className='realfoil-img';img.alt=`${card?.name||'Carta'} · ${v?.label||'variante'}`;img.src=url||card?.images?.large||card?.images?.small||'';img.onerror=()=>{const fallback=card?.images?.large||card?.images?.small||'';if(fallback&&img.src!==fallback){img.onerror=null;img.src=fallback}};
+  tilt.appendChild(img);
+  const full=document.createElement('div');full.className='realfoil-full';tilt.appendChild(full);
+  const art=document.createElement('div');art.className='realfoil-art';tilt.appendChild(art);
+  for(const c of ['rtop','rbottom','rleft','rright']){const d=document.createElement('div');d.className=`realfoil-rev ${c}`;tilt.appendChild(d)}
+  const gloss=document.createElement('div');gloss.className='realfoil-gloss';tilt.appendChild(gloss);root.appendChild(tilt);
+  setRealFoilPose(root,.5,.45,{tilt:true});
+  let cleanup=()=>{};if(interactive){cleanup=bindRealFoilInteraction(root);ACTIVE_VARIANT_ORIENTATION_TARGET=root}
+  return {element:root,destroy:()=>{cleanup();if(ACTIVE_VARIANT_ORIENTATION_TARGET===root)ACTIVE_VARIANT_ORIENTATION_TARGET=null}};
 }
 function plainVariantHero(mount,card,v,url){
-  mount.innerHTML='';const img=document.createElement('img');img.id='variantHeroImage';img.alt=`${card?.name||'Carta'} · ${v?.label||'variante'}`;img.src=url||card?.images?.large||card?.images?.small||'';
-  img.onerror=()=>{img.onerror=null;img.src=card?.images?.large||card?.images?.small||''};mount.appendChild(img);
+  mount.innerHTML='';const visual=createRealFoilCard(card,v,url,{interactive:true});mount.appendChild(visual.element);ACTIVE_VARIANT_VISUAL=visual;ACTIVE_VARIANT_ORIENTATION_TARGET=visual.element;
 }
 async function renderVariantHeroVisual(card,v,imageInfo){
-  const shell=document.getElementById('variantImageShell'),mount=document.getElementById('variantHoloMount');if(!mount||!shell)return;
-  const token=++VARIANT_HERO_TOKEN;const url=imageInfo?.url||card?.images?.large||card?.images?.small||'';const effect=imageInfo?.effect||variantVisualEffect(v);
-  try{ACTIVE_VARIANT_HOLO?.destroy?.()}catch(e){} ACTIVE_VARIANT_HOLO=null;
-  plainVariantHero(mount,card,v,url);
-  if(effect==='none') return;
-  shell.classList.add('variant-loading');
-  const lib=await loadVariantHoloLib();
-  if(token!==VARIANT_HERO_TOKEN||String(selectedVariantForModal()?.key)!==String(v?.key)){shell.classList.remove('variant-loading');return;}
-  if(!lib?.createHoloCard){shell.classList.remove('variant-loading');return;}
-  try{
-    const holo=lib.createHoloCard({
-      image:url,imageAlt:`${card.name} · ${v.label}`,effect,interactive:true,
-      gyroscope:{rangeX:18,rangeY:18,sensitivity:1.05},
-      textureSeed:variantTextureSeed(card,v),
-      showcase:{delay:60,duration:1900,loop:false,speed:.92,intensity:.94,respectReducedMotion:false},
-      physics:{maxTilt:15,parallax:.34,glareRange:1.15,returnDelay:70},
-      visual:{brightness:1.06,contrast:1.035,saturate:1.08,glareOpacity:.62,shineOpacity:.93,lineSpace:5,lineAngle:118,glitterSize:1.1}
-    });
-    mount.innerHTML='';mount.appendChild(holo.element);ACTIVE_VARIANT_HOLO=holo;
-  }catch(err){console.warn('Não foi possível aplicar foil',err);plainVariantHero(mount,card,v,url)}
-  finally{shell.classList.remove('variant-loading')}
+  const mount=document.getElementById('variantHoloMount');if(!mount)return;
+  try{ACTIVE_VARIANT_VISUAL?.destroy?.()}catch(e){} ACTIVE_VARIANT_VISUAL=null;
+  const url=imageInfo?.url||card?.images?.large||card?.images?.small||'';
+  const visual=createRealFoilCard(card,v,url,{interactive:true});mount.innerHTML='';mount.appendChild(visual.element);ACTIVE_VARIANT_VISUAL=visual;ACTIVE_VARIANT_ORIENTATION_TARGET=visual.element;
 }
 async function enhanceVisibleBinderVariants(){
   const nodes=[...document.querySelectorAll('.featured-card-image[data-variant-effect]:not([data-variant-ready])')];if(!nodes.length)return;
-  const lib=await loadVariantHoloLib();if(!lib?.createHoloCard)return;
   for(const node of nodes){
-    const effect=node.dataset.variantEffect||'none';node.dataset.variantReady='1';if(effect==='none')continue;
-    const url=node.dataset.variantImage||node.querySelector('img')?.src||'';if(!url)continue;
-    try{
-      const holo=lib.createHoloCard({image:url,imageAlt:node.dataset.variantAlt||'Carta da coleção',effect,interactive:false,gyroscope:false,textureSeed:Number(node.dataset.variantSeed)||1,visual:{brightness:1.01,contrast:1.01,saturate:1.02,glareOpacity:.18,shineOpacity:.34}});
-      node.innerHTML='';node.appendChild(holo.element);node.classList.add('variant-featured');
-    }catch(e){}
+    node.dataset.variantReady='1';const url=node.dataset.variantImage||node.querySelector('img')?.src||'';if(!url)continue;
+    const fakeCard={id:node.dataset.variantCardId||'',name:node.dataset.variantAlt||'Carta da coleção',rarity:node.dataset.variantRarity||'',subtypes:(node.dataset.variantSubtypes||'').split('|').filter(Boolean),images:{small:url,large:url}};
+    const fakeVariant={key:node.dataset.variantKey||'default',type:node.dataset.variantType||'normal',foil:node.dataset.variantFoil||'',subtype:node.dataset.variantSubtype||'',label:node.dataset.variantLabel||'Variante'};
+    const visual=createRealFoilCard(fakeCard,fakeVariant,url,{interactive:false,compact:true});node.innerHTML='';node.appendChild(visual.element);node.classList.add('final-variant-card');
   }
 }
 function bestTcgPrice(p){
@@ -2352,7 +2471,7 @@ async function fetchAllCardsForPokemon(p,onRetry){
       }
     }
 
-    // Garante também as MEP 064–093 associadas a Pokémon.
+    // Garante também as MEP 064–093 oficiais/reveladas associadas a Pokémon (092 é Trainer).
     for(const manual of recentMepCardsForPokemon(id)){
       const idx=all.findIndex(c=>String(c?.id||'').toLowerCase()===manual.id.toLowerCase() || (String(c?.set?.id||'').toLowerCase()==='mep' && normalizeLocalCardNumber(c?.number)===normalizeLocalCardNumber(manual.number)));
       if(idx>=0){
@@ -2538,7 +2657,7 @@ function renderModalCards(resetLimit=false,skipEnrich=false){
   const more=filtered.length>shown.length
     ? `<div class="load-more-wrap"><button class="load-more-btn" id="loadMoreCards">Mostrar mais ${Math.min(MODAL_PAGE_STEP,filtered.length-shown.length)} cartas</button></div>`:'';
 
-  body.innerHTML=controls+cardsHtml+more+`<div class="art-modal-note">A pesquisa combina <strong>número da Pokédex + nome do Pokémon</strong> e inclui de forma garantida as <strong>promos MEP recentes (037–093, quando associadas a Pokémon)</strong>. O botão Cardmarket aparece sempre. Carrega diretamente na <strong>imagem da carta</strong> para escolher a variante física exata, ver preços e decidir qual queres usar no binder. A Wishlist continua ao nível da impressão da carta.</div>`;
+  body.innerHTML=controls+cardsHtml+more+`<div class="art-modal-note">A pesquisa combina <strong>número da Pokédex + nome do Pokémon</strong> e inclui de forma garantida as <strong>promos MEP recentes (037–101 oficiais/reveladas, quando associadas a Pokémon)</strong>. O botão Cardmarket aparece sempre. Carrega diretamente na <strong>imagem da carta</strong> para escolher a variante física exata, ver preços e decidir qual queres usar no binder. A Wishlist continua ao nível da impressão da carta.</div>`;
 
   // restore UI values after rerender
   const searchEl=document.getElementById('cardBrowserSearch');
@@ -2572,8 +2691,8 @@ function renderModalCards(resetLimit=false,skipEnrich=false){
     await openVariantModal(card,currentModalPokemon);
   };
   body.querySelectorAll('[data-open-variants]').forEach(el=>{
-    el.addEventListener('click',()=>openVariantFromElement(el));
-    el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openVariantFromElement(el);}});
+    el.addEventListener('click',()=>{requestVariantMotionPermission();openVariantFromElement(el)});
+    el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();requestVariantMotionPermission();openVariantFromElement(el);}});
   });
   body.querySelectorAll('[data-wish-card]').forEach(btn=>{
     btn.addEventListener('click',async()=>{
@@ -2633,7 +2752,7 @@ function renderVariantModal(){
     marketCardHtml('olx','O','OLX','<strong>Pesquisa</strong><small>anúncios atuais</small>','A API oficial não permite ler anúncios de outros utilizadores; abre pesquisa específica',olxUrl,'Ver anúncios');
   const meta=[`<strong>Tipo:</strong> ${escapeHtml(v.type||'normal')}`,v.foil?`<strong>Foil:</strong> ${escapeHtml(foilPretty(v.foil))}`:'',v.subtype?`<strong>Subtipo:</strong> ${escapeHtml(v.subtype.replace(/-/g,' '))}`:'',v.stamps?.length?`<strong>Selo:</strong> ${escapeHtml(v.stamps.join(', ').replace(/-/g,' '))}`:'',v.cardmarketId?`<strong>Cardmarket:</strong> #${v.cardmarketId}`:'',v.tcgplayerId?`<strong>TCGPlayer:</strong> #${v.tcgplayerId}`:''].filter(Boolean).join('<br>');
   document.getElementById('variantMetaCard').innerHTML=meta||'Versão física desta carta.';
-  document.getElementById('variantDataNote').innerHTML=image.effect==='none'?'<b>Imagem:</b> variante sem acabamento holográfico adicional.':'<b>Visual RealFoil:</b> inclina o telemóvel ou passa o dedo sobre a carta para veres o brilho desta variante. Quando a base só disponibiliza uma scan comum, o acabamento Holo/Reverse/foil é renderizado por cima da própria carta.';
+  document.getElementById('variantDataNote').innerHTML=`<b>Visual físico:</b> todas as variantes respondem ao rato/dedo e ao movimento do iPhone quando autorizado. ${image.effect==='normal'?'A variante Normal tem apenas reflexo de superfície, sem holografia.':image.effect==='holo'?'Na Holo, o foil fica concentrado na janela da ilustração.':image.effect==='reverse'?'Na Reverse Holo, o foil fica no corpo da carta à volta da ilustração.':'O padrão especial é aplicado de acordo com o tipo de foil identificado.'}`;
   document.querySelectorAll('[data-variant-select]').forEach(btn=>btn.addEventListener('click',()=>{currentVariantSelectedKey=btn.dataset.variantSelect;requestVariantMotionPermission();renderVariantModal();}));
   ownBtn.onclick=async()=>{
     const wasOwned=isSpecificCardOwned(pokemon.id,card.id,v.key);
@@ -2660,6 +2779,7 @@ async function openVariantModal(card,pokemon){
   if(currentVariantCard===card) renderVariantModal();
 }
 function closeVariantModal(){
+  try{ACTIVE_VARIANT_VISUAL?.destroy?.()}catch(e){}ACTIVE_VARIANT_VISUAL=null;ACTIVE_VARIANT_ORIENTATION_TARGET=null;
   const modal=document.getElementById('variantModal');modal.classList.remove('open');modal.setAttribute('aria-hidden','true');currentVariantCard=null;currentVariantPokemon=null;currentVariantSelectedKey=null;
 }
 
@@ -2780,7 +2900,7 @@ function makeCard(p){
     <div class="card-top"><div class="dex-number">#${String(p.id).padStart(3,'0')}</div><div class="card-ball"></div></div>
     <div class="art-star-badge" title="ART obtida">★</div>
     ${featured?`<div class="featured-card-label">★ ${escapeHtml(featured.variantLabel||'CARTA DA COLEÇÃO')}</div>`:''}
-    <div class="card-image ${featured?'featured-card-image':''}" ${featured?`data-variant-effect="${escapeHtml(variantVisualEffect(variantFromSnapshot(featured)))}" data-variant-image="${escapeHtml(featured.imageSmall||featured.imageLarge||'')}" data-variant-alt="${escapeHtml(`${featured.name} · ${featured.variantLabel||'variante'}`)}" data-variant-seed="${variantTextureSeed({id:featured.id},variantFromSnapshot(featured))}"`:''}><img loading="lazy" src="${featured?escapeHtml(featured.imageSmall||featured.imageLarge):artworkUrl(p.id)}" alt="${featured?escapeHtml(featured.name):pretty(p.name)}" onerror="this.onerror=null;this.src='${fallbackArtworkUrl(p.id)}'"></div>
+    <div class="card-image ${featured?'featured-card-image':''}" ${featured?`data-variant-effect="${escapeHtml(variantVisualEffect(variantFromSnapshot(featured)))}" data-variant-image="${escapeHtml(featured.imageSmall||featured.imageLarge||'')}" data-variant-alt="${escapeHtml(`${featured.name} · ${featured.variantLabel||'variante'}`)}" data-variant-card-id="${escapeHtml(featured.id||'')}" data-variant-key="${escapeHtml(featured.variantKey||'default')}" data-variant-label="${escapeHtml(featured.variantLabel||'Variante')}" data-variant-type="${escapeHtml(featured.variantType||'normal')}" data-variant-foil="${escapeHtml(featured.variantFoil||'')}" data-variant-subtype="${escapeHtml(featured.variantSubtype||'')}" data-variant-rarity="${escapeHtml(featured.rarity||'')}"`:''}><img loading="lazy" src="${featured?escapeHtml(featured.imageSmall||featured.imageLarge):artworkUrl(p.id)}" alt="${featured?escapeHtml(featured.name):pretty(p.name)}" onerror="this.onerror=null;this.src='${fallbackArtworkUrl(p.id)}'"></div>
     <div class="completion-badge">EM FALTA</div>
     <div class="type-row" data-id="${p.id}">${typeMarkup(p.id)}</div>
     <h3 class="dex-name">${pretty(p.name)}</h3>
@@ -3475,7 +3595,7 @@ document.getElementById('installBtn').addEventListener('click',async()=>{
 
 
 
-// ===== v10.17 · SCANNER AUTOMÁTICO DE CARTAS =====
+// ===== v11.0 · SCANNER AUTOMÁTICO DE CARTAS =====
 let scannerStream=null;
 let scannerCandidateContext=[];
 let scannerAutoTimer=null;
@@ -3489,26 +3609,30 @@ function setScannerStatus(title,detail='',kind=''){
   el.className='scanner-status'+(kind?' '+kind:'');
   el.innerHTML=`<strong>${escapeHtml(title)}</strong><span>${escapeHtml(detail)}</span>`;
 }
-function clearScannerAuto(){if(scannerAutoTimer){clearTimeout(scannerAutoTimer);scannerAutoTimer=null}scannerAutoBusy=false;scannerStableKey='';scannerStableHits=0;scannerSession++;}
+function clearScannerAuto({invalidate=false}={}){if(scannerAutoTimer){clearTimeout(scannerAutoTimer);scannerAutoTimer=null}scannerAutoBusy=false;scannerStableKey='';scannerStableHits=0;if(invalidate)scannerSession++;}
 function stopScannerCamera(){
-  clearScannerAuto();
+  clearScannerAuto({invalidate:true});
   if(scannerStream){scannerStream.getTracks().forEach(t=>t.stop());scannerStream=null;}
-  const video=document.getElementById('scannerVideo'); if(video) video.srcObject=null;
+  const video=document.getElementById('scannerVideo');if(video){try{video.pause()}catch(_){ }video.srcObject=null;}
+  document.getElementById('scannerCameraShell')?.classList.remove('auto-scanning');
 }
 async function startScannerCamera(){
   const video=document.getElementById('scannerVideo'),preview=document.getElementById('scannerPreview');
-  if(preview) preview.hidden=true; if(video) video.hidden=false;
-  stopScannerCamera();
-  const mySession=scannerSession;
-  if(!navigator.mediaDevices?.getUserMedia){setScannerStatus('Câmara não disponível','Usa “Escolher foto” para fotografar a carta.','bad');return;}
+  if(preview)preview.hidden=true;if(video)video.hidden=false;
+  // IMPORTANTE: invalida a sessão antiga primeiro e só depois memoriza a nova sessão.
+  stopScannerCamera();const mySession=scannerSession;
+  if(!navigator.mediaDevices?.getUserMedia){setScannerStatus('Câmara não disponível','Usa a fotografia de fallback.','bad');return;}
   try{
-    scannerStream=await navigator.mediaDevices.getUserMedia({audio:false,video:{facingMode:{ideal:'environment'},width:{ideal:1440},height:{ideal:1920}}});
-    if(mySession!==scannerSession){scannerStream?.getTracks().forEach(t=>t.stop());return;}
-    video.srcObject=scannerStream; await video.play();
-    setScannerStatus('Leitura automática ativa','Mantém a carta dentro da moldura. Assim que a identificação for segura, abrimos a carta diretamente.','working');
-    scheduleScannerAuto(650);
+    const stream=await navigator.mediaDevices.getUserMedia({audio:false,video:{facingMode:{ideal:'environment'},width:{ideal:1920},height:{ideal:2560}}});
+    if(mySession!==scannerSession){stream.getTracks().forEach(t=>t.stop());return;}scannerStream=stream;video.srcObject=stream;
+    await new Promise((resolve,reject)=>{if(video.readyState>=1)return resolve();const timer=setTimeout(resolve,1800);video.onloadedmetadata=()=>{clearTimeout(timer);resolve()};video.onerror=()=>{clearTimeout(timer);reject(new Error('Falha no vídeo da câmara'))}});
+    await video.play();if(mySession!==scannerSession)return;
+    document.getElementById('scannerCameraShell')?.classList.add('auto-scanning');
+    setScannerStatus('A procurar uma carta…','Só tens de manter a carta direita dentro da moldura. A app abre-a automaticamente quando confirmar nome/número.','working');
+    // Prepara OCR em paralelo; assim o primeiro scan automático não espera por um clique extra.
+    ensureScannerOCRWorker().then(()=>{if(mySession===scannerSession)scheduleScannerAuto(120)}).catch(e=>{console.warn('OCR preload',e);setScannerStatus('Reconhecimento indisponível','Usa a fotografia de fallback.','bad')});
   }catch(e){
-    console.warn('Scanner camera',e);setScannerStatus('Não foi possível abrir a câmara','Podes usar “Escolher foto” — no iPhone abre a câmara/galeria nativa.','bad');
+    console.warn('Scanner camera',e);setScannerStatus('Não foi possível abrir a câmara','Confirma a permissão da câmara no Safari/PWA ou usa a fotografia de fallback.','bad');
   }
 }
 function openScanner(){
@@ -3580,8 +3704,14 @@ async function preprocessScannerBlob(blob){
   let source=null,w=0,h=0,cleanup=()=>{};
   if(typeof createImageBitmap==='function'){const bmp=await createImageBitmap(blob);source=bmp;w=bmp.width;h=bmp.height;cleanup=()=>bmp.close?.();}
   else{const url=URL.createObjectURL(blob);const img=new Image();await new Promise((res,rej)=>{img.onload=res;img.onerror=rej;img.src=url});source=img;w=img.naturalWidth;h=img.naturalHeight;cleanup=()=>URL.revokeObjectURL(url);}
-  const maxW=1100,scale=Math.min(1,maxW/w);const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(w*scale));canvas.height=Math.max(1,Math.round(h*scale));const ctx=canvas.getContext('2d',{willReadFrequently:true});ctx.drawImage(source,0,0,canvas.width,canvas.height);cleanup();
-  const id=ctx.getImageData(0,0,canvas.width,canvas.height),d=id.data;for(let i=0;i<d.length;i+=4){const y=.299*d[i]+.587*d[i+1]+.114*d[i+2];const v=Math.max(0,Math.min(255,(y-128)*1.28+128));d[i]=d[i+1]=d[i+2]=v;}ctx.putImageData(id,0,0);return canvas;
+  // A fotografia já vem centrada na moldura 63:88. Mantemos resolução suficiente para nome e número.
+  const maxW=920,scale=Math.min(1,maxW/w),cw=Math.max(1,Math.round(w*scale)),ch=Math.max(1,Math.round(h*scale));
+  const base=document.createElement('canvas');base.width=cw;base.height=ch;const bctx=base.getContext('2d',{willReadFrequently:true});bctx.drawImage(source,0,0,cw,ch);cleanup();
+  // OCR concentrado: topo (nome) + fundo (set/número) ampliados num único frame.
+  const out=document.createElement('canvas');out.width=920;out.height=760;const ctx=out.getContext('2d',{willReadFrequently:true});ctx.fillStyle='#fff';ctx.fillRect(0,0,out.width,out.height);
+  const topH=Math.round(ch*.31),botY=Math.round(ch*.64),botH=ch-botY;
+  ctx.drawImage(base,0,0,cw,topH,0,0,920,330);ctx.drawImage(base,0,botY,cw,botH,0,350,920,410);
+  const id=ctx.getImageData(0,0,out.width,out.height),d=id.data;for(let i=0;i<d.length;i+=4){const y=.299*d[i]+.587*d[i+1]+.114*d[i+2];const v=Math.max(0,Math.min(255,(y-128)*1.52+128));d[i]=d[i+1]=d[i+2]=v;}ctx.putImageData(id,0,0);return out;
 }
 function showScannerCandidates(candidates,pokemon){
   scannerCandidateContext=candidates.map(x=>({card:x.card,pokemon,score:x.score}));
@@ -3616,7 +3746,7 @@ async function identifyScannedCard(blob,{auto=false}={}){
     if(unequivocal){setScannerStatus('Carta identificada',`${top.card.set?.name||'Set'} · #${top.card.number}. A abrir variantes…`,'good');closeScanner();await openVariantModal(top.card,pokemon);return true;}
     if(auto){
       if(key===scannerStableKey)scannerStableHits++;else{scannerStableKey=key;scannerStableHits=1;}
-      if(scannerStableHits>=2&&top.score>=145&&(!second||top.score-second.score>=20)){
+      if(scannerStableHits>=2&&num&&top.score>=135&&(!second||top.score-second.score>=10)){
         setScannerStatus('Carta confirmada',`${top.card.set?.name||'Set'} · #${top.card.number}. A abrir variantes…`,'good');closeScanner();await openVariantModal(top.card,pokemon);return true;
       }
       return false;
@@ -3625,19 +3755,27 @@ async function identifyScannedCard(blob,{auto=false}={}){
   }catch(e){console.error('Scanner',e);if(!auto)setScannerStatus('O scanner falhou',e?.message||'Tenta novamente ou escolhe uma fotografia.','bad');return false;}
 }
 function scannerFrameBlob(){
-  return new Promise(resolve=>{const video=document.getElementById('scannerVideo');if(!video?.videoWidth){resolve(null);return;}const canvas=document.getElementById('scannerCanvas');const targetW=Math.min(1100,video.videoWidth);const scale=targetW/video.videoWidth;canvas.width=Math.round(video.videoWidth*scale);canvas.height=Math.round(video.videoHeight*scale);canvas.getContext('2d').drawImage(video,0,0,canvas.width,canvas.height);canvas.toBlob(resolve,'image/jpeg',.88);});
+  return new Promise(resolve=>{
+    const video=document.getElementById('scannerVideo');if(!video?.videoWidth||video.readyState<2){resolve(null);return;}
+    const vw=video.videoWidth,vh=video.videoHeight,targetAspect=63/88;let sx=0,sy=0,sw=vw,sh=vh;
+    // Replica o object-fit:cover do preview e recorta a carta que está dentro da guia central.
+    if(vw/vh>targetAspect){sw=vh*targetAspect;sx=(vw-sw)/2}else{sh=vw/targetAspect;sy=(vh-sh)/2}
+    const inset=.055;sx+=sw*inset;sy+=sh*inset;sw*=1-inset*2;sh*=1-inset*2;
+    const canvas=document.getElementById('scannerCanvas');const targetW=920;canvas.width=targetW;canvas.height=Math.round(targetW/targetAspect);canvas.getContext('2d',{alpha:false}).drawImage(video,sx,sy,sw,sh,0,0,canvas.width,canvas.height);canvas.toBlob(resolve,'image/jpeg',.93);
+  });
 }
-function scheduleScannerAuto(delay=2200){
+function scheduleScannerAuto(delay=800){
   if(scannerAutoTimer)clearTimeout(scannerAutoTimer);const session=scannerSession;
-  scannerAutoTimer=setTimeout(async()=>{if(session!==scannerSession||!document.getElementById('scannerModal')?.classList.contains('open'))return;if(scannerAutoBusy){scheduleScannerAuto(700);return;}scannerAutoBusy=true;try{const blob=await scannerFrameBlob();if(blob)await identifyScannedCard(blob,{auto:true});}finally{scannerAutoBusy=false;if(session===scannerSession&&document.getElementById('scannerModal')?.classList.contains('open'))scheduleScannerAuto(1400);}},delay);
+  scannerAutoTimer=setTimeout(async()=>{
+    if(session!==scannerSession||!document.getElementById('scannerModal')?.classList.contains('open'))return;
+    if(scannerAutoBusy){scheduleScannerAuto(400);return;}scannerAutoBusy=true;
+    try{const blob=await scannerFrameBlob();if(blob)await identifyScannedCard(blob,{auto:true});}
+    finally{scannerAutoBusy=false;if(session===scannerSession&&document.getElementById('scannerModal')?.classList.contains('open'))scheduleScannerAuto(720);}
+  },delay);
 }
-async function captureScannerFrame(){
-  const blob=await scannerFrameBlob();if(!blob){document.getElementById('scannerFile').click();return;}await identifyScannedCard(blob,{auto:false});
-}
-document.getElementById('mobileScanBtn')?.addEventListener('click',openScanner);
+document.getElementById('mobileScanBtn')?.addEventListener('click',()=>{requestVariantMotionPermission();openScanner()});
 document.getElementById('scannerClose')?.addEventListener('click',closeScanner);
 document.getElementById('scannerModal')?.addEventListener('click',e=>{if(e.target===e.currentTarget)closeScanner()});
-document.getElementById('scannerCapture')?.addEventListener('click',captureScannerFrame);
 document.getElementById('scannerPhotoBtn')?.addEventListener('click',()=>document.getElementById('scannerFile').click());
 document.getElementById('scannerFile')?.addEventListener('change',e=>{const f=e.target.files?.[0];if(f)identifyScannedCard(f,{auto:false});e.target.value='';});
 
