@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="Pokédex XL">
 <link rel="manifest" href="manifest.webmanifest">
-<title>Pokédex XL — Master Set · v12.3.2 IMAGE REPAIR</title>
+<title>Pokédex XL — Master Set · v12.3.3 BINDER INSPECT</title>
 <link rel="apple-touch-icon" href="icon-180.png">
 <style>
 :root{
@@ -951,6 +951,15 @@ body:not(.auth-locked) .auth-gate{opacity:0;visibility:hidden;pointer-events:non
 .featured-card-image.binder-static-variant[data-variant-effect="normal"]::after{opacity:.035}
 .featured-card-image.binder-static-variant[data-variant-effect="holo"]::after,.featured-card-image.binder-static-variant[data-variant-effect="cosmos"]::after{opacity:.10}
 .featured-card-image.binder-static-variant[data-variant-effect="reverse"]::after,.featured-card-image.binder-static-variant[data-variant-effect="masterball"]::after,.featured-card-image.binder-static-variant[data-variant-effect="pokeball"]::after{opacity:.085}
+
+/* v12.3.3 · inspeção da impressão física escolhida no binder. */
+.binder-inspect-btn{position:relative;z-index:7;width:calc(100% - 18px);min-height:29px;margin:-1px auto 7px;display:flex;align-items:center;justify-content:center;gap:6px;border:1px solid rgba(90,57,0,.24);border-radius:999px;background:linear-gradient(180deg,#fff7cf,#e7bd48);color:#3e2900;box-shadow:0 5px 12px rgba(92,61,0,.13),inset 0 1px 0 rgba(255,255,255,.68);font-size:8px;font-weight:1000;letter-spacing:.55px;text-transform:uppercase;cursor:pointer;transition:transform .14s ease,filter .14s ease,box-shadow .14s ease}
+.binder-inspect-btn::before{content:'◉';font-size:10px;line-height:1}
+.binder-inspect-btn:hover{filter:brightness(1.035);transform:translateY(-1px);box-shadow:0 7px 15px rgba(92,61,0,.18),inset 0 1px 0 rgba(255,255,255,.72)}
+.binder-inspect-btn:focus-visible{outline:3px solid rgba(225,46,39,.28);outline-offset:2px}
+.binder-inspect-btn:active{transform:translateY(0)}
+@media(max-width:760px){.binder-inspect-btn{min-height:28px;width:100%;gap:4px;font-size:7px;letter-spacing:.28px;margin-top:0}}
+@media print{.binder-inspect-btn{display:none!important}}
 .featured-card-image.final-variant-card{overflow:hidden!important}
 
 
@@ -2389,6 +2398,26 @@ function pseudoCardFromSnapshot(snap){
     __marketUrl:String(snap.marketUrl||''),__source:String(snap.source||'Coleção'),__imageFallbacks:Array.isArray(snap.imageFallbacks)?snap.imageFallbacks:[]
   };
 }
+function binderInspectionCardFromSnapshot(snap){
+  const card=pseudoCardFromSnapshot(snap);
+  const v=variantFromSnapshot(snap)||normalizeVariantObject({type:'normal'});
+  card.__v123ManualVariants=[{
+    variantId:String(v.key||snap?.variantKey||'default'),
+    type:String(v.type||'normal'),foil:String(v.foil||''),subtype:String(v.subtype||''),size:'standard',
+    stamps:Array.isArray(v.stamps)?v.stamps:[],
+    thirdParty:{cardmarket:Number(v.cardmarketId)||null,tcgplayer:Number(v.tcgplayerId)||null}
+  }];
+  card.__v123ExclusiveManualVariants=true;
+  card.__binderInspection=true;
+  return card;
+}
+async function inspectFeaturedBinderCard(pokemon){
+  const snap=featuredCardFor(pokemon?.id);
+  if(!snap)return;
+  const card=binderInspectionCardFromSnapshot(snap);
+  try{await requestV12MotionPermission()}catch(_){}
+  await openVariantModal(card,pokemon);
+}
 async function refreshOwnedCardPriceCache(){
   const store=loadCardDetailStore();
   const byCard=new Map();
@@ -3130,6 +3159,7 @@ function makeCard(p){
     <div class="art-star-badge" title="ART obtida">★</div>
     ${featured?`<div class="featured-card-label">★ ${escapeHtml(featured.variantLabel||'CARTA DA COLEÇÃO')}</div>`:''}
     <div class="card-image ${featured?'featured-card-image':''}" ${featured?`data-variant-effect="${escapeHtml(variantVisualEffect(variantFromSnapshot(featured)))}" data-variant-image="${escapeHtml(featuredImage)}" data-variant-alt="${escapeHtml(`${featured.name} · ${featured.variantLabel||'variante'}`)}" data-variant-card-id="${escapeHtml(featured.id||'')}" data-variant-key="${escapeHtml(featured.variantKey||'default')}" data-variant-label="${escapeHtml(featured.variantLabel||'Variante')}" data-variant-type="${escapeHtml(featured.variantType||'normal')}" data-variant-foil="${escapeHtml(featured.variantFoil||'')}" data-variant-subtype="${escapeHtml(featured.variantSubtype||'')}" data-variant-rarity="${escapeHtml(featured.rarity||'')}"`:''}><img loading="lazy" src="${featured?escapeHtml(featuredImage):artworkUrl(p.id)}" ${featured?`data-image-fallbacks="${escapeHtml(encodedImageFallbacks(featuredFallbacks))}" onerror="advanceCardImageFallback(this)"`:`onerror="this.onerror=null;this.src='${fallbackArtworkUrl(p.id)}'"`} alt="${featured?escapeHtml(featured.name):pretty(p.name)}"></div>
+    ${featured?`<button type="button" class="binder-inspect-btn" data-inspect-binder-card aria-label="Inspecionar ${escapeHtml(featured.name)} · ${escapeHtml(featured.variantLabel||'variante')}">Inspecionar carta</button>`:''}
     <div class="completion-badge">EM FALTA</div>
     <div class="type-row" data-id="${p.id}">${typeMarkup(p.id)}</div>
     <h3 class="dex-name">${pretty(p.name)}</h3>
@@ -3142,6 +3172,12 @@ function makeCard(p){
     <div class="art-help">Comuns · Holo · Promo · EX/GX/V · IR/SIR · Full Art · Secretas</div>`;
 
   setCardVisual(el,hasCard,hasArt);
+
+  const inspectBtn=el.querySelector('[data-inspect-binder-card]');
+  if(inspectBtn) inspectBtn.addEventListener('click',async e=>{
+    e.preventDefault();e.stopPropagation();
+    await inspectFeaturedBinderCard(p);
+  });
 
   el.querySelectorAll('.cb').forEach(c=>{
     c.addEventListener('change',async()=>{
@@ -3621,7 +3657,7 @@ window.addEventListener('appinstalled',()=>{
 
 if('serviceWorker' in navigator && location.protocol!=='file:'){
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('./sw.js?v=12.3.2',{updateViaCache:'none'})
+    navigator.serviceWorker.register('./sw.js?v=12.3.3',{updateViaCache:'none'})
       .then(reg=>reg.update())
       .catch(err=>console.warn('Service Worker:',err));
   });
@@ -4517,7 +4553,7 @@ fetchAllCardsForPokemon=async function(p,onRetry){
 const V123_RENDER_MODAL=renderModalCards;
 renderModalCards=function(...args){const r=V123_RENDER_MODAL.apply(this,args);try{const p=currentModalPokemon;if(p){let current=false;try{const m=JSON.parse(localStorage.getItem(V123_DONE_PREFIX+Number(p.id))||'null');current=m?.version===V123_SUPPLEMENT_VERSION&&(Date.now()-Number(m.updatedAt||0))<V123_SUPPLEMENT_TTL}catch(_){}if(!current){const s=document.getElementById('artModalSummary');if(s&&!s.textContent.includes('catálogo especial'))s.innerHTML+=` <span class="cache-live-note catalog-plus">· a completar catálogo especial…</span>`}}}catch(_){}return r};
 
-console.info('POKÉDEX XL v12.3.2 IMAGE REPAIR carregada');
+console.info('POKÉDEX XL v12.3.3 BINDER INSPECT carregada');
 
 document.getElementById('resetGenBtn').addEventListener('click',()=>{state.generation=null;state.page=1;renderCurrentPage()});
 </script>
