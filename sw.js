@@ -1,4 +1,4 @@
-const CACHE_NAME='pokedex-xl-v8-cloud-card-sync';
+const CACHE_NAME='pokedex-xl-v9-collection-login';
 const SHELL=['./','./index.html','./manifest.webmanifest','./icon-180.png','./icon-192.png','./icon-512.png'];
 
 self.addEventListener('install',event=>{

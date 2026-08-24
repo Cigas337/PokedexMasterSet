@@ -228,7 +228,7 @@ body.modal-open{overflow:hidden}
 
 
 /* ===== ALL CARDS BROWSER ===== */
-.card-browser-controls{display:grid;grid-template-columns:minmax(220px,1.4fr) minmax(150px,.7fr) minmax(170px,.8fr);gap:10px;margin-bottom:16px;position:sticky;top:0;z-index:4;padding:10px;border-radius:14px;background:rgba(7,13,20,.94);border:1px solid rgba(255,255,255,.08);backdrop-filter:blur(12px)}
+.card-browser-controls{display:grid;grid-template-columns:minmax(220px,1.4fr) minmax(150px,.7fr) minmax(170px,.8fr);gap:10px;margin-bottom:16px;position:relative;top:auto;z-index:1;padding:10px;border-radius:14px;background:rgba(7,13,20,.94);border:1px solid rgba(255,255,255,.08);backdrop-filter:blur(12px)}
 .card-browser-controls input,.card-browser-controls select{width:100%;height:42px;border-radius:10px;border:1px solid rgba(255,255,255,.10);background:#111b26;color:#eef4fb;padding:0 12px;outline:none;color-scheme:dark}.card-browser-controls select option{background:#111b26!important;color:#eef4fb!important}
 .card-browser-controls input:focus,.card-browser-controls select:focus{border-color:rgba(238,64,55,.75);box-shadow:0 0 0 3px rgba(238,64,55,.10)}
 .card-browser-count{grid-column:1/-1;color:#8f9dad;font-size:11px;font-weight:800;padding:0 2px 2px}
@@ -241,7 +241,7 @@ body.modal-open{overflow:hidden}
 .load-more-wrap{display:flex;justify-content:center;padding:20px 0 4px}
 .load-more-btn{min-width:210px;min-height:42px;border:1px solid rgba(255,255,255,.10);border-radius:12px;background:#14202c;color:#eef4fb;font-weight:900}
 .load-more-btn:hover{background:#1a2a38}
-@media(max-width:700px){.card-browser-controls{grid-template-columns:1fr 1fr;top:-1px}.card-browser-controls input{grid-column:1/-1}.card-browser-count{grid-column:1/-1}}
+@media(max-width:700px){.card-browser-controls{grid-template-columns:1fr 1fr;top:auto}.card-browser-controls input{grid-column:1/-1}.card-browser-count{grid-column:1/-1}}
 @media(max-width:430px){.card-browser-controls{grid-template-columns:1fr}.card-browser-controls input,.card-browser-count{grid-column:auto}}
 
 @media(max-width:1320px){.hero{grid-template-columns:minmax(350px,1fr) minmax(0,2fr) 118px;gap:12px}.stats-panel{padding-left:16px;padding-right:16px}.stats-grid{grid-template-columns:minmax(285px,.8fr) minmax(0,1.2fr);column-gap:14px}.mini-stat{padding:10px 8px}.mini-meta span{font-size:19px}.ball-panel .pokeball-big{transform:scale(.86)}}
@@ -359,9 +359,56 @@ body.modal-open{overflow:hidden}
   .mini-meta span{font-size:14px !important}
 }
 
+
+
+/* ===== v9 · LOGIN SIMPLES + MENU DE COLEÇÃO ===== */
+body.auth-locked{overflow:hidden}
+body.auth-locked>.wrap,
+body.auth-locked>.art-modal{visibility:hidden}
+.auth-gate{position:fixed;inset:0;z-index:100000;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(circle at 50% 0,rgba(225,46,39,.18),transparent 34%),linear-gradient(180deg,#03070b,#070b11 55%,#03060a);transition:opacity .2s ease,visibility .2s ease}
+body:not(.auth-locked) .auth-gate{opacity:0;visibility:hidden;pointer-events:none}
+.auth-card{width:min(430px,100%);padding:28px;border-radius:26px;background:linear-gradient(160deg,#0e1722,#060b11);border:1px solid rgba(225,46,39,.42);box-shadow:0 28px 70px rgba(0,0,0,.55);text-align:center}
+.auth-ball{width:72px;height:72px;margin:0 auto 17px;border-radius:50%;background:linear-gradient(180deg,#ff463d 0 46%,#151d25 46% 54%,#f7fbff 54% 100%);border:3px solid rgba(0,0,0,.7);position:relative;box-shadow:0 14px 30px rgba(0,0,0,.42)}
+.auth-ball:before{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:20px;height:20px;border-radius:50%;background:#fff;border:6px solid #151d25}
+.auth-title{margin:0;font-size:30px;line-height:1;font-weight:1000;letter-spacing:.5px}.auth-title span{color:#ff3b34}
+.auth-sub{margin:8px 0 22px;color:#94a2b2;font-size:12px;font-weight:800;letter-spacing:1px;text-transform:uppercase}
+.auth-form{display:grid;gap:11px;text-align:left}.auth-label{font-size:10px;color:#aebac7;font-weight:900;letter-spacing:.8px;text-transform:uppercase}
+.auth-input{width:100%;height:52px;border:1px solid rgba(255,255,255,.10);border-radius:14px;background:#101923;color:#f3f7fb;padding:0 15px;outline:none;font-size:15px}.auth-input:focus{border-color:rgba(225,46,39,.8);box-shadow:0 0 0 3px rgba(225,46,39,.11)}
+.auth-submit{height:52px;margin-top:5px;border:0;border-radius:14px;background:linear-gradient(180deg,#d62822,#90110e);color:#fff;font-weight:950;letter-spacing:.35px;box-shadow:0 12px 24px rgba(143,17,14,.28)}
+.auth-error{min-height:17px;margin-top:2px;color:#ff716a;font-size:11px;font-weight:800;text-align:center}
+.auth-note{margin-top:17px;color:#667585;font-size:10px;line-height:1.5}
+
+.collection-menu-wrap{position:relative;flex:0 0 auto}.collection-menu-btn{display:flex;align-items:center;gap:8px}.collection-menu-btn .menu-caret{font-size:10px;opacity:.7;transition:transform .18s}.collection-menu-wrap.open .menu-caret{transform:rotate(180deg)}
+.collection-menu{position:absolute;right:0;top:calc(100% + 9px);z-index:1000;width:285px;padding:8px;border-radius:16px;background:#0d1620;border:1px solid rgba(255,255,255,.10);box-shadow:0 22px 48px rgba(0,0,0,.5);display:none}
+.collection-menu-wrap.open .collection-menu{display:block}
+.collection-menu button{width:100%;min-height:42px;padding:9px 11px;border:0;border-radius:10px;background:transparent;color:#dce5ee;text-align:left;font-size:12px;font-weight:850;cursor:pointer}.collection-menu button:hover{background:#172330}.collection-menu button.danger{color:#ff7770}.collection-menu button.danger:hover{background:rgba(225,46,39,.12)}
+.collection-menu-sep{height:1px;margin:6px 5px;background:rgba(255,255,255,.08)}
+.collection-menu small{display:block;margin:2px 11px 7px;color:#6f7e8e;font-size:9px;line-height:1.35}
+.bulk-progress{position:fixed;left:50%;bottom:22px;z-index:99999;transform:translateX(-50%);display:none;align-items:center;gap:10px;max-width:calc(100vw - 28px);padding:11px 15px;border-radius:999px;background:#111b25;border:1px solid rgba(255,255,255,.12);box-shadow:0 15px 36px rgba(0,0,0,.45);color:#edf4fb;font-size:11px;font-weight:900}.bulk-progress.show{display:flex}.bulk-progress-dot{width:9px;height:9px;border-radius:50%;background:#f2b735;box-shadow:0 0 0 4px rgba(242,183,53,.10)}
+@media(max-width:820px){.collection-menu-wrap{width:100%}.collection-menu-btn{width:100%;justify-content:center}.collection-menu{position:fixed;left:12px;right:12px;top:auto;bottom:12px;width:auto;max-height:70vh;overflow:auto}}
+
 </style>
 </head>
-<body>
+<body class="auth-locked">
+
+<div class="auth-gate" id="authGate" aria-label="Entrada Pokédex XL">
+  <div class="auth-card">
+    <div class="auth-ball"></div>
+    <h1 class="auth-title">POKÉDEX <span>XL</span></h1>
+    <div class="auth-sub">National Dex · By Cigas</div>
+    <form class="auth-form" id="loginForm" autocomplete="on">
+      <label class="auth-label" for="loginUser">Username</label>
+      <input class="auth-input" id="loginUser" name="username" autocomplete="username" spellcheck="false" required>
+      <label class="auth-label" for="loginPass">Password</label>
+      <input class="auth-input" id="loginPass" name="password" type="password" autocomplete="current-password" required>
+      <button class="auth-submit" type="submit">ENTRAR</button>
+      <div class="auth-error" id="loginError" role="alert"></div>
+    </form>
+    <div class="auth-note">Acesso simples para a tua página pessoal. Os dados da coleção continuam sincronizados através do Supabase.</div>
+  </div>
+</div>
+<div class="bulk-progress" id="bulkProgress"><span class="bulk-progress-dot"></span><span id="bulkProgressText">A atualizar coleção…</span></div>
+
 <div class="wrap">
   <div class="hero-shell">
     <section class="hero">
@@ -425,11 +472,23 @@ body.modal-open{overflow:hidden}
         <option value="name-desc">Nome (Z → A)</option>
       </select>
     </div>
-    <button class="action-btn" id="exportBtn">⬇ Backup</button>
-    <button class="action-btn" id="importBtn">⬆ Restaurar</button>
+    <div class="collection-menu-wrap" id="collectionMenuWrap">
+      <button class="action-btn collection-menu-btn" id="collectionMenuBtn" type="button">🗂 Coleção <span class="menu-caret">▾</span></button>
+      <div class="collection-menu" id="collectionMenu">
+        <button type="button" data-collection-action="mark-all-card">✓ Marcar todos como CARTA</button>
+        <small>Marca a coleção nacional completa como tendo carta; não apaga ART nem cartas específicas.</small>
+        <button type="button" data-collection-action="clear-art">☆ Limpar todas as ART</button>
+        <button type="button" data-collection-action="clear-featured">🖼 Remover cartas principais</button>
+        <button type="button" class="danger" data-collection-action="clear-collection">✕ Limpar coleção</button>
+        <div class="collection-menu-sep"></div>
+        <button type="button" id="exportBtn">⬇ Exportar backup</button>
+        <button type="button" id="importBtn">⬆ Importar backup</button>
+        <div class="collection-menu-sep"></div>
+        <button type="button" id="logoutBtn">↪ Terminar sessão</button>
+      </div>
+    </div>
     <input type="file" id="importFile" accept="application/json,.json" hidden>
     <button class="action-btn hidden" id="installBtn">📱 Instalar App</button>
-    <button class="action-btn red" onclick="window.print()">🖨 Imprimir</button>
   </div>
 
   <section class="stage">
@@ -1936,6 +1995,114 @@ async function importBackupFile(file){
   }
 }
 
+
+let bulkUiTimer=null;
+function setBulkProgress(show,text='A atualizar coleção…'){
+  const box=document.getElementById('bulkProgress');
+  const label=document.getElementById('bulkProgressText');
+  if(label) label.textContent=text;
+  if(box) box.classList.toggle('show',!!show);
+}
+function ensureLocalRow(id){
+  let row=supaFor(id);
+  if(!row){
+    row={pokemon_id:Number(id),card:false,full_art:false,card_details:emptyCardDetails()};
+    window.__supabaseData=window.__supabaseData||[];
+    window.__supabaseData.push(row);
+  }
+  return row;
+}
+async function upsertBulkRows(rows,label){
+  setSyncStatus('saving',label);
+  setBulkProgress(true,label);
+  for(let i=0;i<rows.length;i+=100){
+    const chunk=rows.slice(i,i+100);
+    const {error}=await supabaseClient.from('pokemon_cards').upsert(chunk,{onConflict:'pokemon_id'});
+    if(error) throw error;
+    setBulkProgress(true,`${label} · ${Math.min(i+chunk.length,rows.length)}/${rows.length}`);
+  }
+}
+function refreshAfterBulk(){
+  saveCardDetailStore();
+  updateCounts();
+  renderCurrentPage(false);
+  setSyncStatus('synced','Sincronizado');
+  setBulkProgress(false);
+}
+async function runCollectionAction(action){
+  const ids=Array.from({length:1025},(_,i)=>i+1);
+  try{
+    if(action==='mark-all-card'){
+      if(!confirm('Marcar os 1025 Pokémon como CARTA?\n\nAs marcações ART e as cartas específicas que já escolheste serão mantidas. A alteração será sincronizada em todos os dispositivos.')) return;
+      const rows=ids.map(id=>{
+        const cur=supaFor(id)||{};
+        return {pokemon_id:id,card:true,full_art:cur.full_art===true,...(window.__cardDetailsCloudReady===false?{}:{card_details:normalizeCardDetails(pokemonCardDetail(id))})};
+      });
+      await upsertBulkRows(rows,'A marcar todos como CARTA…');
+      rows.forEach(r=>{const x=ensureLocalRow(r.pokemon_id);x.card=true;x.full_art=r.full_art===true;if('card_details' in r)x.card_details=normalizeCardDetails(r.card_details)});
+      refreshAfterBulk();
+      return;
+    }
+
+    if(action==='clear-art'){
+      if(!confirm('Remover TODAS as marcações ART?\n\nAs marcações CARTA e as cartas específicas serão mantidas. A alteração será sincronizada em todos os dispositivos.')) return;
+      const rows=ids.map(id=>{
+        const cur=supaFor(id)||{};
+        return {pokemon_id:id,card:cur.card===true,full_art:false,...(window.__cardDetailsCloudReady===false?{}:{card_details:normalizeCardDetails(pokemonCardDetail(id))})};
+      });
+      await upsertBulkRows(rows,'A limpar ART…');
+      rows.forEach(r=>{const x=ensureLocalRow(r.pokemon_id);x.card=r.card===true;x.full_art=false;if('card_details' in r)x.card_details=normalizeCardDetails(r.card_details)});
+      refreshAfterBulk();
+      return;
+    }
+
+    if(action==='clear-featured'){
+      const affected=ids.filter(id=>!!normalizeCardDetails(pokemonCardDetail(id)).featured);
+      if(!affected.length){alert('Não tens nenhuma carta definida como imagem principal.');return;}
+      if(!confirm(`Remover ${affected.length} carta(s) principal(is) da Pokédex?\n\nAs cartas continuam marcadas como tuas; apenas volta a aparecer a imagem normal do Pokémon. A alteração será sincronizada.`)) return;
+      const rows=affected.map(id=>{
+        const cur=supaFor(id)||{};
+        const details=normalizeCardDetails(pokemonCardDetail(id));
+        details.featured=null;
+        const store=loadCardDetailStore();store[String(id)]=details;
+        return {pokemon_id:id,card:cur.card===true,full_art:cur.full_art===true,...(window.__cardDetailsCloudReady===false?{}:{card_details:details})};
+      });
+      await upsertBulkRows(rows,'A remover cartas principais…');
+      rows.forEach(r=>{const x=ensureLocalRow(r.pokemon_id);if('card_details' in r)x.card_details=normalizeCardDetails(r.card_details)});
+      refreshAfterBulk();
+      return;
+    }
+
+    if(action==='clear-collection'){
+      if(!confirm('ATENÇÃO: limpar toda a coleção?\n\nIsto remove CARTA, ART, cartas específicas e imagens principais dos 1025 Pokémon e sincroniza a limpeza em todos os dispositivos.\n\nEsta ação não pode ser desfeita sem um backup.')) return;
+      if(!confirm('Confirmar uma segunda vez: queres mesmo deixar a Pokédex toda por marcar?')) return;
+      const empty=emptyCardDetails();
+      const rows=ids.map(id=>({pokemon_id:id,card:false,full_art:false,...(window.__cardDetailsCloudReady===false?{}:{card_details:empty})}));
+      await upsertBulkRows(rows,'A limpar coleção…');
+      CARD_DETAIL_STORE={};saveCardDetailStore();
+      window.__supabaseData=rows.map(r=>({pokemon_id:r.pokemon_id,card:false,full_art:false,card_details:emptyCardDetails()}));
+      refreshAfterBulk();
+      return;
+    }
+  }catch(err){
+    console.error('Erro na ação de coleção:',err);
+    setBulkProgress(false);
+    setSyncStatus('error','Erro ao atualizar coleção');
+    alert('Não foi possível concluir a operação: '+(err.message||err));
+  }
+}
+
+let realtimeRefreshTimer=null;
+function scheduleRealtimeRefresh(){
+  clearTimeout(realtimeRefreshTimer);
+  realtimeRefreshTimer=setTimeout(()=>{
+    setSyncStatus('synced','Sincronizado em tempo real');
+    updateCounts();
+    renderCurrentPage(false);
+    if(currentModalPokemon && document.getElementById('artModal')?.classList.contains('open')) renderModalCards(false,true);
+  },140);
+}
+
 function startRealtime(){
   try{
     const channel=supabaseClient
@@ -1967,12 +2134,7 @@ function startRealtime(){
           window.__supabaseData.push(fresh);
           if(Object.prototype.hasOwnProperty.call(row,'card_details')) applyCloudCardDetailsRow(row);
         }
-        setSyncStatus('synced','Sincronizado em tempo real');
-        updateCounts();
-        renderCurrentPage(false);
-        if(currentModalPokemon?.id===id && document.getElementById('artModal')?.classList.contains('open')){
-          renderModalCards(false,true);
-        }
+        scheduleRealtimeRefresh();
       })
       .subscribe(status=>{
         if(status==='SUBSCRIBED') setSyncStatus('synced','Sincronizado');
@@ -2003,19 +2165,75 @@ document.getElementById('artModalClose').addEventListener('click',closeArtModal)
 document.getElementById('artModal').addEventListener('click',e=>{if(e.target.id==='artModal') closeArtModal()});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElementById('artModal').classList.contains('open')) closeArtModal()});
 
-loadSupabaseData().then(async data=>{
+let appStarted=false;
+async function startApp(){
+  if(appStarted) return;
+  appStarted=true;
+  const data=await loadSupabaseData();
   window.__supabaseData=data;
   await hydrateAndMigrateCardDetails(data);
   loadNames();
   startRealtime();
   renderCurrentPage(false);
-});
+}
 
 document.getElementById('search').addEventListener('input',e=>{state.search=e.target.value.trim();state.page=1;renderCurrentPage()});
 document.getElementById('filterBy').addEventListener('change',e=>{state.filter=e.target.value;state.page=1;renderCurrentPage()});
 document.getElementById('sortBy').addEventListener('change',e=>{state.sort=e.target.value;state.page=1;renderCurrentPage()});
-document.getElementById('exportBtn').addEventListener('click',exportBackup);
-document.getElementById('importBtn').addEventListener('click',()=>document.getElementById('importFile').click());
+
+const AUTH_SESSION_KEY='pokedex-xl-auth-v1';
+const AUTH_USER='admin';
+const AUTH_PASS_SHA256='eb861137efa007794537eac2795cec2e0f87e13e4dce41b303cc45d9794761ed';
+async function sha256Text(value){
+  const bytes=new TextEncoder().encode(String(value));
+  const hash=await crypto.subtle.digest('SHA-256',bytes);
+  return Array.from(new Uint8Array(hash)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+async function unlockApp(){
+  sessionStorage.setItem(AUTH_SESSION_KEY,'1');
+  document.body.classList.remove('auth-locked');
+  await startApp();
+}
+function lockApp(){
+  sessionStorage.removeItem(AUTH_SESSION_KEY);
+  location.reload();
+}
+document.getElementById('loginForm').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const user=document.getElementById('loginUser').value.trim();
+  const pass=document.getElementById('loginPass').value;
+  const error=document.getElementById('loginError');
+  try{
+    const digest=await sha256Text(pass);
+    if(user===AUTH_USER && digest===AUTH_PASS_SHA256){
+      error.textContent='';
+      document.getElementById('loginPass').value='';
+      await unlockApp();
+    }else{
+      error.textContent='Username ou password incorretos.';
+      document.getElementById('loginPass').select();
+    }
+  }catch(err){
+    console.error(err);
+    error.textContent='Não foi possível validar o acesso.';
+  }
+});
+
+const collectionMenuWrap=document.getElementById('collectionMenuWrap');
+document.getElementById('collectionMenuBtn').addEventListener('click',e=>{e.stopPropagation();collectionMenuWrap.classList.toggle('open')});
+document.addEventListener('click',e=>{if(!e.target.closest('#collectionMenuWrap')) collectionMenuWrap.classList.remove('open')});
+document.querySelectorAll('[data-collection-action]').forEach(btn=>btn.addEventListener('click',async()=>{collectionMenuWrap.classList.remove('open');await runCollectionAction(btn.dataset.collectionAction)}));
+document.getElementById('logoutBtn').addEventListener('click',lockApp);
+
+if(sessionStorage.getItem(AUTH_SESSION_KEY)==='1'){
+  document.body.classList.remove('auth-locked');
+  startApp();
+}else{
+  setTimeout(()=>document.getElementById('loginUser')?.focus(),50);
+}
+
+document.getElementById('exportBtn').addEventListener('click',()=>{collectionMenuWrap.classList.remove('open');exportBackup()});
+document.getElementById('importBtn').addEventListener('click',()=>{collectionMenuWrap.classList.remove('open');document.getElementById('importFile').click()});
 document.getElementById('importFile').addEventListener('change',e=>{
   const file=e.target.files?.[0];
   if(file) importBackupFile(file);
