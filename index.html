@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="Pokédex XL">
 <link rel="manifest" href="manifest.webmanifest">
-<title>Pokédex XL — Master Set · v10.12</title>
+<title>Pokédex XL — Master Set · v10.16</title>
 <link rel="apple-touch-icon" href="icon-180.png">
 <style>
 :root{
@@ -770,9 +770,10 @@ body:not(.auth-locked) .auth-gate{opacity:0;visibility:hidden;pointer-events:non
 
 
 /* ===== v10.15 · SCANNER DE CARTAS (mobile-first, sem alterar o desktop existente) ===== */
-.mobile-scan-btn{display:none}
-.scanner-modal{position:fixed;inset:0;z-index:26000;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(0,0,0,.82);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
-.scanner-modal.open{display:flex}
+.mobile-scan-btn{display:flex;align-items:center;justify-content:center;min-height:44px;padding:0 14px;border:1px solid rgba(246,193,63,.28);border-radius:12px;background:linear-gradient(180deg,#382d13,#17130a);color:#ffe08a;font-size:11px;font-weight:950;letter-spacing:.15px;cursor:pointer;white-space:nowrap}
+.mobile-scan-btn:hover{filter:brightness(1.08)}
+.scanner-modal{position:fixed;inset:0;z-index:26000;display:none;pointer-events:none;align-items:center;justify-content:center;padding:18px;background:rgba(0,0,0,.82);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.scanner-modal.open{display:flex;pointer-events:auto}
 .scanner-panel{width:min(720px,100%);max-height:min(92vh,920px);display:flex;flex-direction:column;overflow:hidden;border-radius:24px;background:linear-gradient(180deg,#0d1721,#060b11);border:1px solid rgba(255,255,255,.12);box-shadow:0 30px 90px rgba(0,0,0,.7)}
 .scanner-head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;padding:16px 18px;background:linear-gradient(135deg,#46110f,#78140f 55%,#25090b);border-bottom:1px solid rgba(255,255,255,.08)}
 .scanner-head h3{margin:0;color:#fff;font-size:22px;font-weight:1000}.scanner-head p{margin:4px 0 0;color:#efc5c1;font-size:10px;line-height:1.4}
@@ -2598,6 +2599,7 @@ function setCardVisual(cardEl, cardValue, artValue){
 function makeCard(p){
   const el=document.createElement('div');
   el.className='dex-card';
+  el.dataset.pokemonId=String(p.id);
   el.dataset.name=p.name.toLowerCase();
   el.dataset.id=String(p.id);
 
@@ -2677,11 +2679,8 @@ function makeCard(p){
     });
   });
 
-  el.addEventListener('click',e=>{
-    if(e.target.closest('.card-actions')) return;
-    openArtModal(p);
-  });
-
+  // O clique de abrir a galeria é tratado por delegação no #list.
+  // Assim continua a funcionar depois de filtros, paginação e re-renderizações.
   return el;
 }
 
@@ -3111,7 +3110,7 @@ window.addEventListener('appinstalled',()=>{
 
 if('serviceWorker' in navigator && location.protocol!=='file:'){
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('./sw.js?v=10.12',{updateViaCache:'none'})
+    navigator.serviceWorker.register('./sw.js?v=10.16',{updateViaCache:'none'})
       .then(reg=>reg.update())
       .catch(err=>console.warn('Service Worker:',err));
   });
@@ -3141,6 +3140,17 @@ async function startApp(){
   updateCollectionValueUI();
   setTimeout(()=>refreshOwnedCardPriceCache().catch(err=>console.warn('Atualização do valor estimado:',err)),1200);
 }
+
+// Clique robusto na Pokédex: funciona mesmo quando os cartões são recriados.
+const dexList=document.getElementById('list');
+dexList.addEventListener('click',e=>{
+  if(e.target.closest('.card-actions,button,label,input,a,select')) return;
+  const card=e.target.closest('.dex-card');
+  if(!card || !dexList.contains(card)) return;
+  const id=Number(card.dataset.pokemonId);
+  const pokemon=(window.__all||[]).find(p=>Number(p.id)===id);
+  if(pokemon) openArtModal(pokemon);
+});
 
 document.getElementById('search').addEventListener('input',e=>{state.search=e.target.value.trim();state.page=1;renderCurrentPage()});
 document.getElementById('filterBy').addEventListener('change',e=>{state.filter=e.target.value;state.page=1;renderCurrentPage()});

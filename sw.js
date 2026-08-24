@@ -1,4 +1,4 @@
-const CACHE_NAME='pokedex-xl-v10-15-scanner';
+const CACHE_NAME='pokedex-xl-v10-16-scanner-fix';
 const SHELL=['./','./index.html','./manifest.webmanifest','./icon-180.png','./icon-192.png','./icon-512.png'];
 
 self.addEventListener('install',event=>{
