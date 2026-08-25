@@ -1,4 +1,4 @@
-const CACHE_NAME='pokedex-xl-v12-4-2-full-card-viewer';
+const CACHE_NAME='pokedex-xl-v12-5-0-organizer-regions';
 const SHELL=['./','./index.html','./manifest.webmanifest','./icon-180.png','./icon-192.png','./icon-512.png','./assets/charmeleon-mep-079.jpg'];
 
 self.addEventListener('install',event=>{
