@@ -1,0 +1,15 @@
+/* Pokédex M7 v15.4.1 · stability hotfix */
+.m7-v1541 .m7-v1541-shop,.m7-v1541 .m7-v1541-expansions{min-width:0}
+.m7-v1541-shop .m7-shop-inline-modal{position:relative!important;inset:auto!important;display:block!important;width:100%!important;height:auto!important;max-height:none!important;margin:0!important;padding:0!important;background:transparent!important;opacity:1!important;visibility:visible!important;pointer-events:auto!important;z-index:auto!important;overflow:visible!important}
+.m7-v1541-shop .m7-shop-inline-modal .stock-panel{position:relative!important;inset:auto!important;width:100%!important;max-width:none!important;height:auto!important;max-height:none!important;margin:0!important;transform:none!important;border-radius:22px!important;overflow:visible!important;box-shadow:none!important}
+.m7-v1541-shop .m7-shop-inline-modal .stock-body,.m7-v1541-shop .m7-shop-inline-modal .stock-grid{height:auto!important;max-height:none!important;overflow:visible!important}
+.m7-v1541-shop .m7-shop-inline-modal #stockClose{display:none!important}
+.m7-v1541-expansions .m7-expansions-surface{min-height:640px}
+.m7-v1541-expansions .m7-expansion-source{display:block;margin:0 0 14px;text-align:center;color:#61717b;font-size:8px}
+.m7-v1541-expansions .m7-expansion-set-card{overflow:hidden}
+.m7-v1541-expansions .m7-expansion-set-logo img{max-width:100%;object-fit:contain}
+.m7-v1541-expansions .m7-expansion-retry{min-height:38px;margin-top:10px;padding:8px 13px;border:0;border-radius:12px;background:#159fe9;color:#fff;font-size:9px;font-weight:950;cursor:pointer}
+.m7-v1541-expansions .m7-expansion-card-grid{align-items:start}
+.m7-v1541-expansions .m7-expansion-card .m7-expansion-card-action{display:none!important}
+.m7-v1541-expansions .m7-expansion-card-preview{cursor:default!important}
+@media(max-width:760px){.m7-v1541-shop .m7-shop-inline-modal .stock-panel{border-radius:17px!important}.m7-v1541-expansions .m7-expansions-surface{min-height:calc(100dvh - 170px)}}
