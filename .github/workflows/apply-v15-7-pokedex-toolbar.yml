@@ -1,0 +1,49 @@
+name: Apply v15.7 Pokedex toolbar
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/apply-v15-7-pokedex-toolbar.yml'
+      - 'scripts/apply_v15_7_pokedex_toolbar.py'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Activate v15.7
+        run: python3 scripts/apply_v15_7_pokedex_toolbar.py
+      - name: Validate v15.7
+        run: |
+          node --check v15.7.js
+          python3 - <<'PY'
+          from pathlib import Path
+          css=Path('v15.7.css').read_text(encoding='utf-8')
+          html=Path('index.html').read_text(encoding='utf-8')
+          sw=Path('sw.js').read_text(encoding='utf-8')
+          assert css.count('{') == css.count('}'), 'CSS brace mismatch'
+          assert html.count('v15.7.css') == 1, 'v15.7.css reference missing/duplicated'
+          assert html.count('v15.7.js') == 1, 'v15.7.js reference missing/duplicated'
+          assert "pokedexm7-shell-v15.7.0" in sw, 'SW cache not updated'
+          assert "'./v15.7.css'" in sw and "'./v15.7.js'" in sw, 'SW CORE missing v15.7 assets'
+          print('v15.7 validation OK')
+          PY
+      - name: Commit activation
+        run: |
+          if git diff --quiet; then
+            echo 'Already active.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html sw.js
+          git commit -m 'feat: activate professional Pokedex toolbar v15.7'
+          git push
