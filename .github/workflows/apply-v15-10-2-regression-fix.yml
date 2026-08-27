@@ -1,3 +1,4 @@
+# v15.10.2 activation trigger
 name: Apply v15.10.2 regression fix
 
 on:
