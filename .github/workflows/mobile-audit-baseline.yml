@@ -56,25 +56,34 @@ jobs:
                 if(metrics.navButtons.some(h=>h<44))throw new Error(`${view}: nav touch target under 44px`);
                 if(metrics.overflow.length)throw new Error(`${view}: visible horizontal overflow ${JSON.stringify(metrics.overflow)}`);
 
-                // At the end of every view, its final meaningful control/content must be scrollable clear of the dock.
-                const clearance=await page.evaluate(async(view)=>{
+                // Reliable bottom clearance check: scroll the document itself to its absolute end,
+                // then compare the active view's bottom edge with the fixed dock. This avoids
+                // scrollIntoView being intercepted by nested/paginated app layout.
+                await page.evaluate(()=>window.scrollTo({top:document.documentElement.scrollHeight,behavior:'auto'}));
+                await page.waitForTimeout(120);
+                const clearance=await page.evaluate((view)=>{
                   const map={portfolio:'#m7PortfolioView',search:'#m7SearchView',shop:'#m7ShopView',expansions:'#m7ExpansionsView',profile:'#m7ProfileView'};
                   const root=document.querySelector(map[view]);const nav=document.querySelector('.m7-app-nav');
                   if(!root||!nav)return null;
-                  const candidates=[...root.querySelectorAll('button,a,input,select,article,.dex-card,.m7-v155-set,.m7-setting-row')].filter(el=>{const s=getComputedStyle(el),r=el.getBoundingClientRect();return s.display!=='none'&&s.visibility!=='hidden'&&r.height>10});
-                  const last=candidates[candidates.length-1];if(!last)return null;
-                  last.scrollIntoView({block:'end',behavior:'auto'});await new Promise(r=>setTimeout(r,80));
-                  const lr=last.getBoundingClientRect(),nr=nav.getBoundingClientRect();
-                  return {lastBottom:Math.round(lr.bottom),dockTop:Math.round(nr.top),clearance:Math.round(nr.top-lr.bottom),tag:last.tagName,cls:String(last.className||'').slice(0,70)};
+                  const rr=root.getBoundingClientRect(),nr=nav.getBoundingClientRect();
+                  const doc=document.documentElement;
+                  return {
+                    rootBottom:Math.round(rr.bottom),dockTop:Math.round(nr.top),clearance:Math.round(nr.top-rr.bottom),
+                    scrollY:Math.round(scrollY),maxScroll:Math.round(Math.max(0,doc.scrollHeight-innerHeight)),
+                    bodyPaddingBottom:getComputedStyle(document.body).paddingBottom
+                  };
                 },view);
-                console.log('CLEARANCE',JSON.stringify(clearance));
-                if(clearance && clearance.clearance < -2)throw new Error(`${view}: last content remains under dock ${JSON.stringify(clearance)}`);
+                console.log('BOTTOM_CLEARANCE',JSON.stringify(clearance));
+                if(clearance && Math.abs(clearance.scrollY-clearance.maxScroll)>3)throw new Error(`${view}: could not reach document bottom ${JSON.stringify(clearance)}`);
+                if(clearance && clearance.clearance < -2)throw new Error(`${view}: active view bottom remains under dock ${JSON.stringify(clearance)}`);
                 await page.evaluate(()=>window.scrollTo({top:0,behavior:'auto'}));
+                await page.waitForTimeout(80);
               }
 
               // Inputs must not trigger Safari focus zoom.
               await page.locator('[data-app-nav="search"]').click();await page.waitForTimeout(250);
               const searchFont=await page.locator('#m7GlobalQuery').evaluate(el=>parseFloat(getComputedStyle(el).fontSize)).catch(()=>16);
+              console.log('SEARCH_INPUT_FONT',searchFont);
               if(searchFont<16)throw new Error(`search input font ${searchFont}px can trigger iOS zoom`);
 
               // Expansion detail must no longer hide its logo slot on mobile.
