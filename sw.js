@@ -1,7 +1,7 @@
-const CACHE_NAME='pokedexm7-shell-v15.8.2-rc1';
+const CACHE_NAME='pokedexm7-shell-v15.9.0-rc1';
 const PUSH_API='https://wdljzuqoftrontqhhatr.supabase.co/functions/v1/push-subscriptions';
 const PUSH_API_KEY='sb_publishable_MslRW16TUUxlAEnUNiQ2sQ_3FrG4sLy';
-const CORE=['./','./index.html','./manifest.webmanifest','./v15.css','./v15.js','./v15-fix.js','./v15.5.css','./v15.5.js','./v15.7.css','./v15.7.js','./v15.8.css','./v15.8.js'];
+const CORE=['./','./index.html','./manifest.webmanifest','./v15.css','./v15.js','./v15-fix.js','./v15.5.css','./v15.5.js','./v15.7.css','./v15.7.js','./v15.8.css','./v15.8.js','./v15.9.css','./v15.9.js'];
 
 self.addEventListener('install',event=>{
   self.skipWaiting();
