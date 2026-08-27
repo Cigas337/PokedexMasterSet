@@ -1,4 +1,4 @@
-/* Pokédex M7 v15.7.0 · Professional Pokédex toolbar */
+/* Pokédex M7 v15.7.1 · Professional Pokédex toolbar */
 (function(){
   const once=(fn)=>{if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',fn,{once:true});else fn()};
   once(()=>setTimeout(init,120));
@@ -93,11 +93,13 @@
     sortProxy.innerHTML=sortBy.innerHTML;
 
     function sync(){
-      filterProxy.value=filterBy.value;
-      sortProxy.value=sortBy.value;
+      if(filterProxy.value!==filterBy.value)filterProxy.value=filterBy.value;
+      if(sortProxy.value!==sortBy.value)sortProxy.value=sortBy.value;
       const active=(filterBy.value!=='all'?1:0)+(sortBy.value!=='number-asc'?1:0);
-      count.textContent=String(active);
-      count.hidden=active===0;
+      const nextCount=String(active);
+      if(count.textContent!==nextCount)count.textContent=nextCount;
+      const shouldHide=active===0;
+      if(count.hidden!==shouldHide)count.hidden=shouldHide;
     }
 
     function setSelect(original,proxy){
@@ -168,10 +170,14 @@
       if(btn&&btn.dataset.appNav!=='portfolio'&&!panel.hidden)close(false);
     },true);
 
-    // Keep toolbar state correct when v15.2 moves the shared controls between views.
+    // v15.2 moves the same toolbar between Pokédex and Search. Observe only that
+    // parent transition; do not react to our own badge/content mutations.
+    let lastParentId=controls.parentElement?.id||'';
     const observer=new MutationObserver(()=>{
-      const inPortfolio=controls.parentElement?.id==='m7PortfolioView';
-      if(!inPortfolio&&!panel.hidden)close(false);
+      const parentId=controls.parentElement?.id||'';
+      if(parentId===lastParentId)return;
+      lastParentId=parentId;
+      if(parentId!=='m7PortfolioView'&&!panel.hidden)close(false);
       sync();
     });
     observer.observe(document.body,{childList:true,subtree:true});
