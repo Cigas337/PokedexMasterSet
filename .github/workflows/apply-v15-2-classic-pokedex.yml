@@ -1,0 +1,54 @@
+name: Activate Pokédex M7 v15.2 classic Pokédex
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/apply-v15-2-classic-pokedex.yml'
+      - 'scripts/apply_v15_2_classic_pokedex.py'
+      - 'v15.2.css'
+      - 'v15.2.js'
+
+permissions:
+  contents: write
+
+jobs:
+  activate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Activate v15.2
+        run: python scripts/apply_v15_2_classic_pokedex.py
+      - name: Validate JavaScript
+        run: |
+          node --check v15.2.js
+          python - <<'PY'
+          from pathlib import Path
+          import re, subprocess
+          html=Path('index.html').read_text(encoding='utf-8')
+          scripts=re.findall(r'<script(?:\s[^>]*)?>(.*?)</script>',html,flags=re.S|re.I)
+          for i,code in enumerate(scripts):
+              if not code.strip(): continue
+              p=Path(f'/tmp/pokedex-v152-{i}.js');p.write_text(code,encoding='utf-8')
+              subprocess.run(['node','--check',str(p)],check=True)
+          print('JavaScript validation OK')
+          PY
+      - name: Validate references
+        run: |
+          grep -q 'v15.2.css?v=15.2.0' index.html
+          grep -q 'v15.2.js?v=15.2.0' index.html
+          grep -q 'sw.js?v=15.2.0' index.html
+      - name: Commit v15.2 activation
+        run: |
+          if git diff --quiet -- index.html sw.js; then
+            echo 'No activation changes needed.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html sw.js
+          git commit -m 'feat: restore classic Pokédex and clean Search in v15.2'
+          git push
