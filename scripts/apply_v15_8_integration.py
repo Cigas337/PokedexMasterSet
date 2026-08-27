@@ -91,18 +91,20 @@ if 'ownedForSet(s,[])' in js:
     raise SystemExit('empty expansion ownership call remains')
 js_path.write_text(js,encoding='utf-8')
 
-# Activate v15.8 assets once, after the existing v15.7 layer.
+# Activate v15.8 RC assets once, after the existing v15.7 layer.
+ASSET_VERSION='15.8.2'
+CACHE_VERSION='pokedexm7-shell-v15.8.2-rc1'
 if 'v15.8.css' not in html:
-    html=html.replace('</head>','<link rel="stylesheet" href="./v15.8.css?v=15.8.0">\n</head>',1)
+    html=html.replace('</head>',f'<link rel="stylesheet" href="./v15.8.css?v={ASSET_VERSION}">\n</head>',1)
 else:
-    html=re.sub(r'v15\.8\.css\?v=[0-9.]+','v15.8.css?v=15.8.0',html)
+    html=re.sub(r'v15\.8\.css\?v=[0-9.]+',f'v15.8.css?v={ASSET_VERSION}',html)
 if 'v15.8.js' not in html:
-    html=html.replace('</body>','<script src="./v15.8.js?v=15.8.0"></script>\n</body>',1)
+    html=html.replace('</body>',f'<script src="./v15.8.js?v={ASSET_VERSION}"></script>\n</body>',1)
 else:
-    html=re.sub(r'v15\.8\.js\?v=[0-9.]+','v15.8.js?v=15.8.0',html)
+    html=re.sub(r'v15\.8\.js\?v=[0-9.]+',f'v15.8.js?v={ASSET_VERSION}',html)
 html_path.write_text(html,encoding='utf-8')
 
-sw=re.sub(r"const CACHE_NAME='pokedexm7-shell-v[^']+';","const CACHE_NAME='pokedexm7-shell-v15.8.0';",sw,count=1)
+sw=re.sub(r"const CACHE_NAME='pokedexm7-shell-v[^']+';",f"const CACHE_NAME='{CACHE_VERSION}';",sw,count=1)
 core_match=re.search(r"const CORE=\[(.*?)\];",sw,flags=re.S)
 if not core_match: raise SystemExit('SW CORE not found')
 items=core_match.group(1)
@@ -111,4 +113,4 @@ for asset in ("'./v15.8.css'","'./v15.8.js'"):
         items=items.rstrip()+','+asset
 sw=sw[:core_match.start(1)]+items+sw[core_match.end(1):]
 sw_path.write_text(sw,encoding='utf-8')
-print('v15.8 integration activation applied')
+print('v15.8 release-candidate integration activation applied')
