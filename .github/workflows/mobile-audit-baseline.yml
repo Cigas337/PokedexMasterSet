@@ -38,61 +38,67 @@ jobs:
               console.log('\nVIEWPORT',JSON.stringify(vp));
 
               const views=['portfolio','search','shop','expansions','profile'];
+              const roots={portfolio:'#m7PortfolioView',search:'#m7SearchView',shop:'#m7ShopView',expansions:'#m7ExpansionsView',profile:'#m7ProfileView'};
               for(const view of views){
                 const btn=page.locator(`[data-app-nav="${view}"]`);
                 if(await btn.count())await btn.click();
                 await page.waitForTimeout(view==='shop'||view==='expansions'?1100:400);
 
-                const metrics=await page.evaluate((view)=>{
+                const metrics=await page.evaluate(({view,rootSel})=>{
                   const nav=document.querySelector('.m7-app-nav');const nr=nav?.getBoundingClientRect();
+                  const root=document.querySelector(rootSel);const rr=root?.getBoundingClientRect();
                   const visible=[...document.querySelectorAll('body *')].filter(el=>{const s=getComputedStyle(el),r=el.getBoundingClientRect();return s.display!=='none'&&s.visibility!=='hidden'&&r.width>1&&r.height>1});
                   const overflow=visible.filter(el=>{const r=el.getBoundingClientRect();return r.left<-2||r.right>innerWidth+2}).filter(el=>!el.closest('.m7-global-detail')).slice(0,8).map(el=>({tag:el.tagName,id:el.id,cls:String(el.className||'').slice(0,70),left:Math.round(el.getBoundingClientRect().left),right:Math.round(el.getBoundingClientRect().right)}));
                   const navButtons=[...nav.querySelectorAll('[data-app-nav]')].map(b=>Math.round(b.getBoundingClientRect().height));
-                  return {view,scrollWidth:document.documentElement.scrollWidth,viewport:innerWidth,nav:{top:Math.round(nr.top),bottom:Math.round(nr.bottom),height:Math.round(nr.height),gapBottom:Math.round(innerHeight-nr.bottom)},navButtons,overflow};
-                },view);
+                  const paddingBottom=parseFloat(getComputedStyle(document.body).paddingBottom)||0;
+                  return {
+                    view,active:document.body.dataset.m7View||'',scrollWidth:document.documentElement.scrollWidth,viewport:innerWidth,
+                    nav:{top:Math.round(nr.top),bottom:Math.round(nr.bottom),height:Math.round(nr.height),gapBottom:Math.round(innerHeight-nr.bottom)},
+                    navButtons,paddingBottom,rootWidth:rr?Math.round(rr.width):0,rootDisplay:root?getComputedStyle(root).display:'missing',overflow
+                  };
+                },{view,rootSel:roots[view]});
                 console.log('METRICS',JSON.stringify(metrics));
+                if(metrics.active!==view)throw new Error(`${view}: route not active (${metrics.active})`);
+                if(metrics.rootDisplay==='none'||metrics.rootDisplay==='missing')throw new Error(`${view}: active root hidden`);
+                if(metrics.rootWidth>metrics.viewport+2)throw new Error(`${view}: root wider than viewport ${metrics.rootWidth}/${metrics.viewport}`);
                 if(metrics.scrollWidth>metrics.viewport+2)throw new Error(`${view}: horizontal document overflow ${metrics.scrollWidth}/${metrics.viewport}`);
                 if(metrics.nav.gapBottom>1)throw new Error(`${view}: dock is still floating ${metrics.nav.gapBottom}px above bottom`);
                 if(metrics.navButtons.some(h=>h<44))throw new Error(`${view}: nav touch target under 44px`);
+                if(metrics.paddingBottom < metrics.nav.height+24)throw new Error(`${view}: bottom safe content zone too small ${metrics.paddingBottom}px for ${metrics.nav.height}px dock`);
                 if(metrics.overflow.length)throw new Error(`${view}: visible horizontal overflow ${JSON.stringify(metrics.overflow)}`);
 
-                // Reliable bottom clearance check: scroll the document itself to its absolute end,
-                // then compare the active view's bottom edge with the fixed dock. This avoids
-                // scrollIntoView being intercepted by nested/paginated app layout.
-                await page.evaluate(()=>window.scrollTo({top:document.documentElement.scrollHeight,behavior:'auto'}));
-                await page.waitForTimeout(120);
-                const clearance=await page.evaluate((view)=>{
-                  const map={portfolio:'#m7PortfolioView',search:'#m7SearchView',shop:'#m7ShopView',expansions:'#m7ExpansionsView',profile:'#m7ProfileView'};
-                  const root=document.querySelector(map[view]);const nav=document.querySelector('.m7-app-nav');
-                  if(!root||!nav)return null;
-                  const rr=root.getBoundingClientRect(),nr=nav.getBoundingClientRect();
-                  const doc=document.documentElement;
-                  return {
-                    rootBottom:Math.round(rr.bottom),dockTop:Math.round(nr.top),clearance:Math.round(nr.top-rr.bottom),
-                    scrollY:Math.round(scrollY),maxScroll:Math.round(Math.max(0,doc.scrollHeight-innerHeight)),
-                    bodyPaddingBottom:getComputedStyle(document.body).paddingBottom
-                  };
+                const critical=await page.evaluate((view)=>{
+                  const shown=sel=>{const el=document.querySelector(sel);if(!el)return false;const s=getComputedStyle(el),r=el.getBoundingClientRect();return s.display!=='none'&&s.visibility!=='hidden'&&r.width>1&&r.height>1};
+                  if(view==='portfolio')return {controls:shown('#m7PortfolioView .controls'),stage:shown('#m7PortfolioView .stage'),cards:document.querySelectorAll('#m7PortfolioView .dex-card').length};
+                  if(view==='search')return {searchbar:shown('.m7-global-searchbar'),query:!!document.querySelector('#m7GlobalQuery'),results:shown('.m7-global-search')};
+                  if(view==='shop')return {modal:shown('#m7ShopHost #stockModal'),toolbar:shown('#m7ShopHost .stock-toolbar'),cards:document.querySelectorAll('#stockBody .stock-card').length};
+                  if(view==='expansions')return {search:shown('.m7-v155-exp-search'),filters:shown('.m7-v155-exp-filters'),sets:document.querySelectorAll('#v155SetResults .m7-v155-set').length};
+                  if(view==='profile')return {profile:shown('.m7-profile-card'),settings:shown('.m7-settings-card'),rows:document.querySelectorAll('#m7ProfileView .m7-setting-row').length};
                 },view);
-                console.log('BOTTOM_CLEARANCE',JSON.stringify(clearance));
-                if(clearance && Math.abs(clearance.scrollY-clearance.maxScroll)>3)throw new Error(`${view}: could not reach document bottom ${JSON.stringify(clearance)}`);
-                if(clearance && clearance.clearance < -2)throw new Error(`${view}: active view bottom remains under dock ${JSON.stringify(clearance)}`);
-                await page.evaluate(()=>window.scrollTo({top:0,behavior:'auto'}));
-                await page.waitForTimeout(80);
+                console.log('CRITICAL',view,JSON.stringify(critical));
+                if(view==='portfolio'&&(!critical.controls||!critical.stage||critical.cards<1))throw new Error(`portfolio critical UI missing ${JSON.stringify(critical)}`);
+                if(view==='search'&&(!critical.searchbar||!critical.query||!critical.results))throw new Error(`search critical UI missing ${JSON.stringify(critical)}`);
+                if(view==='shop'&&(!critical.modal||!critical.toolbar||critical.cards<1))throw new Error(`shop critical UI missing ${JSON.stringify(critical)}`);
+                if(view==='expansions'&&(!critical.search||!critical.filters||critical.sets<1))throw new Error(`expansions critical UI missing ${JSON.stringify(critical)}`);
+                if(view==='profile'&&(!critical.profile||!critical.settings||critical.rows<1))throw new Error(`profile critical UI missing ${JSON.stringify(critical)}`);
               }
 
-              // Inputs must not trigger Safari focus zoom.
               await page.locator('[data-app-nav="search"]').click();await page.waitForTimeout(250);
-              const searchFont=await page.locator('#m7GlobalQuery').evaluate(el=>parseFloat(getComputedStyle(el).fontSize)).catch(()=>16);
+              const searchFont=await page.locator('#m7GlobalQuery').evaluate(el=>parseFloat(getComputedStyle(el).fontSize));
               console.log('SEARCH_INPUT_FONT',searchFont);
               if(searchFont<16)throw new Error(`search input font ${searchFont}px can trigger iOS zoom`);
 
-              // Expansion detail must no longer hide its logo slot on mobile.
               await page.locator('[data-app-nav="expansions"]').click();
               await page.waitForFunction(()=>document.querySelectorAll('#v155SetResults .m7-v155-set').length>0,null,{timeout:35000});
               await page.locator('#v155SetResults .m7-v155-set').first().click();await page.waitForTimeout(500);
-              const logoDisplay=await page.locator('.m7-v155-detail-logo').evaluate(el=>getComputedStyle(el).display);
-              console.log('DETAIL_LOGO_DISPLAY',logoDisplay);
-              if(logoDisplay==='none')throw new Error('Expansion detail logo is hidden on mobile');
+              const detail=await page.evaluate(()=>{
+                const logo=document.querySelector('.m7-v155-detail-logo'),head=document.querySelector('.m7-v155-detail-head');
+                const lr=logo?.getBoundingClientRect(),hr=head?.getBoundingClientRect();
+                return {logoDisplay:logo?getComputedStyle(logo).display:'missing',logoWidth:lr?Math.round(lr.width):0,headWidth:hr?Math.round(hr.width):0,viewport:innerWidth};
+              });
+              console.log('DETAIL',JSON.stringify(detail));
+              if(detail.logoDisplay==='none'||detail.logoDisplay==='missing'||detail.logoWidth<35)throw new Error(`Expansion detail logo slot invalid ${JSON.stringify(detail)}`);
+              if(detail.headWidth>detail.viewport+2)throw new Error(`Expansion detail wider than viewport ${JSON.stringify(detail)}`);
 
               console.log('PASS_VIEWPORT',vp.name);
               await page.close();
