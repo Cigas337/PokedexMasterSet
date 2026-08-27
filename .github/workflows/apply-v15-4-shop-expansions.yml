@@ -1,0 +1,30 @@
+name: Activate Pokédex M7 v15.4 Shop Expansions
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-v15-4-shop-expansions.yml'
+jobs:
+  activate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Activate v15.4
+        run: python3 scripts/apply_v15_4_shop_expansions.py
+      - name: Validate JavaScript
+        run: node --check v15.4.js
+      - name: Validate references
+        run: |
+          grep -q 'v15.4.css?v=15.4.0' index.html
+          grep -q 'v15.4.js?v=15.4.0' index.html
+          grep -q 'sw.js?v=15.4.0' index.html
+          grep -q 'pokedexm7-shell-v15.4.0' sw.js
+      - name: Commit v15.4 activation
+        run: |
+          if git diff --quiet; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html sw.js
+          git commit -m 'feat: Shop page and Expansions browser in v15.4'
+          git push
