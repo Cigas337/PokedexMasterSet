@@ -1,0 +1,45 @@
+name: Activate Pokédex M7 v15.1 portfolio search
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/apply-v15-1-portfolio-search.yml'
+      - 'scripts/apply_v15_1_portfolio_search.py'
+      - 'v15.1.css'
+      - 'v15.1.js'
+
+permissions:
+  contents: write
+
+jobs:
+  activate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Activate v15.1
+        run: python scripts/apply_v15_1_portfolio_search.py
+      - name: Validate JavaScript
+        run: |
+          node --check v15.js
+          node --check v15-fix.js
+          node --check v15.1.js
+      - name: Validate references
+        run: |
+          grep -q 'v15.1.css?v=15.1.0' index.html
+          grep -q 'v15.1.js?v=15.1.0' index.html
+          grep -q 'pokedexm7-shell-v15.1.0' sw.js
+      - name: Commit v15.1 activation
+        run: |
+          if git diff --quiet -- index.html sw.js; then
+            echo 'No activation changes needed.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html sw.js
+          git commit -m 'feat: make Portfolio home and Search missing-card discovery in v15.1'
+          git push
