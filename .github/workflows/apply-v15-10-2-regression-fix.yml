@@ -1,0 +1,60 @@
+name: Apply v15.10.2 regression fix
+
+on:
+  pull_request:
+    paths:
+      - 'v15.10.2.js'
+      - 'scripts/apply_v15_10_2_regression_fix.py'
+      - '.github/workflows/apply-v15-10-2-regression-fix.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'v15.10.2.js'
+      - 'scripts/apply_v15_10_2_regression_fix.py'
+      - '.github/workflows/apply-v15-10-2-regression-fix.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Validate source
+        run: |
+          node --check v15.10.2.js
+          python3 -m py_compile scripts/apply_v15_10_2_regression_fix.py
+          grep -q "repairAllFeatured" v15.10.2.js
+          grep -q "tdxSetByName" v15.10.2.js
+          grep -q "buildExpansionPayload" v15.10.2.js
+      - name: Activate in validation workspace
+        run: python3 scripts/apply_v15_10_2_regression_fix.py
+      - name: Validate activated shell
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          html=Path('index.html').read_text(encoding='utf-8')
+          sw=Path('sw.js').read_text(encoding='utf-8')
+          assert html.count('v15.10.2.js') == 1
+          assert html.index('v15.10.1.js') < html.index('v15.10.2.js')
+          assert 'pokedexm7-shell-v15.10.2-rc1' in sw
+          assert "'./v15.10.2.js'" in sw
+          print('v15.10.2 validation OK')
+          PY
+      - name: Commit activation
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          if git diff --quiet; then
+            echo 'Already active.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html sw.js
+          git commit -m 'fix: activate v15.10.2 regression fix'
+          git push
