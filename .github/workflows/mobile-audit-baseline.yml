@@ -1,4 +1,4 @@
-name: Mobile UX baseline audit
+name: Mobile UX v15.6 live verification
 
 on:
   push:
@@ -17,7 +17,7 @@ jobs:
           npm init -y >/dev/null 2>&1
           npm install --no-save playwright@1.55.0
           npx playwright install --with-deps chromium
-      - name: Audit mobile views
+      - name: Verify live mobile UX
         env:
           LIVE_URL: https://cigas337.github.io/PokedexMasterSet/
         run: |
@@ -32,39 +32,63 @@ jobs:
               await page.reload({waitUntil:'domcontentloaded',timeout:60000});
               await page.evaluate(async()=>{if(typeof unlockApp==='function')await unlockApp()});
               await page.waitForTimeout(1200);
+
+              const cssVersion=await page.evaluate(async()=>await (await fetch('./v15.5.css',{cache:'reload'})).text());
+              if(!cssVersion.includes('Pokédex M7 v15.6.0 · Professional Mobile UX'))throw new Error('Live CSS is not v15.6');
               console.log('\nVIEWPORT',JSON.stringify(vp));
+
               const views=['portfolio','search','shop','expansions','profile'];
               for(const view of views){
                 const btn=page.locator(`[data-app-nav="${view}"]`);
                 if(await btn.count())await btn.click();
-                await page.waitForTimeout(view==='shop'||view==='expansions'?1000:350);
-                const m=await page.evaluate((view)=>{
-                  const nav=document.querySelector('.m7-app-nav');
-                  const nr=nav?.getBoundingClientRect();
-                  const visible=[...document.querySelectorAll('body *')].filter(el=>{
-                    const s=getComputedStyle(el),r=el.getBoundingClientRect();
-                    return s.display!=='none'&&s.visibility!=='hidden'&&r.width>1&&r.height>1;
-                  });
-                  const overflow=visible.filter(el=>{const r=el.getBoundingClientRect();return r.left<-2||r.right>innerWidth+2}).slice(0,12).map(el=>({tag:el.tagName,id:el.id,cls:String(el.className||'').slice(0,90),left:Math.round(el.getBoundingClientRect().left),right:Math.round(el.getBoundingClientRect().right),w:Math.round(el.getBoundingClientRect().width)}));
-                  const bottomCovered=visible.filter(el=>{
-                    if(!nr||el===nav||nav.contains(el))return false;
-                    const r=el.getBoundingClientRect();
-                    return r.bottom>nr.top && r.top<innerHeight && r.width>40 && r.height>20;
-                  }).slice(0,10).map(el=>({tag:el.tagName,id:el.id,cls:String(el.className||'').slice(0,80),top:Math.round(el.getBoundingClientRect().top),bottom:Math.round(el.getBoundingClientRect().bottom)}));
-                  return {
-                    view,
-                    bodyScrollWidth:document.documentElement.scrollWidth,
-                    viewport:innerWidth,
-                    nav:nr&&{top:Math.round(nr.top),bottom:Math.round(nr.bottom),height:Math.round(nr.height),gapBottom:Math.round(innerHeight-nr.bottom)},
-                    overflow,
-                    bottomCovered,
-                    active:document.body.dataset.m7View||''
-                  };
+                await page.waitForTimeout(view==='shop'||view==='expansions'?1100:400);
+
+                const metrics=await page.evaluate((view)=>{
+                  const nav=document.querySelector('.m7-app-nav');const nr=nav?.getBoundingClientRect();
+                  const visible=[...document.querySelectorAll('body *')].filter(el=>{const s=getComputedStyle(el),r=el.getBoundingClientRect();return s.display!=='none'&&s.visibility!=='hidden'&&r.width>1&&r.height>1});
+                  const overflow=visible.filter(el=>{const r=el.getBoundingClientRect();return r.left<-2||r.right>innerWidth+2}).filter(el=>!el.closest('.m7-global-detail')).slice(0,8).map(el=>({tag:el.tagName,id:el.id,cls:String(el.className||'').slice(0,70),left:Math.round(el.getBoundingClientRect().left),right:Math.round(el.getBoundingClientRect().right)}));
+                  const navButtons=[...nav.querySelectorAll('[data-app-nav]')].map(b=>Math.round(b.getBoundingClientRect().height));
+                  return {view,scrollWidth:document.documentElement.scrollWidth,viewport:innerWidth,nav:{top:Math.round(nr.top),bottom:Math.round(nr.bottom),height:Math.round(nr.height),gapBottom:Math.round(innerHeight-nr.bottom)},navButtons,overflow};
                 },view);
-                console.log('AUDIT',JSON.stringify(m));
+                console.log('METRICS',JSON.stringify(metrics));
+                if(metrics.scrollWidth>metrics.viewport+2)throw new Error(`${view}: horizontal document overflow ${metrics.scrollWidth}/${metrics.viewport}`);
+                if(metrics.nav.gapBottom>1)throw new Error(`${view}: dock is still floating ${metrics.nav.gapBottom}px above bottom`);
+                if(metrics.navButtons.some(h=>h<44))throw new Error(`${view}: nav touch target under 44px`);
+                if(metrics.overflow.length)throw new Error(`${view}: visible horizontal overflow ${JSON.stringify(metrics.overflow)}`);
+
+                // At the end of every view, its final meaningful control/content must be scrollable clear of the dock.
+                const clearance=await page.evaluate(async(view)=>{
+                  const map={portfolio:'#m7PortfolioView',search:'#m7SearchView',shop:'#m7ShopView',expansions:'#m7ExpansionsView',profile:'#m7ProfileView'};
+                  const root=document.querySelector(map[view]);const nav=document.querySelector('.m7-app-nav');
+                  if(!root||!nav)return null;
+                  const candidates=[...root.querySelectorAll('button,a,input,select,article,.dex-card,.m7-v155-set,.m7-setting-row')].filter(el=>{const s=getComputedStyle(el),r=el.getBoundingClientRect();return s.display!=='none'&&s.visibility!=='hidden'&&r.height>10});
+                  const last=candidates[candidates.length-1];if(!last)return null;
+                  last.scrollIntoView({block:'end',behavior:'auto'});await new Promise(r=>setTimeout(r,80));
+                  const lr=last.getBoundingClientRect(),nr=nav.getBoundingClientRect();
+                  return {lastBottom:Math.round(lr.bottom),dockTop:Math.round(nr.top),clearance:Math.round(nr.top-lr.bottom),tag:last.tagName,cls:String(last.className||'').slice(0,70)};
+                },view);
+                console.log('CLEARANCE',JSON.stringify(clearance));
+                if(clearance && clearance.clearance < -2)throw new Error(`${view}: last content remains under dock ${JSON.stringify(clearance)}`);
+                await page.evaluate(()=>window.scrollTo({top:0,behavior:'auto'}));
               }
+
+              // Inputs must not trigger Safari focus zoom.
+              await page.locator('[data-app-nav="search"]').click();await page.waitForTimeout(250);
+              const searchFont=await page.locator('#m7GlobalQuery').evaluate(el=>parseFloat(getComputedStyle(el).fontSize)).catch(()=>16);
+              if(searchFont<16)throw new Error(`search input font ${searchFont}px can trigger iOS zoom`);
+
+              // Expansion detail must no longer hide its logo slot on mobile.
+              await page.locator('[data-app-nav="expansions"]').click();
+              await page.waitForFunction(()=>document.querySelectorAll('#v155SetResults .m7-v155-set').length>0,null,{timeout:35000});
+              await page.locator('#v155SetResults .m7-v155-set').first().click();await page.waitForTimeout(500);
+              const logoDisplay=await page.locator('.m7-v155-detail-logo').evaluate(el=>getComputedStyle(el).display);
+              console.log('DETAIL_LOGO_DISPLAY',logoDisplay);
+              if(logoDisplay==='none')throw new Error('Expansion detail logo is hidden on mobile');
+
+              console.log('PASS_VIEWPORT',vp.name);
               await page.close();
             }
             await browser.close();
-          })().catch(e=>{console.error(e.stack||e);process.exit(1)});
+            console.log('MOBILE_V156_ALL_PASS');
+          })().catch(e=>{console.error('MOBILE_V156_FAILED',e.stack||e);process.exit(1)});
           NODE
