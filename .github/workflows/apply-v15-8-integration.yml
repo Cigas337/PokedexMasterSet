@@ -38,12 +38,13 @@ jobs:
           assert 'ownedForSet(s,[])' not in js
           assert 'function numKey' in js and 'function sameSetRecord' in js
           assert html.count('v15.8.css') == 1 and html.count('v15.8.js') == 1
-          assert 'v15.8.js?v=15.8.0' in html and 'v15.8.css?v=15.8.0' in html
-          assert "pokedexm7-shell-v15.8.0" in sw
+          assert 'v15.8.js?v=15.8.2' in html and 'v15.8.css?v=15.8.2' in html
+          assert "pokedexm7-shell-v15.8.2-rc1" in sw
           assert "'./v15.8.css'" in sw and "'./v15.8.js'" in sw
           assert 'Signed by Cigas' in rt and 'Unofficial fan project' in rt and 'Legendary as ♥♥♥♥' in rt
           assert 'mep/0?29' in rt or 'MEP_029' in rt
-          print('v15.8 validation OK')
+          assert 'installStockRecovery' in rt and 'm7-v158-stock-ready' in rt
+          print('v15.8.2 RC validation OK')
           PY
       - name: Commit activation
         run: |
@@ -54,5 +55,5 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add index.html sw.js v15.5.js
-          git commit -m 'fix: link Expansions to Pokedex and polish profile v15.8'
+          git commit -m 'fix: keep v15.8.2 RC integration active'
           git push
