@@ -1,0 +1,65 @@
+name: Apply v15.10 final polish
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'v15.10.js'
+      - 'v15.10.css'
+      - 'scripts/apply_v15_10_final_polish.py'
+      - '.github/workflows/apply-v15-10-final-polish.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Validate final-polish source
+        run: |
+          node --check v15.10.js
+          python3 -m py_compile scripts/apply_v15_10_final_polish.py
+          grep -q "api.pokemontcg.io/v2" v15.10.js
+          grep -q "api.tcgdex.net/v2/en" v15.10.js
+          grep -q "m7ExpansionSource" v15.10.js
+          grep -q 'data-m7-view="portfolio".*m7-stats-panel' v15.10.css
+          grep -q 'm7-v155-exp-shell' v15.10.css
+          grep -q 'm7-v1510-skeleton' v15.10.css
+      - name: Activate v15.10
+        run: python3 scripts/apply_v15_10_final_polish.py
+      - name: Validate activated shell
+        run: |
+          node --check v15.9.js
+          node --check v15.10.js
+          python3 - <<'PY'
+          from pathlib import Path
+          html=Path('index.html').read_text(encoding='utf-8')
+          sw=Path('sw.js').read_text(encoding='utf-8')
+          assert html.count('v15.10.css') == 1
+          assert html.count('v15.10.js') == 1
+          assert 'v15.10.css?v=15.10.0' in html
+          assert 'v15.10.js?v=15.10.0' in html
+          assert html.index('v15.9.css') < html.index('v15.10.css')
+          assert html.index('v15.9.js') < html.index('v15.10.js')
+          assert "pokedexm7-shell-v15.10.0-rc1" in sw
+          assert "'./v15.10.css'" in sw and "'./v15.10.js'" in sw
+          print('v15.10 RC final polish validation OK')
+          PY
+      - name: Commit activation
+        run: |
+          if git diff --quiet; then
+            echo 'Already active.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html sw.js
+          git commit -m 'chore: activate v15.10.0 RC final polish'
+          git push
