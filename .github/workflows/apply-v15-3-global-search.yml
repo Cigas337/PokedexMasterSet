@@ -1,0 +1,29 @@
+name: Activate Pokédex M7 v15.3 global search
+on:
+  push:
+    paths:
+      - 'scripts/apply_v15_3_global_search.py'
+      - 'v15.3.js'
+      - 'v15.3.css'
+      - '.github/workflows/apply-v15-3-global-search.yml'
+permissions:
+  contents: write
+jobs:
+  activate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Activate v15.3
+        run: python scripts/apply_v15_3_global_search.py
+      - name: Validate JavaScript
+        run: node --check v15.3.js && node --check v15.2.js && node --check v15.js
+      - name: Validate references
+        run: grep -q 'v15.3.css?v=15.3.0' index.html && grep -q 'v15.3.js?v=15.3.0' index.html && grep -q 'sw.js?v=15.3.0' index.html
+      - name: Commit v15.3 activation
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html sw.js
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'feat: global TCG card search in v15.3'
+          git push
