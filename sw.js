@@ -1,4 +1,4 @@
-const CACHE_NAME='pokedexm7-shell-v15.5.0';
+const CACHE_NAME='pokedexm7-shell-v15.5.1';
 const PUSH_API='https://wdljzuqoftrontqhhatr.supabase.co/functions/v1/push-subscriptions';
 const PUSH_API_KEY='sb_publishable_MslRW16TUUxlAEnUNiQ2sQ_3FrG4sLy';
 const CORE=['./','./index.html','./manifest.webmanifest','./v15.css','./v15.js','./v15-fix.js','./v15.5.css','./v15.5.js'];

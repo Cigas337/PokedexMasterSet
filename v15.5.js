@@ -1,4 +1,4 @@
-/* Pokédex M7 v15.5.0 · clean Shop + Expansions runtime
+/* Pokédex M7 v15.5.1 · newest-first expansions + resilient images
    Important: v15.4.js and v15.4.1.js must NOT be loaded with this file. */
 (function(){
   const nav=document.getElementById('m7AppNav');
@@ -147,25 +147,39 @@
 
   /* ---------- IMAGE FALLBACKS ---------- */
   function uniq(a){return [...new Set(a.filter(Boolean))]}
-  function imageCandidates(base,kind){
-    const s=String(base||'').trim();if(!s)return [];
-    if(/\.(?:webp|png|jpe?g)(?:\?.*)?$/i.test(s))return [s];
-    if(kind==='card')return uniq([`${s}/high.webp`,`${s}/low.webp`,`${s}.webp`,`${s}.png`,s]);
-    return uniq([`${s}.webp`,`${s}.png`,s,`${s}/high.webp`,`${s}/low.webp`]);
+  function imageCandidates(bases,kind){
+    const source=Array.isArray(bases)?bases:[bases],out=[];
+    for(const raw of source){
+      const s=String(raw||'').trim();if(!s)continue;
+      const clean=s.replace(/[?#].*$/,'');
+      const hasExt=/\.(?:webp|png|jpe?g)$/i.test(clean);
+      if(kind==='card'){
+        const base=clean.replace(/\/(?:high|low)\.(?:webp|png|jpe?g)$/i,'').replace(/\.(?:webp|png|jpe?g)$/i,'');
+        if(hasExt)out.push(s);
+        out.push(`${base}/high.webp`,`${base}/high.png`,`${base}/high.jpg`,`${base}/low.webp`,`${base}/low.png`,`${base}/low.jpg`,`${base}.webp`,`${base}.png`,`${base}.jpg`,base);
+      }else{
+        const base=clean.replace(/\.(?:webp|png|jpe?g)$/i,'');
+        if(hasExt)out.push(s);
+        out.push(`${base}.webp`,`${base}.png`,`${base}.jpg`,base);
+      }
+    }
+    return uniq(out);
   }
-  function setImg(img,base,kind,fallbackText){
-    const list=imageCandidates(base,kind);let i=0;
-    const fail=()=>{i++;if(i<list.length)img.src=list[i];else{img.removeAttribute('src');img.style.display='none';const holder=img.parentElement;if(holder&&fallbackText&&!holder.querySelector('.fallback-name'))holder.insertAdjacentHTML('beforeend',`<span class="fallback-name">${esc(fallbackText)}</span>`)} };
+  function setImg(img,bases,kind,fallbackText){
+    const list=imageCandidates(bases,kind);let i=0;
+    const holder=img?.parentElement;
+    holder?.querySelector('.fallback-name')?.remove();
+    const fail=()=>{i++;if(i<list.length){img.src=list[i]}else{img.removeAttribute('src');img.style.display='none';if(holder&&fallbackText&&!holder.querySelector('.fallback-name'))holder.insertAdjacentHTML('beforeend',`<span class="fallback-name">${esc(fallbackText)}</span>`)}};
     img.onerror=fail;
     if(list.length){img.style.display='';img.src=list[0]}else fail();
   }
   function hydrateImages(root=document){
-    root.querySelectorAll('img[data-v155-image]').forEach(img=>{if(img.dataset.v155Hydrated)return;img.dataset.v155Hydrated='1';setImg(img,img.dataset.v155Image,img.dataset.v155Kind||'set',img.dataset.v155Fallback||'')});
+    root.querySelectorAll('img[data-v155-image]').forEach(img=>{if(img.dataset.v155Hydrated)return;img.dataset.v155Hydrated='1';setImg(img,[img.dataset.v155Image,img.dataset.v155ImageAlt],img.dataset.v155Kind||'set',img.dataset.v155Fallback||'')});
   }
 
   /* ---------- EXPANSIONS / TCGDEX ---------- */
   const TDX='https://api.tcgdex.net/v2/en';
-  const SET_CACHE='pokedexm7-v155-sets-cache';
+  const SET_CACHE='pokedexm7-v1551-sets-cache';
   let sets=[],setsLoaded=false,currentSet=null,currentCards=[],loadToken=0;
   async function jsonFetch(url,timeout=15000){
     const ctl=new AbortController();const timer=setTimeout(()=>ctl.abort(),timeout);
@@ -173,7 +187,7 @@
   }
   function normalizeSet(raw){
     const series=typeof raw?.serie==='object'?raw.serie?.name:(raw?.serie||raw?.series||'Outras expansões');
-    return {id:String(raw?.id||''),name:String(raw?.name||raw?.id||'Expansão'),series:String(series||'Outras expansões'),logo:raw?.logo||raw?.symbol||raw?.image||'',symbol:raw?.symbol||'',total:Number(raw?.cardCount?.official||raw?.cardCount?.total||raw?.total||0),releaseDate:String(raw?.releaseDate||raw?.release_date||'')};
+    return {id:String(raw?.id||''),name:String(raw?.name||raw?.id||'Expansão'),series:String(series||'Outras expansões'),logo:raw?.logo||raw?.image||'',symbol:raw?.symbol||'',total:Number(raw?.cardCount?.official||raw?.cardCount?.total||raw?.total||0),releaseDate:String(raw?.releaseDate||raw?.release_date||'')};
   }
   function readSetCache(){try{const v=JSON.parse(localStorage.getItem(SET_CACHE)||'null');return Array.isArray(v?.sets)?v.sets:[]}catch(_){return []}}
   function writeSetCache(rows){try{localStorage.setItem(SET_CACHE,JSON.stringify({at:Date.now(),sets:rows}))}catch(_){}}
@@ -182,7 +196,7 @@
     if(setsLoaded&&!force){renderSets();return}
     holder.innerHTML='<div class="m7-v155-state">A carregar expansões…</div>';
     try{
-      const raw=await jsonFetch(`${TDX}/sets`);
+      const raw=await jsonFetch(`${TDX}/sets?sort:field=releaseDate&sort:order=DESC`);
       const arr=Array.isArray(raw)?raw:Array.isArray(raw?.data)?raw.data:[];
       sets=arr.map(normalizeSet).filter(s=>s.id&&s.name);
       if(!sets.length)throw new Error('Catálogo vazio');
@@ -204,20 +218,20 @@
     const list=sets.filter(s=>(!q||norm(`${s.name} ${s.id} ${s.series}`).includes(q))&&(series==='all'||s.series===series));
     if(!list.length){holder.innerHTML='<div class="m7-v155-state"><div><strong>Nenhuma expansão encontrada.</strong><span>Experimenta outro nome ou limpa os filtros.</span></div></div>';return}
     const groups=new Map();for(const s of list){if(!groups.has(s.series))groups.set(s.series,[]);groups.get(s.series).push(s)}
-    holder.innerHTML=[...groups.entries()].map(([group,rows])=>`<section class="m7-v155-exp-group"><h3>${esc(group)}</h3><div class="m7-v155-exp-grid">${rows.map(s=>{const known=s.total||0;const owned=ownedForSet(s,[]);const pct=known?owned/known*100:0;return `<button type="button" class="m7-v155-set" data-v155-set="${esc(s.id)}"><div class="m7-v155-set-top"><span class="m7-v155-code">${esc(s.id)}</span><span class="m7-v155-progress"><span>${owned} de ${known||'—'}</span><i class="m7-v155-ring" style="--p:${pct.toFixed(2)}"></i></span></div><div class="m7-v155-set-image"><img alt="${esc(s.name)}" data-v155-image="${esc(s.logo)}" data-v155-kind="set" data-v155-fallback="${esc(s.name)}"></div><strong>${esc(s.name)}</strong></button>`}).join('')}</div></section>`).join('');
+    holder.innerHTML=[...groups.entries()].map(([group,rows])=>`<section class="m7-v155-exp-group"><h3>${esc(group)}</h3><div class="m7-v155-exp-grid">${rows.map(s=>{const known=s.total||0;const owned=ownedForSet(s,[]);const pct=known?owned/known*100:0;return `<button type="button" class="m7-v155-set" data-v155-set="${esc(s.id)}"><div class="m7-v155-set-top"><span class="m7-v155-code">${esc(s.id)}</span><span class="m7-v155-progress"><span>${owned} de ${known||'—'}</span><i class="m7-v155-ring" style="--p:${pct.toFixed(2)}"></i></span></div><div class="m7-v155-set-image"><img alt="${esc(s.name)}" data-v155-image="${esc(s.logo)}" data-v155-image-alt="${esc(s.symbol)}" data-v155-kind="set" data-v155-fallback="${esc(s.name)}"></div><strong>${esc(s.name)}</strong></button>`}).join('')}</div></section>`).join('');
     hydrateImages(holder);
   }
   async function openSet(set){
     const token=++loadToken;currentSet=set;currentCards=[];
     document.getElementById('v155SetList').hidden=true;document.getElementById('v155SetDetail').hidden=false;
     document.getElementById('v155DetailSeries').textContent=set.series||'Pokémon TCG';document.getElementById('v155DetailName').textContent=set.name;document.getElementById('v155DetailMeta').textContent=[set.id,set.releaseDate].filter(Boolean).join(' · ');
-    setImg(document.getElementById('v155DetailLogo'),set.logo,'set',set.name);updateDetailCount();
+    setImg(document.getElementById('v155DetailLogo'),[set.logo,set.symbol],'set',set.name);updateDetailCount();
     const grid=document.getElementById('v155Cards');grid.innerHTML='<div class="m7-v155-state">A carregar cartas desta expansão…</div>';
     try{
       const raw=await jsonFetch(`${TDX}/sets/${encodeURIComponent(set.id)}`);
       if(token!==loadToken)return;
       const cardRows=Array.isArray(raw?.cards)?raw.cards:Array.isArray(raw?.data?.cards)?raw.data.cards:[];
-      if(raw?.logo)set.logo=raw.logo;if(raw?.cardCount)set.total=Number(raw.cardCount.official||raw.cardCount.total||set.total||0);
+      if(raw?.logo)set.logo=raw.logo;if(raw?.symbol)set.symbol=raw.symbol;if(raw?.releaseDate){set.releaseDate=String(raw.releaseDate);document.getElementById('v155DetailMeta').textContent=[set.id,set.releaseDate].filter(Boolean).join(' · ')}setImg(document.getElementById('v155DetailLogo'),[set.logo,set.symbol],'set',set.name);if(raw?.cardCount)set.total=Number(raw.cardCount.official||raw.cardCount.total||set.total||0);
       currentCards=cardRows.map(c=>({id:String(c?.id||''),localId:String(c?.localId||c?.number||''),name:String(c?.name||'Carta'),image:c?.image||c?.images?.large||c?.images?.small||''})).filter(c=>c.id||c.name);
       if(!set.total)set.total=currentCards.length;
       renderCards();updateDetailCount();renderSets();
