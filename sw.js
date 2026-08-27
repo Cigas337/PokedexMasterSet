@@ -1,107 +1,85 @@
-const CACHE_NAME='pokedex-xl-v12-5-0-organizer-regions';
-const SHELL=['./','./index.html','./manifest.webmanifest','./icon-180.png','./icon-192.png','./icon-512.png','./assets/charmeleon-mep-079.jpg'];
+const CACHE_NAME='pokedexm7-shell-v14.0.0';
+const PUSH_API='https://wdljzuqoftrontqhhatr.supabase.co/functions/v1/push-subscriptions';
+const CORE=['./','./index.html','./manifest.webmanifest'];
 
 self.addEventListener('install',event=>{
-  event.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.addAll(SHELL)).then(()=>self.skipWaiting()));
+  self.skipWaiting();
+  event.waitUntil((async()=>{
+    const cache=await caches.open(CACHE_NAME);
+    await Promise.all(CORE.map(async url=>{try{await cache.add(new Request(url,{cache:'reload'}))}catch(_){}}));
+  })());
 });
 
 self.addEventListener('activate',event=>{
-  event.waitUntil(
-    caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE_NAME).map(k=>caches.delete(k))))
-      .then(()=>self.clients.claim())
-  );
+  event.waitUntil((async()=>{
+    const keys=await caches.keys();
+    await Promise.all(keys.filter(k=>k.startsWith('pokedexm7-shell-')&&k!==CACHE_NAME).map(k=>caches.delete(k)));
+    await self.clients.claim();
+  })());
 });
 
 self.addEventListener('fetch',event=>{
   const req=event.request;
-  if(req.method!=='GET') return;
+  if(req.method!=='GET')return;
   const url=new URL(req.url);
-
-  // Nunca colocar os dados da coleção/Supabase em cache: têm de vir sempre atualizados.
-  if(url.hostname.endsWith('supabase.co')){
-    event.respondWith(fetch(req));
-    return;
-  }
-
-  // O stock tenta sempre a rede; conserva a última resposta apenas como
-  // fallback quando o agregador estiver temporariamente indisponível.
-  if(url.hostname==='www.pokestockpt.com' && url.pathname.endsWith('/seen_products.json')){
-    event.respondWith(
-      caches.open(CACHE_NAME).then(async cache=>{
-        try{
-          const fresh=await fetch(req,{cache:'no-store'});
-          if(fresh&&fresh.ok) cache.put(req,fresh.clone()).catch(()=>{});
-          return fresh;
-        }catch(error){
-          const cached=await cache.match(req,{ignoreSearch:true});
-          if(cached)return cached;
-          throw error;
-        }
-      })
-    );
-    return;
-  }
-
-  // Navegação: rede primeiro, ficheiro local como fallback offline.
+  if(url.origin!==self.location.origin)return;
   if(req.mode==='navigate'){
-    event.respondWith(
-      fetch(req,{cache:'no-store'}).then(res=>{
-        const copy=res.clone();
-        caches.open(CACHE_NAME).then(cache=>cache.put('./index.html',copy));
-        return res;
-      }).catch(()=>caches.match('./index.html'))
-    );
+    event.respondWith((async()=>{
+      try{
+        const fresh=await fetch(req);
+        const cache=await caches.open(CACHE_NAME);
+        cache.put('./index.html',fresh.clone()).catch(()=>{});
+        return fresh;
+      }catch(_){
+        return (await caches.match(req))||(await caches.match('./index.html'))||Response.error();
+      }
+    })());
     return;
   }
+  event.respondWith((async()=>{
+    const cached=await caches.match(req);
+    const update=fetch(req).then(async fresh=>{
+      if(fresh?.ok){const cache=await caches.open(CACHE_NAME);cache.put(req,fresh.clone()).catch(()=>{});}return fresh;
+    }).catch(()=>null);
+    return cached||(await update)||Response.error();
+  })());
+});
 
-  // Catálogo de cartas: resposta em cache imediatamente quando já existe,
-  // e atualização silenciosa em segundo plano. Assim os cliques repetidos são instantâneos
-  // e uma falha temporária da API não obriga o utilizador a clicar várias vezes.
-  if(url.hostname==='api.pokemontcg.io' || url.hostname==='api.tcgdex.net'){
-    event.respondWith(
-      caches.open(CACHE_NAME).then(async cache=>{
-        const cached=await cache.match(req);
-        const refresh=fetch(req).then(res=>{
-          if(res && res.ok) cache.put(req,res.clone()).catch(()=>{});
-          return res;
-        }).catch(()=>null);
-        if(cached){
-          event.waitUntil(refresh);
-          return cached;
-        }
-        const fresh=await refresh;
-        if(fresh) return fresh;
-        throw new Error('API de cartas/preços indisponível');
-      })
-    );
-    return;
-  }
+self.addEventListener('push',event=>{
+  let data={};
+  try{data=event.data?event.data.json():{}}catch(_){data={body:event.data?.text?.()||''}}
+  const title=data.title||'Pokédex M7';
+  const options={
+    body:data.body||'Nova atualização de stock Pokémon.',
+    tag:data.tag||'pokedexm7-stock',
+    renotify:true,
+    icon:'./icon-180.png',
+    badge:'./icon-180.png',
+    image:data.image||undefined,
+    data:{url:data.url||self.registration.scope,eventType:data.eventType||'',store:data.store||'',collection:data.collection||''},
+    timestamp:data.timestamp||Date.now(),
+  };
+  event.waitUntil(self.registration.showNotification(title,options));
+});
 
-  // App shell e recursos Pokémon: cache primeiro para acelerar e permitir uso offline parcial.
-  const cacheable = url.origin===self.location.origin ||
-    url.hostname==='raw.githubusercontent.com' ||
-    url.hostname==='pokeapi.co' ||
-    url.hostname==='cdn.jsdelivr.net' ||
-    url.hostname==='images.pokemontcg.io' ||
-    url.hostname==='assets.tcgdex.net' ||
-    url.hostname==='den-cards.pokellector.com' ||
-    url.hostname==='product-images.tcgplayer.com';
+self.addEventListener('notificationclick',event=>{
+  event.notification.close();
+  const target=event.notification?.data?.url||self.registration.scope;
+  event.waitUntil((async()=>{
+    try{return await self.clients.openWindow(target)}catch(_){
+      const list=await self.clients.matchAll({type:'window',includeUncontrolled:true});
+      if(list[0])return list[0].focus();
+    }
+  })());
+});
 
-  if(cacheable){
-    event.respondWith(
-      caches.match(req).then(cached=>{
-        if(cached) return cached;
-        return fetch(req).then(res=>{
-          if(res && (res.ok || res.type==='opaque')){
-            const copy=res.clone();
-            caches.open(CACHE_NAME).then(cache=>cache.put(req,copy)).catch(()=>{});
-          }
-          return res;
-        });
-      })
-    );
-    return;
-  }
-
-  event.respondWith(fetch(req));
+self.addEventListener('pushsubscriptionchange',event=>{
+  event.waitUntil((async()=>{
+    try{
+      const key=event.oldSubscription?.options?.applicationServerKey;
+      if(!key)return;
+      const sub=await self.registration.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:key});
+      await fetch(PUSH_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'subscribe',subscription:sub.toJSON(),userAgent:self.navigator?.userAgent||'',platform:'service-worker',locale:'pt-PT',collections:['*'],stores:['*']})});
+    }catch(e){console.warn('pushsubscriptionchange',e)}
+  })());
 });

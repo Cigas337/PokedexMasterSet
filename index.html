@@ -6,9 +6,9 @@
 <meta name="theme-color" content="#080f17">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
-<meta name="apple-mobile-web-app-title" content="Pokédex XL">
+<meta name="apple-mobile-web-app-title" content="Pokédex M7">
 <link rel="manifest" href="manifest.webmanifest">
-<title>Pokédex XL — Master Set · v12.7.2 CUSTOM MOBILE + PC WALLPAPER</title>
+<title>Pokédex M7 — Master Set · v14.0.0 PUSH PHASE 2</title>
 <link rel="apple-touch-icon" href="icon-180.png">
 <style>
 :root{
@@ -1087,17 +1087,374 @@ body:not(.auth-locked) .auth-gate{opacity:0;visibility:hidden;pointer-events:non
 .full-card-close:hover{background:rgba(43,55,67,.96)}
 .full-card-close:focus-visible{outline:3px solid rgba(246,193,63,.62);outline-offset:3px}
 @media(max-width:760px){.full-card-modal{padding:44px 4vw}.full-card-stage{width:min(92vw,calc((100dvh - 88px)*.7142857));}.full-card-close{width:44px;height:44px;font-size:27px}}
+
+
+/* ======================================================================
+   v13.0 · POKÉDEX M7 — POLISH VISUAL / DEX CARDS / STOCK / FINDER
+   ====================================================================== */
+.m7-runtime-hooks{display:none!important}
+.m7-hero{grid-template-columns:minmax(310px,.78fr) minmax(0,1.42fr)!important;gap:14px!important}
+.m7-brand-panel{display:flex;align-items:center;min-height:132px!important;padding:20px 22px!important;background:linear-gradient(135deg,rgba(8,18,29,.96),rgba(3,8,14,.94) 72%)!important}
+.m7-brand-row{width:100%;grid-template-columns:58px minmax(0,1fr)!important;gap:16px!important}
+.m7-brand-row .pokeball-mini{width:58px;height:58px}
+.m7-brand-panel .brand-title{font-size:clamp(36px,3.4vw,52px)!important;letter-spacing:-1px!important;text-transform:none!important}
+.m7-brand-panel .brand-title .xl{color:#ff3f36;text-transform:uppercase}
+.m7-brand-panel .brand-sub{margin-top:8px!important;color:#d9e2eb!important;font-size:12px!important;letter-spacing:2.8px!important;text-transform:uppercase!important}
+.m7-stats-panel{min-height:132px!important;padding:18px 20px!important;display:flex;align-items:center;background:linear-gradient(135deg,#650906,#971712 42%,#650807 100%)!important}
+.m7-stats-row{width:100%;display:grid;grid-template-columns:auto minmax(180px,1fr) auto;align-items:center;gap:20px}
+.m7-count-wrap{min-width:max-content}.m7-count-wrap .big-count{margin:0!important;font-size:clamp(42px,4.2vw,68px)!important;letter-spacing:-2px!important;line-height:.92!important}
+.m7-progress-wrap .progress-track{height:26px!important;margin:0!important;background:rgba(0,0,0,.36)!important}
+.m7-wallet-value{margin:0!important;min-width:150px!important;justify-content:flex-start!important;padding:10px 13px!important;border-radius:16px!important;background:rgba(0,0,0,.24)!important}
+.m7-wallet-value .value-copy{display:none!important}.m7-wallet-value strong{font-size:clamp(20px,2vw,28px)!important;color:#fff!important}
+.poke-wallet-icon{position:relative;width:38px;height:29px;flex:0 0 auto;border-radius:8px;background:linear-gradient(180deg,#2b3742,#121a22);border:2px solid rgba(255,255,255,.72);box-shadow:inset 0 -6px 10px rgba(0,0,0,.28),0 5px 10px rgba(0,0,0,.22)}
+.poke-wallet-icon:before{content:"";position:absolute;left:5px;right:5px;top:-5px;height:8px;border-radius:6px 6px 2px 2px;background:#e33b32;border:2px solid #111a22}
+.poke-wallet-ball{position:absolute;right:5px;top:8px;width:12px;height:12px;border-radius:50%;background:linear-gradient(180deg,#ef4038 0 44%,#111a22 44% 57%,#f4f6f8 57%);border:1.5px solid #0e151c;box-shadow:0 0 0 1px rgba(255,255,255,.15)}
+.m7-ball-panel{display:none!important}
+
+/* Tiles: só o essencial e a carta é o foco */
+.dex-card{min-height:0!important;height:auto!important;padding:10px!important;border-radius:18px!important;display:flex!important;flex-direction:column!important;background:linear-gradient(180deg,rgba(241,245,249,.97),rgba(217,225,234,.97))!important}
+.dex-card:before{opacity:.12!important;right:-65px!important;top:68px!important}
+.dex-card:not(.owned-card){background:linear-gradient(180deg,rgba(223,229,235,.96),rgba(199,208,218,.96))!important}
+.dex-card .card-ball,.dex-card .type-row,.dex-card .dex-sub,.dex-card .art-availability,.dex-card .art-help,.dex-card .completion-badge,.dex-card .art-star-badge,.dex-card .pokemon-generation-badge{display:none!important}
+.dex-card .card-top{min-height:31px!important;align-items:center!important;padding:0 1px!important}
+.dex-card .dex-number{font-size:11px!important;letter-spacing:.55px!important;padding:5px 8px!important;border-radius:999px!important;background:rgba(10,17,24,.08)!important;border:1px solid rgba(10,17,24,.08)!important}
+.energy-corner{margin-left:auto;display:flex;align-items:center;justify-content:flex-end;gap:3px;min-height:31px;position:relative;z-index:8}
+.tcg-energy{--energy-bg:#7f8790;width:29px;height:29px;display:inline-flex;align-items:center;justify-content:center;border-radius:50%;background:var(--energy-bg);border:2px solid rgba(255,255,255,.9);box-shadow:inset 0 2px 5px rgba(255,255,255,.25),0 3px 8px rgba(0,0,0,.24);color:#fff;overflow:hidden}
+.tcg-energy svg{width:21px;height:21px;display:block;overflow:visible}.tcg-energy svg *{vector-effect:non-scaling-stroke}
+.tcg-energy-grass{--energy-bg:#58a848}.tcg-energy-fire{--energy-bg:#dc4a35}.tcg-energy-water{--energy-bg:#4089d5}.tcg-energy-lightning{--energy-bg:#d9b72a;color:#181713}.tcg-energy-psychic{--energy-bg:#a552a1}.tcg-energy-fighting{--energy-bg:#bb6746}.tcg-energy-darkness{--energy-bg:#4d4d56}.tcg-energy-metal{--energy-bg:#8899a1;color:#172026}.tcg-energy-fairy{--energy-bg:#dc86b4}.tcg-energy-dragon{--energy-bg:#9b8f37}.tcg-energy-colorless{--energy-bg:#a9afb4;color:#20252a}
+.dex-card .missing-finder-btn{top:9px!important;right:45px!important;width:28px!important;height:28px!important;border-width:1px!important;font-size:14px!important;box-shadow:0 4px 10px rgba(11,47,81,.24)!important}
+.dex-card .card-image,.dex-card.has-featured-tcg .card-image{height:236px!important;margin:6px 0 7px!important;padding:3px!important;border-radius:13px!important;background:rgba(255,255,255,.40)!important;border:1px solid rgba(13,24,36,.07)!important;overflow:visible!important}
+.dex-card .card-image img,.dex-card.has-featured-tcg .card-image img{max-height:230px!important;max-width:100%!important;border-radius:10px!important;object-fit:contain!important;box-shadow:none!important}
+.dex-card.has-featured-tcg .card-image img{box-shadow:0 10px 20px rgba(0,0,0,.18)!important}
+.dex-card:not(.has-featured-tcg) .card-image{height:200px!important;background:radial-gradient(circle at 50% 42%,rgba(255,255,255,.66),rgba(255,255,255,.18) 58%,transparent 76%)!important;border-color:transparent!important}
+.dex-card:not(.has-featured-tcg) .card-image img{max-height:194px!important;filter:grayscale(.35) saturate(.65) brightness(.78) opacity(.62) drop-shadow(0 8px 12px rgba(0,0,0,.13))!important}
+.dex-card .binder-inspect-btn,.dex-card.has-featured-tcg .binder-inspect-btn{order:3;width:100%!important;min-height:29px!important;margin:2px 0 5px!important;padding:5px 8px!important;border-radius:9px!important;background:linear-gradient(180deg,#1b2b39,#101923)!important;border:1px solid rgba(0,0,0,.16)!important;color:#fff!important;font-size:8px!important;letter-spacing:.65px!important;text-transform:uppercase!important;box-shadow:none!important}
+.dex-card.owned-art .binder-inspect-btn{box-shadow:inset 0 0 0 1px rgba(246,193,63,.26)!important}
+.dex-card .dex-name{order:4;min-height:0!important;margin:3px 0 7px!important;font-size:14px!important;line-height:1.15!important;text-align:center!important;font-weight:1000!important}
+.dex-card .card-actions{order:5;display:grid!important;grid-template-columns:1fr 1fr!important;gap:6px!important;margin-top:auto!important}
+.dex-card .state-ui{min-height:30px!important;padding:0 7px!important;border-radius:9px!important;font-size:9px!important;gap:5px!important;letter-spacing:.2px!important}
+.dex-card .state-ui .dot{width:10px!important;height:10px!important;border-width:1.5px!important}.dex-card .state-ui .art-symbol{font-size:13px!important}
+.dex-card .state-pill{min-width:0!important}
+
+/* Finder mais visual: cartas + lojas nacionais */
+.finder-panel{width:min(1260px,100%)!important}.finder-grid{grid-template-columns:minmax(260px,.68fr) minmax(0,1.32fr)!important}
+.finder-energy-icon{width:38px!important;height:38px!important;background:transparent!important;border:0!important;box-shadow:none!important;padding:1px!important}
+.finder-energy-icon .tcg-energy{width:36px;height:36px}.finder-energy-icon .tcg-energy svg{width:26px;height:26px}
+.finder-store-list{grid-template-columns:repeat(2,minmax(0,1fr))!important}.finder-store{grid-template-columns:minmax(0,1fr)!important;align-content:start}.finder-store a{width:100%;margin-top:4px}.finder-store.physical{box-shadow:inset 3px 0 0 rgba(33,193,110,.65)}
+.finder-cards-section{margin-top:12px}.finder-card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:10px}.finder-card-result{overflow:hidden;border-radius:14px;background:linear-gradient(180deg,#f1f5f8,#dce4eb);color:#10171e;border:1px solid rgba(255,255,255,.12);box-shadow:0 8px 18px rgba(0,0,0,.22);cursor:pointer;transition:transform .14s ease,box-shadow .14s ease}.finder-card-result:hover{transform:translateY(-2px);box-shadow:0 12px 23px rgba(0,0,0,.30)}
+.finder-card-img{height:218px;padding:8px;display:flex;align-items:center;justify-content:center;background:#fff}.finder-card-img img{width:100%;height:100%;object-fit:contain}.finder-card-copy{padding:9px}.finder-card-copy strong{display:block;font-size:10px;line-height:1.25}.finder-card-copy span{display:block;margin-top:3px;color:#667480;font-size:7px;line-height:1.35}.finder-card-tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px}.finder-card-tag{display:inline-flex!important;width:max-content;padding:4px 6px;border-radius:999px;background:#e7edf3;color:#42515f!important;font-size:6.5px!important;font-weight:1000!important;text-transform:uppercase}.finder-card-tag.promo{background:#fff0bf;color:#705400!important}.finder-card-price{margin-top:7px!important;color:#0c6a42!important;font-size:10px!important;font-weight:1000!important}.finder-card-open{margin-top:7px!important;color:#135e91!important;font-size:7px!important;font-weight:1000!important;text-transform:uppercase}
+.finder-cards-more{display:flex;justify-content:center;margin-top:10px}.finder-cards-more button{min-height:38px;padding:7px 14px;border-radius:10px;border:1px solid rgba(255,255,255,.10);background:#1a2a38;color:#eef5fa;font-size:8px;font-weight:1000}
+
+/* Stock: coleção + avisos */
+.stock-toolbar{grid-template-columns:minmax(220px,1.35fr) repeat(4,minmax(128px,.65fr)) auto!important;align-items:stretch!important}
+.stock-notify-btn{min-height:46px;padding:0 13px;border:1px solid rgba(255,255,255,.12);border-radius:13px;background:linear-gradient(180deg,#172634,#0d1721);color:#e9f2f9;font-size:9px;font-weight:1000;letter-spacing:.3px;white-space:nowrap}
+.stock-notify-btn.active{background:linear-gradient(180deg,#187a4b,#0a5431);border-color:rgba(82,224,145,.38);color:#ddffec}.stock-notify-btn.denied{background:linear-gradient(180deg,#6e2621,#421411);color:#ffd7d4}
+.stock-push-status{grid-column:1/-1;display:flex;align-items:center;gap:8px;min-height:30px;padding:7px 11px;border-radius:11px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07);color:#9fb0bf;font-size:9px;font-weight:800;line-height:1.35}.stock-push-status strong{color:#eaf4fb}.stock-push-status.ok{border-color:rgba(69,217,139,.22);background:rgba(25,116,72,.12);color:#bfead2}.stock-push-status.warn{border-color:rgba(255,190,70,.22);background:rgba(125,82,16,.12);color:#f4d7a0}.stock-push-status.error{border-color:rgba(255,92,82,.24);background:rgba(130,33,27,.14);color:#ffd0cc}
+.stock-collection-chip{display:inline-flex;margin-top:6px;padding:4px 6px;border-radius:999px;background:#e8edf2;color:#52606d;font-size:6.5px;font-weight:1000;text-transform:uppercase;letter-spacing:.3px}
+
+.m7-signature{padding:18px 12px!important;text-align:center!important;color:#abb7c3!important;font-size:11px!important;letter-spacing:.3px!important}.m7-signature em{font-style:normal;color:#71808e}.m7-signature span{color:#e44239;margin:0 6px}
+
+@media(max-width:1000px){
+  .m7-hero{grid-template-columns:1fr!important}.m7-brand-panel{min-height:105px!important}.m7-stats-panel{min-height:108px!important}
+  .stock-toolbar{grid-template-columns:repeat(3,minmax(0,1fr))!important}.stock-toolbar input{grid-column:1/-1!important}
+}
+@media(max-width:760px){
+  .m7-brand-panel{min-height:88px!important;padding:13px 14px!important}.m7-brand-row{grid-template-columns:46px 1fr!important;gap:11px!important}.m7-brand-row .pokeball-mini{width:46px;height:46px}.m7-brand-panel .brand-title{font-size:31px!important}.m7-brand-panel .brand-sub{font-size:9px!important;letter-spacing:2.1px!important;margin-top:5px!important}
+  .m7-stats-panel{min-height:95px!important;padding:12px!important}.m7-stats-row{grid-template-columns:auto 1fr auto!important;gap:9px!important}.m7-count-wrap .big-count{font-size:30px!important;letter-spacing:-1px!important}.m7-progress-wrap .progress-track{height:18px!important}.m7-wallet-value{min-width:88px!important;padding:7px 8px!important;gap:6px!important}.m7-wallet-value strong{font-size:15px!important}.poke-wallet-icon{width:29px;height:23px}.poke-wallet-icon:before{height:6px;top:-4px}.poke-wallet-ball{width:10px;height:10px;top:6px;right:3px}
+  .dex-card{padding:8px!important;border-radius:15px!important}.dex-card .card-top{min-height:27px!important}.dex-card .dex-number{font-size:8px!important;padding:4px 6px!important}.tcg-energy{width:25px;height:25px}.tcg-energy svg{width:18px;height:18px}.dex-card .missing-finder-btn{top:7px!important;right:39px!important;width:25px!important;height:25px!important;font-size:12px!important}
+  .dex-card .card-image,.dex-card.has-featured-tcg .card-image{height:190px!important;margin:4px 0 5px!important}.dex-card .card-image img,.dex-card.has-featured-tcg .card-image img{max-height:184px!important}.dex-card:not(.has-featured-tcg) .card-image{height:164px!important}.dex-card:not(.has-featured-tcg) .card-image img{max-height:158px!important}
+  .dex-card .binder-inspect-btn,.dex-card.has-featured-tcg .binder-inspect-btn{min-height:27px!important;font-size:7px!important}.dex-card .dex-name{font-size:11px!important;margin:2px 0 6px!important}.dex-card .state-ui{min-height:28px!important;font-size:7.5px!important;padding:0 5px!important}
+  .finder-grid{grid-template-columns:1fr!important}.finder-store-list{grid-template-columns:1fr!important}.finder-card-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}.finder-card-img{height:190px!important}.finder-card-copy{padding:7px!important}
+  .stock-toolbar{grid-template-columns:1fr 1fr!important}.stock-toolbar input{grid-column:1/-1!important}.stock-notify-btn{font-size:8px!important}
+}
+@media(max-width:430px){
+  .m7-stats-row{grid-template-columns:auto 1fr!important}.m7-progress-wrap{grid-column:1/-1;grid-row:2}.m7-wallet-value{justify-self:end}.m7-stats-panel{min-height:112px!important}
+  #list{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}.dex-card .card-image,.dex-card.has-featured-tcg .card-image{height:174px!important}.dex-card .card-image img,.dex-card.has-featured-tcg .card-image img{max-height:168px!important}.dex-card:not(.has-featured-tcg) .card-image{height:148px!important}.dex-card:not(.has-featured-tcg) .card-image img{max-height:142px!important}
+  .finder-card-img{height:168px!important}
+}
+
+
+/* ======================================================================
+   v13.1 · CORREÇÕES DE POLIMENTO
+   ====================================================================== */
+.m7-stats-row{grid-template-columns:minmax(max-content,.72fr) minmax(220px,1.1fr) minmax(126px,.58fr)!important;gap:16px!important}
+.m7-progress-line{display:grid;grid-template-columns:minmax(120px,1fr) auto;align-items:center;gap:12px;width:100%}
+.m7-progress-wrap .progress-track{height:24px!important;box-shadow:inset 0 7px 13px rgba(0,0,0,.28),0 0 0 1px rgba(255,255,255,.04)!important}
+.m7-visible-percent{min-width:54px;text-align:right;color:#fff;font-size:17px;font-weight:1000;letter-spacing:-.35px;text-shadow:0 2px 8px rgba(0,0,0,.3)}
+.m7-wallet-value{min-width:0!important;justify-self:stretch!important;justify-content:center!important;gap:9px!important;border:1px solid rgba(255,255,255,.12)!important;background:linear-gradient(145deg,rgba(14,21,28,.50),rgba(0,0,0,.24))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 8px 18px rgba(0,0,0,.16)!important}
+.m7-wallet-value strong{font-size:clamp(18px,1.75vw,27px)!important;white-space:nowrap;letter-spacing:-.5px}.poke-wallet-icon{width:36px;height:28px}
+
+.dex-card .card-top{display:flex!important;width:100%;justify-content:space-between!important;gap:8px!important;min-height:31px!important;position:relative;z-index:10}
+.m7-card-top-tools{margin-left:auto;display:flex;align-items:center;justify-content:flex-end;gap:7px;min-width:0}
+.dex-card .missing-finder-btn{position:static!important;inset:auto!important;flex:0 0 auto;width:27px!important;height:27px!important;border-radius:50%!important;margin:0!important}
+.energy-corner{margin:0!important;min-height:27px!important;gap:3px!important}.tcg-energy{width:27px;height:27px}.tcg-energy svg{width:19px;height:19px}
+.m7-missing-label{height:19px;display:flex;align-items:center;justify-content:center;margin:2px 0 1px;color:#a2231d;font-size:8px;font-weight:1000;letter-spacing:1.1px;text-transform:uppercase;line-height:1}
+.m7-missing-label.is-spacer{visibility:hidden}
+.dex-card .card-image,.dex-card.has-featured-tcg .card-image,.dex-card:not(.has-featured-tcg) .card-image{height:228px!important;min-height:228px!important;margin:3px 0 6px!important;display:flex!important;align-items:center!important;justify-content:center!important}
+.dex-card .card-image img,.dex-card.has-featured-tcg .card-image img,.dex-card:not(.has-featured-tcg) .card-image img{max-height:222px!important;width:auto!important;max-width:100%!important;object-fit:contain!important}
+.dex-card .dex-name{min-height:32px!important;max-height:32px!important;display:flex!important;align-items:center!important;justify-content:center!important;margin:3px 0 6px!important;padding:0 2px!important;line-height:1.08!important;overflow:hidden!important;text-wrap:balance}
+.dex-card .binder-inspect-btn{flex:0 0 auto!important}.dex-card .card-actions{flex:0 0 auto!important}
+
+.finder-grid{grid-template-columns:minmax(165px,.28fr) minmax(0,1.72fr)!important;gap:10px!important}.finder-energy-section{padding:11px!important;align-self:start}.finder-energy-section .finder-section-title{margin-bottom:7px!important}.finder-energy-section .finder-section-title h3{font-size:11px!important}.finder-energy-section .finder-section-title span{font-size:8px!important}.finder-energy-list{gap:5px!important}.finder-energy{padding:6px!important;gap:6px!important;min-height:0!important}.finder-energy-icon{width:27px!important;height:27px!important;flex:0 0 27px!important}.finder-energy-icon .tcg-energy{width:25px!important;height:25px!important}.finder-energy-icon .tcg-energy svg{width:18px!important;height:18px!important}.finder-energy strong{font-size:9px!important}.finder-energy small{font-size:7px!important;line-height:1.2!important}.finder-energy-note{font-size:7px!important;line-height:1.3!important;margin-top:6px!important;padding-top:6px!important}
+.finder-store{position:relative!important;gap:7px!important}.finder-store-main{display:flex;flex-direction:column;gap:3px;min-width:0}.finder-store-stock{display:inline-flex;align-items:center;justify-content:center;width:max-content;max-width:100%;padding:5px 7px;border-radius:999px;font-size:7px;font-weight:1000;letter-spacing:.45px;border:1px solid rgba(255,255,255,.09)}.finder-store-stock.checking{color:#b8c5d1;background:#17222d}.finder-store-stock.in{color:#9af0bd;background:rgba(17,112,61,.28);border-color:rgba(45,210,112,.28)}.finder-store-stock.out{color:#ffaaa4;background:rgba(121,29,25,.30);border-color:rgba(238,76,67,.28)}.finder-store-stock.unknown{color:#f0cc81;background:rgba(117,83,22,.28);border-color:rgba(232,180,67,.25)}.finder-store-link.hidden{display:none!important}
+
+.profoil-host>.holo-card{width:100%!important;max-width:100%!important;height:100%!important;aspect-ratio:2.5/3.5!important;margin:auto!important}.profoil-host .holo-card__image{object-fit:contain!important}.profoil-host .holo-card__front{overflow:hidden!important;border-radius:4.55%!important}
+.realfoil-tilt>.realfoil-art,.realfoil-tilt>.realfoil-rev,.realfoil-tilt>.realfoil-full,.realfoil-tilt>.realfoil-gloss{display:block}
+
+@media(max-width:760px){
+  .m7-stats-row{grid-template-columns:auto minmax(0,1fr)!important;gap:9px 10px!important}.m7-count-wrap{grid-column:1}.m7-wallet-value{grid-column:2;justify-self:stretch!important;padding:7px 8px!important}.m7-progress-wrap{grid-column:1/-1!important;grid-row:2!important}.m7-progress-line{grid-template-columns:minmax(0,1fr) auto;gap:8px}.m7-visible-percent{font-size:13px;min-width:42px}.m7-progress-wrap .progress-track{height:18px!important}
+  .m7-card-top-tools{gap:5px}.dex-card .missing-finder-btn{width:24px!important;height:24px!important;font-size:11px!important}.tcg-energy{width:24px!important;height:24px}.tcg-energy svg{width:17px;height:17px}.m7-missing-label{height:16px;font-size:6.5px;margin:1px 0}
+  .dex-card .card-image,.dex-card.has-featured-tcg .card-image,.dex-card:not(.has-featured-tcg) .card-image{height:178px!important;min-height:178px!important}.dex-card .card-image img,.dex-card.has-featured-tcg .card-image img,.dex-card:not(.has-featured-tcg) .card-image img{max-height:172px!important}.dex-card .dex-name{min-height:28px!important;max-height:28px!important;font-size:10.5px!important}
+  .finder-grid{grid-template-columns:1fr!important}.finder-energy-section{padding:8px!important}.finder-energy-list{display:flex!important;flex-wrap:wrap!important}.finder-energy{width:auto!important;min-width:120px!important;flex:0 1 auto!important}.finder-store-list{grid-template-columns:1fr!important}
+}
+
+
+/* ======================================================================
+   v13.2 · RED PANEL RESTORE + PHYSICAL FOIL REFINEMENT
+   ====================================================================== */
+/* Regressa à composição clássica: contador à esquerda, progresso + valor à direita. */
+.m7-stats-panel{
+  min-height:150px!important;
+  padding:18px 22px!important;
+  display:flex!important;
+  align-items:center!important;
+  overflow:hidden!important;
+}
+.m7-stats-row{
+  width:100%!important;
+  display:grid!important;
+  grid-template-columns:minmax(205px,.78fr) minmax(280px,1.22fr)!important;
+  grid-template-areas:"count progress" "count wallet"!important;
+  align-items:center!important;
+  column-gap:24px!important;
+  row-gap:12px!important;
+}
+.m7-count-wrap{
+  grid-area:count!important;
+  min-width:0!important;
+  width:100%!important;
+  display:flex!important;
+  align-items:center!important;
+}
+.m7-count-wrap .big-count{
+  width:100%!important;
+  min-width:0!important;
+  margin:0!important;
+  font-size:clamp(36px,3.65vw,58px)!important;
+  line-height:.92!important;
+  letter-spacing:-2.1px!important;
+  white-space:nowrap!important;
+  font-variant-numeric:tabular-nums!important;
+  text-wrap:nowrap!important;
+}
+.m7-progress-wrap{grid-area:progress!important;min-width:0!important;width:100%!important}
+.m7-progress-line{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:center!important;gap:14px!important;width:100%!important}
+.m7-progress-wrap .progress-track{
+  width:100%!important;
+  height:32px!important;
+  padding:4px!important;
+  border-radius:999px!important;
+  background:rgba(0,0,0,.38)!important;
+  border:1px solid rgba(255,255,255,.10)!important;
+  box-shadow:inset 0 9px 16px rgba(0,0,0,.30),0 0 0 1px rgba(255,255,255,.025)!important;
+}
+.m7-progress-wrap .progress-fill{border-radius:999px!important}
+.m7-visible-percent{
+  min-width:64px!important;
+  color:#fff!important;
+  font-size:20px!important;
+  line-height:1!important;
+  font-weight:1000!important;
+  text-align:right!important;
+  letter-spacing:-.6px!important;
+  font-variant-numeric:tabular-nums!important;
+}
+.m7-wallet-value{
+  grid-area:wallet!important;
+  width:max-content!important;
+  max-width:100%!important;
+  min-width:185px!important;
+  justify-self:end!important;
+  justify-content:flex-start!important;
+  gap:11px!important;
+  margin:0!important;
+  padding:10px 15px!important;
+  border-radius:16px!important;
+  background:linear-gradient(145deg,rgba(13,20,27,.55),rgba(0,0,0,.24))!important;
+  border:1px solid rgba(255,255,255,.11)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 8px 18px rgba(0,0,0,.15)!important;
+}
+.m7-wallet-value strong{font-size:clamp(20px,1.7vw,27px)!important;letter-spacing:-.5px!important;white-space:nowrap!important}
+.poke-wallet-icon{width:39px!important;height:30px!important}
+
+/* O cartão inteiro é sempre a fronteira física do efeito. */
+.profoil-host,.realfoil-card,.realfoil-tilt{isolation:isolate!important}
+.profoil-host{overflow:hidden!important;border-radius:4.65%!important;contain:paint!important}
+.profoil-host>.holo-card,.profoil-host .holo-card__rotator,.profoil-host .holo-card__front{
+  overflow:hidden!important;
+  border-radius:4.65%!important;
+  clip-path:inset(.35% round 4.65%)!important;
+}
+.realfoil-card{--foil-opacity:.46!important;overflow:hidden!important;border-radius:4.65%!important}
+.realfoil-tilt{overflow:hidden!important;border-radius:4.65%!important;clip-path:inset(.2% round 4.65%)!important;background:#0a0d10!important}
+.realfoil-img{border-radius:4.65%!important;overflow:hidden!important}
+.realfoil-art,.realfoil-rev,.realfoil-full,.realfoil-gloss{
+  overflow:hidden!important;
+  background-repeat:no-repeat!important;
+  transform:translateZ(.1px)!important;
+  -webkit-mask-image:linear-gradient(#fff,#fff)!important;
+}
+/* Menos glare e menos clipping branco/estourado. */
+.realfoil-gloss{
+  opacity:.12!important;
+  mix-blend-mode:soft-light!important;
+  background:
+    radial-gradient(ellipse 42% 32% at var(--mx) var(--my),rgba(255,255,255,.42) 0%,rgba(255,255,255,.15) 23%,transparent 68%),
+    linear-gradient(124deg,rgba(255,255,255,.045),transparent 35%,rgba(255,255,255,.035) 67%,transparent)!important;
+}
+/* Base contínua: sem grelhas/quadrados visíveis. */
+.realfoil-art,.realfoil-rev,.realfoil-full{
+  background-image:
+    radial-gradient(ellipse 40% 30% at var(--mx) var(--my),rgba(255,255,255,.62) 0%,rgba(255,255,255,.18) 22%,transparent 68%),
+    conic-gradient(from 125deg at var(--mx) var(--my),rgba(255,103,111,.18),rgba(255,224,112,.20),rgba(102,228,171,.18),rgba(103,188,255,.22),rgba(185,126,255,.20),rgba(255,125,191,.16),rgba(255,103,111,.18))!important;
+  background-size:100% 100%,185% 185%!important;
+  filter:saturate(.94) contrast(1.01)!important;
+}
+.realfoil-card[data-finish="holo"] .realfoil-art{opacity:.46!important;mix-blend-mode:color-dodge!important;filter:saturate(.96) brightness(.98)!important}
+.realfoil-card[data-finish="reverse"] .realfoil-rev{opacity:.38!important;mix-blend-mode:color-dodge!important;filter:saturate(.92) brightness(.98)!important}
+.realfoil-card[data-finish="normal"] .realfoil-gloss{opacity:.08!important}
+
+/* Poké Ball / Master Ball: motivo circular, sem mosaicos quadrados. */
+.realfoil-card[data-finish="pokeball"] .realfoil-rev,
+.realfoil-card[data-finish="pokeball"] .realfoil-full{
+  opacity:.36!important;
+  mix-blend-mode:color-dodge!important;
+  background-image:
+    radial-gradient(ellipse 38% 28% at var(--mx) var(--my),rgba(255,255,255,.56),transparent 67%),
+    radial-gradient(circle at 50% 50%,transparent 0 24%,rgba(255,255,255,.26) 25% 29%,transparent 30% 100%),
+    linear-gradient(0deg,transparent 44%,rgba(255,255,255,.25) 45% 55%,transparent 56%),
+    linear-gradient(128deg,rgba(255,90,90,.12),rgba(100,205,255,.18),rgba(255,255,255,.22),rgba(255,226,102,.12))!important;
+  background-size:100% 100%,42px 42px,42px 42px,190% 190%!important;
+  background-repeat:no-repeat,repeat,repeat,no-repeat!important;
+  filter:saturate(.86) brightness(.98)!important;
+}
+.realfoil-card[data-finish="masterball"] .realfoil-rev,
+.realfoil-card[data-finish="masterball"] .realfoil-full{
+  opacity:.42!important;
+  mix-blend-mode:color-dodge!important;
+  background-image:
+    radial-gradient(ellipse 38% 28% at var(--mx) var(--my),rgba(255,255,255,.60),transparent 66%),
+    radial-gradient(circle at 50% 50%,transparent 0 23%,rgba(210,151,255,.31) 24% 29%,transparent 30% 100%),
+    linear-gradient(0deg,transparent 44%,rgba(205,145,255,.28) 45% 55%,transparent 56%),
+    linear-gradient(132deg,rgba(125,89,255,.14),rgba(95,202,255,.18),rgba(255,255,255,.22),rgba(222,117,255,.16))!important;
+  background-size:100% 100%,46px 46px,46px 46px,190% 190%!important;
+  background-repeat:no-repeat,repeat,repeat,no-repeat!important;
+  filter:saturate(.9) brightness(.98)!important;
+}
+/* Cosmos sem tiles óbvios: pontos distribuídos em escalas diferentes. */
+.realfoil-card[data-finish="cosmos"] .realfoil-art,
+.realfoil-card[data-finish="cosmos"] .realfoil-full{
+  opacity:.40!important;
+  mix-blend-mode:color-dodge!important;
+  background-image:
+    radial-gradient(ellipse 42% 32% at var(--mx) var(--my),rgba(255,255,255,.60),transparent 66%),
+    radial-gradient(circle at 17% 24%,rgba(255,255,255,.70) 0 .45%,transparent .8%),
+    radial-gradient(circle at 73% 34%,rgba(218,235,255,.70) 0 .55%,transparent .95%),
+    radial-gradient(circle at 43% 79%,rgba(255,230,251,.66) 0 .5%,transparent .9%),
+    linear-gradient(126deg,rgba(105,143,255,.15),rgba(255,131,224,.16),rgba(255,255,255,.20),rgba(106,255,225,.12))!important;
+  background-size:100% 100%,100% 100%,100% 100%,100% 100%,190% 190%!important;
+  background-repeat:no-repeat!important;
+}
+.realfoil-card[data-finish="crystal"] .realfoil-art,
+.realfoil-card[data-finish="crystal"] .realfoil-full{
+  opacity:.38!important;
+  mix-blend-mode:color-dodge!important;
+  background-image:
+    radial-gradient(ellipse 40% 30% at var(--mx) var(--my),rgba(255,255,255,.58),transparent 68%),
+    linear-gradient(54deg,transparent 0 43%,rgba(255,255,255,.16) 44% 45%,transparent 46% 100%),
+    linear-gradient(126deg,transparent 0 52%,rgba(115,211,255,.14) 53% 54%,transparent 55% 100%),
+    linear-gradient(135deg,rgba(255,117,217,.13),rgba(96,207,255,.17),rgba(255,232,108,.14))!important;
+  background-size:100% 100%,73px 73px,91px 91px,185% 185%!important;
+  background-repeat:no-repeat,repeat,repeat,no-repeat!important;
+}
+/* Full-face foils: intensidade controlada e gradientes contínuos. */
+.realfoil-card[data-frame="full"] .realfoil-full{opacity:.40!important;mix-blend-mode:color-dodge!important}
+.realfoil-card[data-finish="rainbow"] .realfoil-full{
+  opacity:.46!important;
+  background-image:
+    radial-gradient(ellipse 42% 30% at var(--mx) var(--my),rgba(255,255,255,.56),transparent 68%),
+    conic-gradient(from 115deg at var(--mx) var(--my),rgba(255,82,115,.22),rgba(255,216,94,.22),rgba(100,234,178,.20),rgba(93,183,255,.24),rgba(188,111,255,.22),rgba(255,82,167,.20),rgba(255,82,115,.22))!important;
+  background-size:100% 100%,175% 175%!important;
+}
+.realfoil-card[data-finish="gold"] .realfoil-full{
+  opacity:.40!important;
+  background-image:
+    radial-gradient(ellipse 40% 28% at var(--mx) var(--my),rgba(255,255,255,.52),transparent 68%),
+    linear-gradient(122deg,rgba(105,66,5,.10),rgba(255,220,102,.34),rgba(255,248,198,.30),rgba(183,116,5,.17))!important;
+  filter:saturate(1.02) brightness(.99)!important;
+}
+.realfoil-card[data-finish="metal"] .realfoil-full{
+  opacity:.34!important;
+  background-image:
+    radial-gradient(ellipse 40% 28% at var(--mx) var(--my),rgba(255,255,255,.50),transparent 68%),
+    linear-gradient(122deg,rgba(115,130,145,.11),rgba(255,255,255,.31),rgba(144,188,221,.17),rgba(255,255,255,.22))!important;
+  filter:saturate(.52) brightness(.99)!important;
+}
+.realfoil-card[data-finish="glitter"] .realfoil-full,
+.realfoil-card[data-finish="radiant"] .realfoil-full{
+  opacity:.38!important;
+  background-image:
+    radial-gradient(ellipse 42% 30% at var(--mx) var(--my),rgba(255,255,255,.58),transparent 67%),
+    radial-gradient(circle at 17% 21%,rgba(255,255,255,.45) 0 .35%,transparent .72%),
+    radial-gradient(circle at 69% 38%,rgba(255,255,255,.42) 0 .42%,transparent .78%),
+    radial-gradient(circle at 39% 76%,rgba(255,255,255,.40) 0 .38%,transparent .75%),
+    conic-gradient(from 120deg,rgba(255,91,154,.15),rgba(93,198,255,.19),rgba(255,228,93,.17),rgba(181,108,255,.18),rgba(255,91,154,.15))!important;
+  background-size:100% 100%,100% 100%,100% 100%,100% 100%,180% 180%!important;
+  background-repeat:no-repeat!important;
+}
+
+@media(max-width:1120px){
+  .m7-stats-row{grid-template-columns:minmax(185px,.72fr) minmax(240px,1.28fr)!important;column-gap:18px!important}
+  .m7-count-wrap .big-count{font-size:clamp(34px,4.8vw,52px)!important}
+}
+@media(max-width:760px){
+  .m7-stats-panel{min-height:118px!important;padding:12px 13px!important}
+  .m7-stats-row{
+    grid-template-columns:minmax(0,1fr) auto!important;
+    grid-template-areas:"count wallet" "progress progress"!important;
+    gap:10px 9px!important;
+  }
+  .m7-count-wrap .big-count{font-size:clamp(25px,8vw,32px)!important;letter-spacing:-1.2px!important}
+  .m7-wallet-value{min-width:0!important;padding:7px 9px!important;gap:7px!important}
+  .m7-wallet-value strong{font-size:15px!important}.poke-wallet-icon{width:29px!important;height:23px!important}
+  .m7-progress-line{gap:9px!important}.m7-progress-wrap .progress-track{height:20px!important;padding:3px!important}.m7-visible-percent{font-size:14px!important;min-width:45px!important}
+}
+@media(max-width:390px){
+  .m7-count-wrap .big-count{font-size:24px!important;letter-spacing:-1px!important}
+  .m7-wallet-value strong{font-size:13px!important}.m7-wallet-value{padding:6px 7px!important}.m7-progress-wrap .progress-track{height:18px!important}
+}
+
 </style>
 
 <!-- v12.2 · motor visual único: WebGL principal + imagem estável como fallback -->
-<script>window.__cardsCssModule=null;window.__cardsCssReady=Promise.resolve(null);</script>
+<link id="cardsCssStyles" rel="stylesheet" href="https://unpkg.com/@kongyo2/cards-css@0.5.0/styles.css" onload="window.__cardsCssStyleLoaded=true" onerror="window.__cardsCssStyleLoaded=false">
+<script>window.__cardsCssModule=null;window.__cardsCssStyleLoaded=undefined;window.__cardsCssReady=Promise.resolve(null);</script>
+<script type="module">
+window.__cardsCssReady=(async()=>{
+  try{
+    const mod=await import('https://esm.sh/@kongyo2/cards-css@0.5.0?bundle');
+    window.__cardsCssModule=mod;
+    return mod;
+  }catch(e){console.warn('Motor holográfico externo indisponível; a usar renderer local.',e);return null;}
+})();
+</script>
 </head>
 <body class="auth-locked">
 
-<div class="auth-gate" id="authGate" aria-label="Entrada Pokédex XL">
+<div class="auth-gate" id="authGate" aria-label="Entrada Pokédex M7">
   <div class="auth-card">
     <div class="auth-ball"></div>
-    <h1 class="auth-title">POKÉDEX <span>XL</span></h1>
+    <h1 class="auth-title">POKÉDEX <span>M7</span></h1>
     <div class="auth-sub">Master Set · By Cigas</div>
     <form class="auth-form" id="loginForm" autocomplete="on">
       <label class="auth-label" for="loginUser">Username</label>
@@ -1114,47 +1471,36 @@ body:not(.auth-locked) .auth-gate{opacity:0;visibility:hidden;pointer-events:non
 
 <div class="wrap">
   <div class="hero-shell">
-    <section class="hero">
-      <div class="brand-panel">
-        <div class="brand-row">
-          <div class="pokeball-mini"></div>
+    <section class="hero m7-hero">
+      <div class="brand-panel m7-brand-panel">
+        <div class="brand-row m7-brand-row">
+          <div class="pokeball-mini" aria-hidden="true"></div>
           <div>
-            <h1 class="brand-title">POKÉDEX <span class="xl">XL</span></h1>
-            <div class="brand-sub">National Dex • Master Set</div>
+            <h1 class="brand-title">POKÉDEX <span class="xl">M7</span></h1>
+            <div class="brand-sub">Master Set</div>
           </div>
-          <div class="brand-signature">By: Cigas</div>
         </div>
-        <div class="brand-note">O teu binder digital: uma carta de qualquer coleção para cada Pokémon e, como objetivo premium, uma versão com arte especial.</div>
-        <div class="sync-line">
+        <div class="m7-runtime-hooks" aria-hidden="true">
           <span class="sync-indicator" id="syncIndicator"><span class="sync-dot"></span><span id="syncText">A ligar…</span></span>
-          <span class="db-note" id="artDbNote">Base ART antiga: 751 conhecidos · restantes por verificar</span>
+          <span class="db-note" id="artDbNote">A verificar catálogo…</span>
         </div>
       </div>
 
-      <div class="stats-panel">
-        <div class="stats-grid">
-          <div class="stats-count">
-            <span class="kicker">Coleção Nacional</span>
-            <div class="big-count" id="count">000 / 1025</div>
-            <div class="big-percent"><span id="percentComplete">0.0%</span> completo</div>
+      <div class="stats-panel m7-stats-panel">
+        <div class="m7-stats-row">
+          <div class="stats-count m7-count-wrap"><div class="big-count" id="count">000 / 1025</div></div>
+          <div class="m7-progress-wrap" aria-label="Progresso da Pokédex"><div class="m7-progress-line"><div class="progress-track"><div class="progress-fill" id="progressFill"></div></div><strong class="m7-visible-percent" id="m7VisiblePercent">0.0%</strong></div></div>
+          <div class="collection-value-chip m7-wallet-value" title="Estimativa do valor das cartas escolhidas no binder.">
+            <span class="poke-wallet-icon" aria-hidden="true"><span class="poke-wallet-ball"></span></span>
+            <strong id="collectionValue">~ 0,00 €</strong>
           </div>
-          <div class="stats-progress">
-            <div class="progress-head"><span class="kicker">Progresso Geral</span><span class="value" id="progressLabel">0.0%</span></div>
-            <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
-            <div class="collection-value-chip" title="Estimativa europeia para cartas raw em estado Near Mint, baseada primeiro no Cardmarket Trend da impressão e variante exatas. Não usa o anúncio isolado mais barato.">
-              <div class="value-copy"><span>Valor de mercado · Cardmarket</span><em id="collectionValueMeta">Trend europeu · cartas raw NM</em></div>
-              <strong id="collectionValue">~ 0,00 €</strong>
-            </div>
-          </div>
-          <div class="mini-stats">
-            <div class="mini-stat"><div class="mini-ico">🧾</div><div class="mini-meta"><strong>Cartas</strong><span id="cardsCount">0</span><em>National Dex</em></div></div>
-            <div class="mini-stat"><div class="mini-ico">⭐</div><div class="mini-meta"><strong>ART</strong><span id="artCount">0 / —</span><em id="artPercent">base por verificar</em></div></div>
-            <div class="mini-stat"><div class="mini-ico">🗃️</div><div class="mini-meta"><strong>Em Falta</strong><span id="missingCount">1025</span><em>para a Dex</em></div></div>
-          </div>
+        </div>
+        <div class="m7-runtime-hooks" aria-hidden="true">
+          <span id="percentComplete">0.0%</span><span id="progressLabel">0.0%</span><span id="cardsCount">0</span><span id="artCount">0 / —</span><span id="artPercent">—</span><span id="missingCount">1025</span><span id="collectionValueMeta">—</span>
         </div>
       </div>
 
-      <div class="ball-panel"><div class="pokeball-big"></div></div>
+      <div class="ball-panel m7-ball-panel"><div class="pokeball-big"></div></div>
     </section>
     <div class="gen-tabs" id="genCounts"></div>
   </div>
@@ -1196,7 +1542,7 @@ body:not(.auth-locked) .auth-gate{opacity:0;visibility:hidden;pointer-events:non
         <button type="button" id="exportBtn">⬇ Exportar backup</button>
         <button type="button" id="importBtn">⬆ Importar backup</button>
         <div class="collection-menu-sep"></div>
-        <button type="button" id="installBtn">📲 Instalar Pokédex XL</button>
+        <button type="button" id="installBtn">📲 Instalar Pokédex M7</button>
         <small class="hidden" id="installHint">Instala a Pokédex como aplicação neste dispositivo.</small>
         <button type="button" id="logoutBtn">↪ Terminar sessão</button>
       </div>
@@ -1216,7 +1562,7 @@ body:not(.auth-locked) .auth-gate{opacity:0;visibility:hidden;pointer-events:non
     <div class="pagination-shell" id="pagination"></div>
   </section>
 
-  <div class="footer">O binder mantém o foco na carta escolhida; usa <strong>Inspecionar carta</strong> para abrir variantes, dados e mercados. Ao abrir um Pokémon, o catálogo mundial começa em <strong>inglês</strong> e pode mudar para os restantes idiomas oficiais disponíveis no TCGdex. Cada reimpressão física mantém a sua identidade de set, idioma e número — incluindo McDonald’s e Trick or Trade. A área <strong>Produtos / Stock</strong> é independente da coleção e consulta o stock português em tempo real. As tuas marcações CARTA / ART, Wishlist e sincronização Supabase continuam intactas.</div>
+  <div class="footer m7-signature">Signed by Cigas <span>·</span> <em>Unofficial fan project</em> <span>·</span> “Legendary as ♥♥♥♥”</div>
 </div>
 
 <nav class="mobile-bottom-nav" id="mobileBottomNav" aria-label="Navegação móvel">
@@ -1293,10 +1639,13 @@ body:not(.auth-locked) .auth-gate{opacity:0;visibility:hidden;pointer-events:non
       <button class="stock-close" id="stockClose" type="button" aria-label="Fechar">×</button>
     </div>
     <div class="stock-toolbar">
-      <input id="stockSearch" type="search" placeholder="Pesquisar ETB, booster box, coleção…" autocomplete="off">
+      <input id="stockSearch" type="search" placeholder="Pesquisar ETB, booster box, produto…" autocomplete="off">
+      <select id="stockCollection" aria-label="Filtrar coleção"><option value="all">Todas as coleções</option></select>
       <select id="stockRegion" aria-label="Filtrar região"><option value="all">Todas as regiões</option></select>
       <select id="stockStore" aria-label="Filtrar loja"><option value="all">Todas as lojas</option></select>
       <select id="stockStatus" aria-label="Filtrar estado"><option value="all">Todos os estados</option><option value="in">Em stock</option><option value="pre">Pré-venda</option><option value="out">Esgotado</option></select>
+      <button class="stock-notify-btn" id="stockNotifyBtn" type="button" aria-pressed="false">🔔 Ativar avisos</button>
+      <div class="stock-push-status" id="stockPushStatus"><strong>Push profissional</strong> · pronto para configurar neste dispositivo.</div>
     </div>
     <div class="stock-body" id="stockBody"><div class="art-loading"><div class="art-spinner"></div><div>A consultar lojas portuguesas…</div></div></div>
   </div>
@@ -1305,7 +1654,7 @@ body:not(.auth-locked) .auth-gate{opacity:0;visibility:hidden;pointer-events:non
 <div class="finder-modal" id="missingFinderModal" aria-hidden="true">
   <div class="finder-panel" role="dialog" aria-modal="true" aria-labelledby="missingFinderTitle">
     <div class="finder-head">
-      <div><h2 id="missingFinderTitle">Assistente de carta em falta</h2><p id="missingFinderSub">Geração, energia, coleções e singles em Guimarães.</p></div>
+      <div><h2 id="missingFinderTitle">Assistente de carta em falta</h2><p id="missingFinderSub">Geração, energia, cartas, coleções e lojas portuguesas.</p></div>
       <button class="finder-close" id="missingFinderClose" type="button" aria-label="Fechar">×</button>
     </div>
     <div class="finder-body" id="missingFinderBody"><div class="finder-loading"><div class="art-spinner"></div><div>A preparar o guia de procura…</div></div></div>
@@ -1496,15 +1845,34 @@ async function ensureTypes(ids){
   refreshTypeRows(ids);
 }
 
+const TCG_TYPE_TO_ENERGY={normal:'colorless',flying:'colorless',fire:'fire',water:'water',ice:'water',electric:'lightning',grass:'grass',bug:'grass',fighting:'fighting',ground:'fighting',rock:'fighting',psychic:'psychic',ghost:'psychic',poison:'psychic',dark:'darkness',steel:'metal',dragon:'dragon',fairy:'fairy'};
+const TCG_ENERGY_LABELS={colorless:'Incolor',grass:'Planta',fire:'Fogo',water:'Água',lightning:'Elétrico',psychic:'Psíquico',fighting:'Luta',darkness:'Escuridão',metal:'Metal',fairy:'Fada',dragon:'Dragão'};
+function tcgEnergyGlyph(key){
+  const common='viewBox="0 0 24 24" aria-hidden="true" focusable="false"';
+  if(key==='grass')return `<svg ${common}><path fill="currentColor" d="M19.6 3.7C12.1 4.4 6.4 7.3 5.1 12.2c-.9 3.5 1.2 6.9 4.8 7.9 4.5 1.2 8.6-2.4 9.7-8.3.5-2.8.2-5.5 0-8.1ZM8.2 17.2c2.1-3.8 4.9-6.6 8.6-8.8-2.5 2.7-4.5 5.7-5.9 9.2l-2.7-.4Z"/></svg>`;
+  if(key==='fire')return `<svg ${common}><path fill="currentColor" d="M13.5 2.2c1 4-2.9 5.3-.9 8.2.9 1.3 2.5.9 3.2-.3.6 1 1.8 2.9 1.8 5.3 0 3.5-2.5 6.3-6 6.3s-6.2-2.6-6.2-6.1c0-4.6 4.3-7.6 8.1-13.4Zm-2 10.1c-2.2 2-3.4 3.4-3.4 5.2 0 1.8 1.4 3.1 3.3 3.1 2 0 3.4-1.5 3.4-3.3 0-1.3-.6-2.4-1.4-3.5-.1 1.3-.8 2.1-1.8 2.1-1.2 0-1.8-1-1.4-2.1.2-.5.7-1 1.3-1.5Z"/></svg>`;
+  if(key==='water')return `<svg ${common}><path fill="currentColor" d="M12 2.1S5.2 10.5 5.2 15.1A6.8 6.8 0 0 0 12 21.9a6.8 6.8 0 0 0 6.8-6.8C18.8 10.5 12 2.1 12 2.1Zm-3.8 13c.6 2.5 2.1 3.9 4.7 4.3-3.7.8-6.4-1.7-4.7-4.3Z"/></svg>`;
+  if(key==='lightning')return `<svg ${common}><path fill="currentColor" d="M13.8 1.8 5.7 13h5l-1 9.2L18.3 10h-5.1l.6-8.2Z"/></svg>`;
+  if(key==='psychic')return `<svg ${common}><circle cx="12" cy="12" r="3.1" fill="currentColor"/><path d="M12 4.2a7.8 7.8 0 1 1-7.2 10.8c-1.4-3.3.2-7 3.4-8.6 2.8-1.4 6.3-.3 7.5 2.5 1 2.3-.1 5-2.4 6-1.9.8-4.2-.1-4.9-2-.6-1.5.1-3.2 1.6-3.8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>`;
+  if(key==='fighting')return `<svg ${common}><path fill="currentColor" d="M5.2 5.2h3.3v6H5.2v-6Zm3.9-1.5h3.2v7.5H9.1V3.7Zm3.8.8h3.2v6.7h-3.2V4.5Zm3.8 2h2.7v7.8c0 4.4-2.7 7.1-7.1 7.1H9.8c-2 0-3.6-.7-4.8-2.1l-2.3-2.8 2.3-2.1 2 2.1V12h9.7V6.5Z"/></svg>`;
+  if(key==='darkness')return `<svg ${common}><path fill="currentColor" fill-rule="evenodd" d="M12 2.2a9.8 9.8 0 1 0 0 19.6 9.8 9.8 0 0 0 0-19.6Zm2.7 3.2A7.2 7.2 0 1 0 18.6 16 8.2 8.2 0 0 1 9.4 5.8c1.7-.7 3.5-.8 5.3-.4Z"/></svg>`;
+  if(key==='metal')return `<svg ${common}><path fill="currentColor" fill-rule="evenodd" d="m7.2 3.2-5 8.8 5 8.8h9.6l5-8.8-5-8.8H7.2Zm4.8 4.1a4.7 4.7 0 1 0 0 9.4 4.7 4.7 0 0 0 0-9.4Zm0 2.3a2.4 2.4 0 1 1 0 4.8 2.4 2.4 0 0 1 0-4.8Z"/></svg>`;
+  if(key==='fairy')return `<svg ${common}><path fill="currentColor" d="m12 1.9 2.2 6 6.1 2.1-6.1 2.2-2.2 6.1-2.2-6.1L3.7 10l6.1-2.1 2.2-6Zm6.2 13.2.9 2.4 2.4.9-2.4.9-.9 2.4-.9-2.4-2.4-.9 2.4-.9.9-2.4Z"/></svg>`;
+  if(key==='dragon')return `<svg ${common}><path fill="currentColor" d="M3.4 6.3c3.5-.3 6.1.7 7.8 3.1l1.1 1.5 1-1.7c1.6-2.6 4-4 7.3-4.1-1.1 2.7-2.8 4.9-5.2 6.6 2.1 1.4 3.5 3.4 4.1 6-3.3-.2-5.7-1.5-7.2-3.8l-.6-.9-.7.9c-1.7 2.2-4.1 3.4-7.2 3.5.8-2.5 2.2-4.4 4.2-5.8-2.2-1.3-3.8-3.1-4.6-5.3Z"/></svg>`;
+  return `<svg ${common}><path fill="currentColor" d="m12 2.3 2.8 6.1 6.7.7-5 4.5 1.4 6.6-5.9-3.3-5.9 3.3 1.4-6.6-5-4.5 6.7-.7L12 2.3Z"/></svg>`;
+}
+function tcgEnergyIcon(key,label){
+  const safeKey=String(key||'colorless');const name=label||TCG_ENERGY_LABELS[safeKey]||'Energia';
+  return `<span class="tcg-energy tcg-energy-${safeKey}" title="${escapeHtml(name)}" aria-label="${escapeHtml(name)}">${tcgEnergyGlyph(safeKey)}</span>`;
+}
 function typeMarkup(id){
   const types=window.__typeCache[id]||[];
-  if(!types.length) return '<span class="type-chip" style="background:#87919d">TYPE</span>';
-  return types.map(t=>`<span class="type-chip" style="background:${typeColors[t]||'#66717c'}">${t}</span>`).join('');
+  const keys=[...new Set((types.length?types:['normal']).map(t=>TCG_TYPE_TO_ENERGY[t]||'colorless'))];
+  return keys.map(k=>tcgEnergyIcon(k)).join('');
 }
 function refreshTypeRows(ids){
   ids.forEach(id=>{
-    const el=document.querySelector(`.type-row[data-id="${id}"]`);
-    if(el) el.innerHTML=typeMarkup(id);
+    document.querySelectorAll(`.type-row[data-id="${id}"],.energy-corner[data-id="${id}"]`).forEach(el=>{el.innerHTML=typeMarkup(id)});
   });
 }
 
@@ -1866,7 +2234,8 @@ function variantFrameMode(card,v){
   const eff=variantVisualEffect(v);
   // Full-art / special finishes naturally cover the whole face rather than a classic artwork box.
   if(/illustration|full art|ultra rare|hyper rare|secret|rainbow|gold|radiant|amazing|shiny rare|special/.test(rarity)) return 'full';
-  if(/vmax|vstar|v-union|break/.test(subs)||/ vmax| vstar| break/.test(name)) return 'full';
+  if(/vmax|vstar|v-union|break|gx| ex\b|\bv\b/.test(subs)||/ vmax| vstar| break| gx\b| ex\b| v\b/.test(name)) return 'full';
+  if(/double rare|ultra rare|special illustration|hyper rare|shiny ultra|mega hyper/.test(rarity)) return 'full';
   if(['rainbow','gold','glitter','radiant','metal'].includes(eff)) return 'full';
   return 'standard';
 }
@@ -1909,9 +2278,20 @@ function bindRealFoilInteraction(root){
   root.addEventListener('pointerdown',down);root.addEventListener('pointermove',onMove);root.addEventListener('pointerup',up);root.addEventListener('pointercancel',up);root.addEventListener('pointerleave',leave);
   return ()=>{root.removeEventListener('pointerdown',down);root.removeEventListener('pointermove',onMove);root.removeEventListener('pointerup',up);root.removeEventListener('pointercancel',up);root.removeEventListener('pointerleave',leave);if(ACTIVE_VARIANT_ORIENTATION_TARGET===root)ACTIVE_VARIANT_ORIENTATION_TARGET=null};
 }
-function proFoilEffect(v){
-  const eff=variantVisualEffect(v);
-  return ({normal:'none',holo:'holo',reverse:'reverse',masterball:'mosaic',pokeball:'prism',cosmos:'cosmos',crystal:'crystal',rainbow:'rainbow',gold:'gold',glitter:'glitter',metal:'metal',radiant:'radiant'})[eff]||'none';
+function proFoilEffect(card,v){
+  const eff=variantVisualEffect(v),rarity=String(card?.rarity||'').toLowerCase(),name=String(card?.name||'').toLowerCase(),subs=(card?.subtypes||[]).join(' ').toLowerCase();
+  const explicit={normal:'none',reverse:'reverse',masterball:'mosaic',pokeball:'prism',cosmos:'cosmos',crystal:'crystal',rainbow:'rainbow',gold:'gold',glitter:'glitter',metal:'metal',radiant:'radiant'};
+  if(eff!=='holo')return explicit[eff]||'none';
+  if(/hyper rare|gold|secret rare gold/.test(rarity))return 'gold';
+  if(/rainbow/.test(rarity))return 'rainbow';
+  if(/radiant/.test(rarity)||/radiant/.test(name))return 'radiant';
+  if(/amazing rare/.test(rarity))return 'sunburst';
+  if(/shiny|baby shiny/.test(rarity))return 'prism';
+  if(/special illustration|sir/.test(rarity))return 'aurora';
+  if(/ultra rare|full art/.test(rarity))return 'glitter';
+  if(/mega hyper/.test(rarity))return 'mosaic';
+  if(/gx|vmax|vstar|v-union|\bv\b| ex\b/.test(`${subs} ${name}`))return 'holo';
+  return 'holo';
 }
 function proFoilMaskData(kind,frame='standard'){
   if(frame==='full'||kind==='full'||kind==='none') return null;
@@ -1973,7 +2353,7 @@ async function createProFoilCard(card,v,url,{interactive=true,compact=false}={})
   const opts={
     image:url||card?.images?.large||card?.images?.small||'',
     imageAlt:`${card?.name||'Carta'} · ${v?.label||'variante'}`,
-    effect:proFoilEffect(v),interactive:!!interactive,activateOnClick:false,
+    effect:proFoilEffect(card,v),interactive:!!interactive,activateOnClick:false,
     gyroscope:interactive?{rangeX:18,rangeY:16,sensitivity:.82,invertX:false,invertY:false}:false,
     textureSeed:variantTextureSeed(card,v),palette:proFoilPalette(v),glow:proFoilGlow(v),
     depth:compact?false:{strength:7,perspective:980,shadow:.46,layerScale:.018},
@@ -1996,7 +2376,8 @@ function createRealFoilCard(card,v,url,{interactive=true,compact=false}={}){
   const root=document.createElement('div');root.className=`realfoil-card${compact?' compact':''}`;root.dataset.finish=effect;root.dataset.frame=frame;
   const tilt=document.createElement('div');tilt.className='realfoil-tilt';
   const img=document.createElement('img');img.className='realfoil-img';img.alt=`${card?.name||'Carta'} · ${v?.label||'variante'}`;setCardImageWithFallback(img,card,url);
-  tilt.appendChild(img);root.appendChild(tilt);
+  const layer=cls=>{const el=document.createElement('span');el.className=cls;tilt.appendChild(el);return el};
+  tilt.appendChild(img);layer('realfoil-art');layer('realfoil-rev rtop');layer('realfoil-rev rbottom');layer('realfoil-rev rleft');layer('realfoil-rev rright');layer('realfoil-full');layer('realfoil-gloss');root.appendChild(tilt);
   setRealFoilPose(root,.5,.45,{tilt:true});
   let cleanup=()=>{};if(interactive){cleanup=bindRealFoilInteraction(root);ACTIVE_VARIANT_ORIENTATION_TARGET=root}
   return {element:root,destroy:()=>{cleanup();if(ACTIVE_VARIANT_ORIENTATION_TARGET===root)ACTIVE_VARIANT_ORIENTATION_TARGET=null}};
@@ -3004,11 +3385,20 @@ function cardmarketFallbackUrl(card){
   else terms=[card.name,card.set?.ptcgoCode||card.set?.id,card.number];
   return `https://www.cardmarket.com/en/Pokemon/Products/Singles?searchString=${encodeURIComponent(terms.filter(Boolean).join(' '))}`;
 }
+function v130IsPromoCard(card){
+  const rarity=String(card?.rarity||'').toLowerCase();
+  const setName=String(card?.set?.name||'').toLowerCase();
+  const setId=String(card?.set?.id||'').toLowerCase().replace(/^en::/,'');
+  const code=String(card?.set?.ptcgoCode||'').toLowerCase();
+  if(/promo|black star|prerelease|pre-release/.test(`${rarity} ${setName}`))return true;
+  return /^(basep|np|dpp|hgssp|bwp|xyp|smp|swshp|svp|mep)$/.test(setId)||/^(dp|hgss|bw|xy|sm|swsh|svp|mep)$/.test(code)&&/promo/.test(setName);
+}
 function specialCatalogTags(card){
   const setName=String(card?.set?.name||'').toLowerCase();
   const vars=(()=>{try{return cardVariants(card)}catch(_){return []}})();
   const trick=vars.some(v=>(v.stamps||[]).some(s=>String(s).toLowerCase()==='trick-or-trade'));
   const out=[];
+  if(v130IsPromoCard(card)) out.push('<span class="art-result-tag special-catalog">★ Promo oficial</span>');
   if(/mcdonald/.test(setName)) out.push('<span class="art-result-tag mcd-catalog">🍟 McDonald’s</span>');
   if(trick||/trick or trade|pokéween|pokeween/.test(setName)) out.push('<span class="art-result-tag trick-catalog">🎃 Trick or Trade</span>');
   if(/pop series|trainer kit|poke card creator|poké card creator|best of game|southern islands|pokemon rumble|pokémon rumble|sample/.test(setName)) out.push('<span class="art-result-tag special-catalog">✦ Coleção especial</span>');
@@ -3085,7 +3475,7 @@ function modalFilteredCards(){
   let cards=currentModalCards.filter(card=>{
     if(filter==='art' && !artCategory(card)) return false;
     if(filter==='priced' && !Number.isFinite(cardmarketPrice(card).value)) return false;
-    if(filter==='promo' && !String(card.rarity||'').toLowerCase().includes('promo') && !String(card.set?.name||'').toLowerCase().includes('promo')) return false;
+    if(filter==='promo' && !v130IsPromoCard(card)) return false;
     if(filter==='owned' && !isSpecificCardOwned(currentModalPokemon?.id,card.id)) return false;
     if(filter==='wishlist' && !isSpecificCardWishlisted(currentModalPokemon?.id,card.id)) return false;
     if(!searchTokens.length) return true;
@@ -3364,16 +3754,11 @@ function setCardVisual(cardEl, cardValue, artValue){
   cardEl.classList.toggle('owned-card',!!cardValue);
   cardEl.classList.toggle('owned-art',!!artValue);
   const finderBtn=cardEl.querySelector('.missing-finder-btn');
-  if(finderBtn){finderBtn.classList.toggle('hidden',!!cardValue);finderBtn.setAttribute('aria-hidden',cardValue?'true':'false');finderBtn.tabIndex=cardValue?-1:0;}
+  if(finderBtn){finderBtn.classList.remove('hidden');finderBtn.setAttribute('aria-hidden','false');finderBtn.tabIndex=0;}
   const cardCheck=cardEl.querySelector('.card-check');
   const artCheck=cardEl.querySelector('.art-check');
   if(cardCheck) cardCheck.checked=!!cardValue;
   if(artCheck) artCheck.checked=!!artValue;
-  const badge=cardEl.querySelector('.completion-badge');
-  if(badge){
-    const availability=cardEl.dataset.artAvailability||'unknown';
-    badge.textContent=artValue?'★ ART OBTIDA':(!cardValue?'EM FALTA':'☆ FALTA ART');
-  }
   const symbol=cardEl.querySelector('.art-symbol');
   if(symbol) symbol.textContent=artValue?'★':'☆';
 }
@@ -3392,38 +3777,34 @@ function makeCard(p){
   if(featured) el.classList.add('has-featured-tcg');
   const featuredImage=featured?String(featured.canonicalImageSmall||featured.canonicalImageLarge||featured.imageSmall||featured.imageLarge||''):'';
   const featuredFallbacks=featured?Array.from(new Set([...(Array.isArray(featured.imageFallbacks)?featured.imageFallbacks:[]),artworkUrl(p.id),fallbackArtworkUrl(p.id)].filter(Boolean))):[];
-  const featuredSetLabel=featured?String(featured.setCode||featured.setName||'Coleção'):'';
-  const featuredPrintLabel=featured?[featuredSetLabel,featured.number?`#${featured.number}`:''].filter(Boolean).join(' · '):'';
-  const generation=genInfoFor(p.id),showGenerationBadge=!!String(state.search||'').trim();
-
-  const availability=artAvailability(p.id);
-  el.dataset.artAvailability=availability;
   const noArt=false;
-  const softNoArt=false;
-  const availabilityText=availability==='available'?'ART disponível / encontrada':'ART por verificar';
 
   el.innerHTML=`
-    <div class="card-top"><div class="dex-number">#${String(p.id).padStart(3,'0')}</div>${generation?`<div class="pokemon-generation-badge ${showGenerationBadge?'visible':''}" title="${escapeHtml(generation.label)} · ${escapeHtml(generation.name)}">${escapeHtml(generation.label)} · ${escapeHtml(generation.name)}</div>`:''}<div class="card-ball"></div></div>
-    ${!hasCard?`<button type="button" class="missing-finder-btn" data-find-missing-card title="Onde encontrar cartas de ${escapeHtml(pretty(p.name))}?" aria-label="Encontrar cartas de ${escapeHtml(pretty(p.name))}">?</button>`:''}
-    <div class="art-star-badge" title="ART obtida">★</div>
-    <div class="card-image ${featured?'featured-card-image':''}" ${featured?`data-variant-effect="${escapeHtml(variantVisualEffect(variantFromSnapshot(featured)))}" data-variant-image="${escapeHtml(featuredImage)}" data-variant-alt="${escapeHtml(`${featured.name} · ${featured.variantLabel||'variante'}`)}" data-variant-card-id="${escapeHtml(featured.id||'')}" data-variant-key="${escapeHtml(featured.variantKey||'default')}" data-variant-label="${escapeHtml(featured.variantLabel||'Variante')}" data-variant-type="${escapeHtml(featured.variantType||'normal')}" data-variant-foil="${escapeHtml(featured.variantFoil||'')}" data-variant-subtype="${escapeHtml(featured.variantSubtype||'')}" data-variant-rarity="${escapeHtml(featured.rarity||'')}"`:''}><img loading="lazy" src="${featured?escapeHtml(featuredImage):artworkUrl(p.id)}" ${featured?`data-image-fallbacks="${escapeHtml(encodedImageFallbacks(featuredFallbacks))}" onerror="advanceCardImageFallback(this)"`:`onerror="this.onerror=null;this.src='${fallbackArtworkUrl(p.id)}'"`} alt="${featured?escapeHtml(featured.name):pretty(p.name)}"></div>
-    ${featured?`<button type="button" class="binder-inspect-btn" data-inspect-binder-card aria-label="Inspecionar ${escapeHtml(featured.name)} · ${escapeHtml(featured.variantLabel||'variante')}">Inspecionar carta</button>`:`<div class="completion-badge">EM FALTA</div>`}
-    <div class="type-row" data-id="${p.id}">${typeMarkup(p.id)}</div>
-    <h3 class="dex-name">${pretty(p.name)}</h3>
-    <div class="dex-sub">National Dex</div>
+    <div class="card-top">
+      <div class="dex-number">#${String(p.id).padStart(3,'0')}</div>
+      <div class="m7-card-top-tools">
+        <button type="button" class="missing-finder-btn" data-find-missing-card title="Onde encontrar cartas de ${escapeHtml(pretty(p.name))}?" aria-label="Encontrar cartas de ${escapeHtml(pretty(p.name))}">?</button>
+        <div class="energy-corner" data-id="${p.id}" aria-label="Tipo TCG">${typeMarkup(p.id)}</div>
+      </div>
+    </div>
+    <div class="m7-missing-label ${hasCard?'is-spacer':''}" aria-hidden="true">${hasCard?'':'EM FALTA'}</div>
+    <div class="card-image ${featured?'featured-card-image':''}" ${featured?`data-variant-effect="${escapeHtml(variantVisualEffect(variantFromSnapshot(featured)))}" data-variant-image="${escapeHtml(featuredImage)}" data-variant-alt="${escapeHtml(`${featured.name} · ${featured.variantLabel||'variante'}`)}" data-variant-card-id="${escapeHtml(featured.id||'')}" data-variant-key="${escapeHtml(featured.variantKey||'default')}" data-variant-label="${escapeHtml(featured.variantLabel||'Variante')}" data-variant-type="${escapeHtml(featured.variantType||'normal')}" data-variant-foil="${escapeHtml(featured.variantFoil||'')}" data-variant-subtype="${escapeHtml(featured.variantSubtype||'')}" data-variant-rarity="${escapeHtml(featured.rarity||'')}"`:''}>
+      <img loading="lazy" src="${featured?escapeHtml(featuredImage):artworkUrl(p.id)}" ${featured?`data-image-fallbacks="${escapeHtml(encodedImageFallbacks(featuredFallbacks))}" onerror="advanceCardImageFallback(this)"`:`onerror="this.onerror=null;this.src='${fallbackArtworkUrl(p.id)}'"`} alt="${featured?escapeHtml(featured.name):escapeHtml(pretty(p.name))}">
+    </div>
+    <button type="button" class="binder-inspect-btn" data-inspect-binder-card aria-label="Inspecionar cartas de ${escapeHtml(pretty(p.name))}">Inspecionar carta</button>
+    <h3 class="dex-name">${escapeHtml(pretty(p.name))}</h3>
     <div class="card-actions">
       <label class="state-pill"><input class="cb card-check" type="checkbox" data-k="${key(p.id,'card')}" ${hasCard?'checked':''}><span class="state-ui card-ui"><span class="dot"></span> CARTA</span></label>
-      <label class="state-pill ${noArt&&!softNoArt?'disabled':''}" title="${softNoArt?'Base provisória: se encontrares uma ART válida, podes marcá-la e a tua coleção passa a ter prioridade.':''}"><input class="cb art-check" type="checkbox" data-k="${key(p.id,'fa')}" ${hasArt?'checked':''} ${noArt&&!softNoArt?'disabled':''}><span class="state-ui art-ui"><span class="art-symbol">${hasArt?'★':'☆'}</span> ${noArt&&!hasArt?'SEM ART?':'ART'}</span></label>
-    </div>
-    <div class="art-availability ${noArt?'unavailable':''}">${availabilityText}</div>
-    <div class="art-help">Comuns · Holo · Promo · EX/GX/V · IR/SIR · Full Art · Secretas</div>`;
+      <label class="state-pill"><input class="cb art-check" type="checkbox" data-k="${key(p.id,'fa')}" ${hasArt?'checked':''} ${noArt?'disabled':''}><span class="state-ui art-ui"><span class="art-symbol">${hasArt?'★':'☆'}</span> ART</span></label>
+    </div>`;
 
   setCardVisual(el,hasCard,hasArt);
 
   const inspectBtn=el.querySelector('[data-inspect-binder-card]');
   if(inspectBtn) inspectBtn.addEventListener('click',async e=>{
     e.preventDefault();e.stopPropagation();
-    await inspectFeaturedBinderCard(p);
+    if(featured) await inspectFeaturedBinderCard(p);
+    else await openArtModal(p);
   });
 
   const finderBtn=el.querySelector('[data-find-missing-card]');
@@ -3440,7 +3821,6 @@ function makeCard(p){
 
       let cardValue=before.card===true;
       let artValue=before.full_art===true;
-
       if(type==='full_art'){
         artValue=value;
         if(value) cardValue=true;
@@ -3478,8 +3858,6 @@ function makeCard(p){
     });
   });
 
-  // O clique de abrir a galeria é tratado por delegação no #list.
-  // Assim continua a funcionar depois de filtros, paginação e re-renderizações.
   return el;
 }
 
@@ -3505,7 +3883,7 @@ function updateCounts(){
   document.getElementById('count').textContent=`${String(totalOwned).padStart(3,'0')} / 1025`;
   document.getElementById('percentComplete').textContent=`${pct}%`;
   document.getElementById('progressLabel').textContent=`${pct}%`;
-  document.getElementById('progressFill').style.width=`${pct}%`;
+  document.getElementById('progressFill').style.width=`${pct}%`;const m7Pct=document.getElementById('m7VisiblePercent');if(m7Pct)m7Pct.textContent=`${pct}%`;
   document.getElementById('cardsCount').textContent=totalOwned;
   document.getElementById('artCount').textContent=artDenominator!==null?`${totalArt} / ${artDenominator}`:`${totalArt} / —`;
   document.getElementById('artPercent').textContent=artPct!==null?`${artPct}% ART`:'base ART por verificar';
@@ -3905,12 +4283,12 @@ window.addEventListener('beforeinstallprompt',e=>{
 window.addEventListener('appinstalled',()=>{
   deferredInstallPrompt=null;
   const btn=document.getElementById('installBtn');
-  if(btn) btn.textContent='✓ Pokédex XL instalada';
+  if(btn) btn.textContent='✓ Pokédex M7 instalada';
 });
 
 if('serviceWorker' in navigator && location.protocol!=='file:'){
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('./sw.js?v=12.7.0',{updateViaCache:'none'})
+    navigator.serviceWorker.register('./sw.js?v=14.0.0',{updateViaCache:'none'})
       .then(reg=>reg.update())
       .catch(err=>console.warn('Service Worker:',err));
   });
@@ -4032,7 +4410,7 @@ document.getElementById('installBtn').addEventListener('click',async()=>{
 
   const standalone=window.matchMedia?.('(display-mode: standalone)').matches || window.navigator.standalone===true;
   if(standalone){
-    alert('A Pokédex XL já está aberta como aplicação neste dispositivo.');
+    alert('A Pokédex M7 já está aberta como aplicação neste dispositivo.');
     return;
   }
 
@@ -4041,7 +4419,7 @@ document.getElementById('installBtn').addEventListener('click',async()=>{
     const choice=await deferredInstallPrompt.userChoice;
     if(choice?.outcome==='accepted'){
       const btn=document.getElementById('installBtn');
-      if(btn) btn.textContent='✓ Pokédex XL instalada';
+      if(btn) btn.textContent='✓ Pokédex M7 instalada';
     }
     deferredInstallPrompt=null;
     return;
@@ -4349,7 +4727,7 @@ document.getElementById('scannerFile')?.addEventListener('change',async e=>{cons
 // + renderer WebGL/GLSL. As funções antigas permanecem como fallback.
 // ============================================================================
 const V12_CATALOG_TTL=6*60*60*1000;
-const V12_DB_NAME='pokedex-xl-catalog-v12';
+const V12_DB_NAME='pokedex-m7-catalog-v13-1';
 const V12_DB_STORE='pokemonCards';
 const V12_REFRESHING=new Map();
 const V12_MEMORY_STAMP=new Map();
@@ -4569,7 +4947,7 @@ window.addEventListener('load',()=>{
 // A galeria nunca espera por este complemento: mostra o cache/base imediatamente
 // e acrescenta cartas/variantes em segundo plano.
 // ============================================================================
-const V123_SUPPLEMENT_VERSION='complete-catalog-v3-image-repair';
+const V123_SUPPLEMENT_VERSION='complete-catalog-v4-promo-reconcile-2026';
 const V123_SUPPLEMENT_TTL=24*60*60*1000;
 const V123_SUPPLEMENTING=new Map();
 const V123_DONE_PREFIX='pokedex-xl-v123-supplement:';
@@ -4878,12 +5256,43 @@ function v124EnglishPhysicalImage(setId,number){
   return null;
 }
 function v124NoScanMarkup(card){
-  return `<div class="no-scan-card"><div class="no-scan-mark">●</div><strong>Impressão confirmada</strong><span>Digitalização frontal ainda não disponível nesta fonte · ${escapeHtml(card?.set?.name||'Set')} #${escapeHtml(card?.number||'—')}</span></div>`;
+  return `<div class="no-scan-card"><div class="no-scan-mark">●</div><strong>Impressão confirmada</strong><span>Sem scan público compatível após verificar TCGdex, TCGplayer e Pokémon TCG API · ${escapeHtml(card?.set?.name||'Set')} #${escapeHtml(card?.number||'—')}</span></div>`;
 }
 
 const V124_ORIGINAL_IMAGE_CANDIDATES=cardImageCandidates;
+function v131InferTcgdexSeriesId(card){
+  const explicit=String(card?.__tcgdexSeriesId||'').toLowerCase();if(explicit)return explicit;
+  const set=String(card?.set?.id||'').toLowerCase().replace(/^en::/,'');
+  if(/^mep$|^me\d|^meg/.test(set))return 'me';
+  if(/^svp$|^sv\d|^sv/.test(set))return 'sv';
+  if(/^swshp$|^swsh\d|^cel25|^pgo/.test(set))return 'swsh';
+  if(/^smp$|^sm\d/.test(set))return 'sm';
+  if(/^xyp$|^xy\d|^g1$/.test(set))return 'xy';
+  if(/^bwp$|^bw\d/.test(set))return 'bw';
+  if(/^hgssp$|^hgss\d/.test(set))return 'hgss';
+  if(/^dpp$|^dp\d|^pl\d/.test(set))return 'dp';
+  if(/^ex\d/.test(set))return 'ex';
+  return '';
+}
+function v131TcgdexImageCandidates(card){
+  const lang=String(card?.__language||'en').toLowerCase(),set=String(card?.set?.id||'').toLowerCase().replace(/^[a-z]{2}(?:-[a-z]{2})?::/i,''),num=String(card?.number||'').trim();
+  let base=String(card?.__tcgdexImageBase||'').replace(/\/$/,'');
+  if(!base){const series=v131InferTcgdexSeriesId(card);if(series&&set&&num)base=`https://assets.tcgdex.net/${encodeURIComponent(lang)}/${encodeURIComponent(series)}/${encodeURIComponent(set)}/${encodeURIComponent(num)}`;}
+  if(!base)return [];
+  return [`${base}/high.webp`,`${base}/high.png`,`${base}/high.jpg`,`${base}/low.webp`];
+}
+function v131PokemonTcgImageCandidates(card){
+  const lang=String(card?.__language||'en').toLowerCase();if(lang!=='en')return [];
+  const set=String(card?.set?.id||'').toLowerCase().replace(/^en::/,'').trim(),num=String(card?.number||'').trim();if(!set||!num)return [];
+  return [`https://images.pokemontcg.io/${encodeURIComponent(set)}/${encodeURIComponent(num)}_hires.png`,`https://images.pokemontcg.io/${encodeURIComponent(set)}/${encodeURIComponent(num)}.png`];
+}
+function v131TcgplayerImageCandidates(card){
+  let vars=[];try{vars=cardVariants(card)}catch(_){}
+  const ids=[...new Set(vars.map(v=>Number(v?.tcgplayerId)||null).filter(Boolean))];
+  return ids.flatMap(id=>[`https://product-images.tcgplayer.com/fit-in/1000x1000/${id}.jpg`,`https://product-images.tcgplayer.com/fit-in/700x700/${id}.jpg`]);
+}
 cardImageCandidates=function(card,preferred=''){
-  const candidates=[preferred,card?.images?.small,card?.images?.large,...(Array.isArray(card?.__imageFallbacks)?card.__imageFallbacks:[])];
+  const candidates=[preferred,card?.images?.large,card?.images?.small,...(Array.isArray(card?.__imageFallbacks)?card.__imageFallbacks:[]),...v131TcgdexImageCandidates(card),...v131TcgplayerImageCandidates(card),...v131PokemonTcgImageCandidates(card)];
   if(card?.__allowPokemonArtworkFallback){const pid=Number(card?.nationalPokedexNumbers?.[0])||null;if(pid)candidates.push(artworkUrl(pid),fallbackArtworkUrl(pid));}
   const seen=new Set();return candidates.map(x=>String(x||'').trim()).filter(x=>x&&!seen.has(x)&&seen.add(x));
 };
@@ -4910,13 +5319,18 @@ async function v124Detail(lang,id){
 function v124DetailToCard(d,lang){
   if(!d?.id)return null;
   const physical=v124EnglishPhysicalImage(d.set?.id,d.localId);
-  const base=String(d.image||'');
-  const images=base?{small:`${base}/low.webp`,large:`${base}/high.webp`}:(lang==='en'&&physical?{small:physical.small,large:physical.large}:{small:'',large:''});
+  const base=String(d.image||'').replace(/\/$/,'');
+  const serieId=String(d.set?.serie?.id||d.set?.series?.id||'').toLowerCase();
+  const setId=String(d.set?.id||'').toLowerCase();
+  const localId=String(d.localId||'');
+  const constructedBase=(!base&&serieId&&setId&&localId)?`https://assets.tcgdex.net/${encodeURIComponent(lang)}/${encodeURIComponent(serieId)}/${encodeURIComponent(setId)}/${encodeURIComponent(localId)}`:'';
+  const bestBase=base||constructedBase;
+  const images=bestBase?{small:`${bestBase}/low.webp`,large:`${bestBase}/high.webp`}:(lang==='en'&&physical?{small:physical.small,large:physical.large}:{small:'',large:''});
   const originalId=String(d.id);
   return {
-    id:lang==='en'?originalId:`${lang}::${originalId}`,name:d.name||'',number:String(d.localId||''),supertype:'Pokémon',subtypes:[d.stage||'Pokémon'],rarity:d.rarity||'Pokémon',artist:d.illustrator||'',nationalPokedexNumbers:Array.isArray(d.dexId)?d.dexId:[],
-    set:{id:d.set?.id||'',name:d.set?.name||'Set',ptcgoCode:String(d.set?.id||'').toUpperCase(),series:d.set?.serie?.name||d.set?.series||'Pokémon TCG',releaseDate:d.set?.releaseDate||''},images,cardmarket:null,tcgplayer:null,
-    __source:physical?.source||`TCGdex · catálogo ${V124_LANGUAGE_LABEL.get(lang)||lang}`,__language:lang,__physicalPrint:true,__scanMissing:!(images.small||images.large),__tcgdexOriginalId:originalId,
+    id:lang==='en'?originalId:`${lang}::${originalId}`,name:d.name||'',number:localId,supertype:'Pokémon',subtypes:[d.stage||'Pokémon'],rarity:d.rarity||'Pokémon',artist:d.illustrator||'',nationalPokedexNumbers:Array.isArray(d.dexId)?d.dexId:[],
+    set:{id:d.set?.id||'',name:d.set?.name||'Set',ptcgoCode:String(d.set?.id||'').toUpperCase(),series:d.set?.serie?.name||d.set?.series?.name||d.set?.series||'Pokémon TCG',releaseDate:d.set?.releaseDate||''},images,cardmarket:null,tcgplayer:null,
+    __source:physical?.source||`TCGdex · catálogo ${V124_LANGUAGE_LABEL.get(lang)||lang}`,__language:lang,__physicalPrint:true,__scanMissing:!(images.small||images.large),__tcgdexOriginalId:originalId,__tcgdexImageBase:bestBase,__tcgdexSeriesId:serieId,
     __tcgdexPriceChecked:true,__tcgdexVariantsChecked:true,__tcgdexCardmarket:d.pricing?.cardmarket||null,__tcgdexPriceUpdated:d.pricing?.cardmarket?.updated||null,__tcgdexTcgplayer:d.pricing?.tcgplayer||null,
     __tcgdexVariantsDetailed:Array.isArray(d.variants_detailed)?d.variants_detailed:(Array.isArray(d.variants)?d.variants:null),__tcgdexVariantsLegacy:(!Array.isArray(d.variants)&&d.variants&&typeof d.variants==='object')?d.variants:null,__tcgdexMatchedId:originalId
   };
@@ -5091,7 +5505,7 @@ modalFilteredCards=function(){
     if(numberFilter!=='all'&&v126CardNumberFilterKey(card?.number)!==numberFilter)return false;
     if(filter==='art'&&!artCategory(card))return false;
     if(filter==='priced'&&!Number.isFinite(cardmarketPrice(card).value))return false;
-    if(filter==='promo'&&!String(card.rarity||'').toLowerCase().includes('promo')&&!setName.includes('promo'))return false;
+    if(filter==='promo'&&!v130IsPromoCard(card))return false;
     if(filter==='mcdonalds'&&!/mcdonald/.test(setName))return false;
     if(filter==='trick'&&!isTrick)return false;
     if(filter==='missing-scan'&&cardImageCandidates(card).length)return false;
@@ -5193,24 +5607,39 @@ renderVariantHeroVisual=async function(card,v,imageInfo){
   return V124_BASE_RENDER_VARIANT_VISUAL(card,v,imageInfo);
 };
 
-// Um único motor CSS para todas as cartas: movimento consistente, sem contextos
-// WebGL perdidos e com a proporção real da digitalização.
+// v13.1: motor profissional MIT quando disponível; renderer local com máscaras físicas como fallback.
 createProFoilCard=async function(card,v,url,opts={}){
-  const visual=createRealFoilCard(card,v,url,opts),root=visual.element,img=root?.querySelector?.('img');let observer=null;
+  const interactive=opts.interactive!==false,compact=!!opts.compact;
+  let mod=null;try{mod=window.__cardsCssModule||await Promise.race([window.__cardsCssReady,new Promise(r=>setTimeout(()=>r(null),1800))]);}catch(_){}
+  if(mod?.createHoloCard&&window.__cardsCssStyleLoaded!==false){
+    try{
+      const frame=variantFrameMode(card,v),mask=proFoilMaskFor(card,v);
+      const options={
+        image:url||card?.images?.large||card?.images?.small||'',imageAlt:`${card?.name||'Carta'} · ${v?.label||'variante'}`,
+        effect:proFoilEffect(card,v),interactive,activateOnClick:false,
+        gyroscope:interactive?{rangeX:17,rangeY:15,sensitivity:.78,invertX:false,invertY:false}:false,
+        textureSeed:variantTextureSeed(card,v),palette:proFoilPalette(v),glow:proFoilGlow(v),
+        depth:compact?false:{strength:5.5,perspective:1050,shadow:.40,layerScale:.014},
+        physics:{maxTilt:12,parallax:5.5,glareRange:14,returnDelay:95},visual:proFoilVisual(v,compact),
+        glare:{opacity:compact?.18:.42,blend:'soft-light'},aspectRatio:2.5/3.5
+      };
+      if(mask)options.mask={image:mask,size:'100% 100%',position:'center',repeat:'no-repeat',mode:'shine'};
+      const holo=mod.createHoloCard(options),host=document.createElement('div');host.className='profoil-host'+(compact?' compact':'');host.appendChild(holo.element);
+      return {element:host,destroy:()=>{try{holo.destroy?.()}catch(_){}}};
+    }catch(e){console.warn('Motor holográfico profissional falhou nesta carta; fallback local.',e)}
+  }
+  const visual=createRealFoilCard(card,v,url,{interactive,compact}),root=visual.element,img=root?.querySelector?.('img');let observer=null;
   const align=()=>{
     if(!root||!img?.naturalWidth||!img?.naturalHeight)return;
     const w=root.clientWidth,h=root.clientHeight;if(!w||!h)return;
     const imageRatio=img.naturalWidth/img.naturalHeight,boxRatio=w/h;let x=0,y=0,rw=w,rh=h;
     if(imageRatio>boxRatio){rh=w/imageRatio;y=(h-rh)/2}else{rw=h*imageRatio;x=(w-rw)/2}
     const box=(selector,bx,by,bw,bh)=>{const el=root.querySelector(selector);if(!el)return;el.style.left=`${bx}px`;el.style.top=`${by}px`;el.style.width=`${bw}px`;el.style.height=`${bh}px`;el.style.right='auto';el.style.bottom='auto'};
-    box('.realfoil-gloss',x,y,rw,rh);box('.realfoil-full',x,y,rw,rh);
-    box('.realfoil-art',x+rw*.077,y+rh*.143,rw*.846,rh*.352);
-    box('.realfoil-rev.rtop',x,y,rw,rh*.1435);box('.realfoil-rev.rbottom',x,y+rh*.4945,rw,rh*.5055);
-    box('.realfoil-rev.rleft',x,y+rh*.1425,rw*.0775,rh*.353);box('.realfoil-rev.rright',x+rw*.9225,y+rh*.1425,rw*.0775,rh*.353);
+    box('.realfoil-gloss',x,y,rw,rh);box('.realfoil-full',x,y,rw,rh);box('.realfoil-art',x+rw*.077,y+rh*.143,rw*.846,rh*.352);
+    box('.realfoil-rev.rtop',x,y,rw,rh*.1435);box('.realfoil-rev.rbottom',x,y+rh*.4945,rw,rh*.5055);box('.realfoil-rev.rleft',x,y+rh*.1425,rw*.0775,rh*.353);box('.realfoil-rev.rright',x+rw*.9225,y+rh*.1425,rw*.0775,rh*.353);
   };
-  if(img){if(img.complete)requestAnimationFrame(align);else img.addEventListener('load',()=>requestAnimationFrame(align),{once:true});if(typeof ResizeObserver!=='undefined'){observer=new ResizeObserver(()=>requestAnimationFrame(align));observer.observe(root);}}
-  const destroy=visual.destroy;visual.destroy=()=>{observer?.disconnect?.();destroy?.()};
-  return visual;
+  if(img){if(img.complete)requestAnimationFrame(align);else img.addEventListener('load',()=>requestAnimationFrame(align),{once:true});if(typeof ResizeObserver!=='undefined'){observer=new ResizeObserver(()=>requestAnimationFrame(align));observer.observe(root)}}
+  const destroy=visual.destroy;visual.destroy=()=>{observer?.disconnect?.();destroy?.()};return visual;
 };
 requestV12MotionPermission=function(){
   ensureOrientationListener();
@@ -5260,19 +5689,87 @@ function v124StockLocal(row){return ['Braga','Guimarães'].includes(v125StoreReg
 function v124StockTimestamp(){
   const latest=Math.max(0,...V124_STOCK_ROWS.map(x=>Number(x?.last_checked)||0));return latest?new Date(latest*1000):null;
 }
+const V130_STOCK_NOTIFY_ENABLED='pokedexm7-stock-notify-enabled-v2';
+const V140_PUSH_API='https://wdljzuqoftrontqhhatr.supabase.co/functions/v1/push-subscriptions';
+let V140_PUSH_PUBLIC_KEY='';
+function v130StockNotificationsEnabled(){try{return localStorage.getItem(V130_STOCK_NOTIFY_ENABLED)==='1'}catch(_){return false}}
+function v140IsIOS(){return /iphone|ipad|ipod/i.test(navigator.userAgent||'')}
+function v140IsStandalone(){return window.matchMedia?.('(display-mode: standalone)')?.matches===true||navigator.standalone===true}
+function v140PushCapable(){return !!(window.isSecureContext&&'serviceWorker'in navigator&&'PushManager'in window&&'Notification'in window)}
+function v140SetPushStatus(text,kind=''){
+  const el=document.getElementById('stockPushStatus');if(!el)return;el.className='stock-push-status'+(kind?` ${kind}`:'');el.innerHTML=text;
+}
+function v140UrlBase64ToUint8Array(base64String){
+  const padding='='.repeat((4-base64String.length%4)%4),base64=(base64String+padding).replace(/-/g,'+').replace(/_/g,'/'),raw=atob(base64),out=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)out[i]=raw.charCodeAt(i);return out;
+}
+async function v140GetPushConfig(){
+  if(V140_PUSH_PUBLIC_KEY)return V140_PUSH_PUBLIC_KEY;
+  const r=await fetch(V140_PUSH_API,{method:'GET',cache:'no-store'});if(!r.ok)throw new Error(`Push config HTTP ${r.status}`);const data=await r.json();if(!data?.vapidPublicKey)throw new Error('Chave pública VAPID indisponível');V140_PUSH_PUBLIC_KEY=data.vapidPublicKey;return V140_PUSH_PUBLIC_KEY;
+}
+async function v140GetSubscription(){
+  if(!v140PushCapable())return null;try{const reg=await navigator.serviceWorker.ready;return await reg.pushManager.getSubscription()}catch(_){return null}
+}
+async function v140SyncButton(){
+  const b=document.getElementById('stockNotifyBtn');if(!b)return;
+  if(!window.isSecureContext){b.className='stock-notify-btn denied';b.textContent='🔕 HTTPS necessário';b.disabled=true;v140SetPushStatus('<strong>HTTPS necessário.</strong> O Push API não funciona numa página insegura.','error');return}
+  if(v140IsIOS()&&!v140IsStandalone()){
+    b.className='stock-notify-btn';b.textContent='📲 Instalar para avisos';b.disabled=false;b.setAttribute('aria-pressed','false');v140SetPushStatus('<strong>iPhone:</strong> abre no Safari → Partilhar → Adicionar ao Ecrã Principal. Depois abre a Pokédex M7 pelo ícone e ativa os avisos.','warn');return;
+  }
+  if(!v140PushCapable()){
+    b.className='stock-notify-btn denied';b.textContent='🔕 Push não suportado';b.disabled=true;v140SetPushStatus('<strong>Push indisponível</strong> neste navegador/dispositivo.','error');return;
+  }
+  const sub=await v140GetSubscription(),enabled=!!sub&&Notification.permission==='granted'&&v130StockNotificationsEnabled();
+  b.disabled=false;b.className='stock-notify-btn'+(enabled?' active':Notification.permission==='denied'?' denied':'');b.setAttribute('aria-pressed',String(enabled));
+  b.textContent=Notification.permission==='denied'?'🔕 Avisos bloqueados':enabled?'🔔 Push ativo 24/7':'🔔 Ativar Push';
+  if(enabled)v140SetPushStatus('<strong>Ativo.</strong> O servidor verifica o stock português de 5 em 5 minutos, mesmo com a app fechada.','ok');
+  else if(Notification.permission==='denied')v140SetPushStatus('<strong>Permissão bloqueada.</strong> Reativa as notificações nas definições do sistema/browser.','error');
+  else v140SetPushStatus('<strong>Push profissional.</strong> Recebe reposições e novos produtos mesmo com a Pokédex M7 fechada.');
+}
+function v130UpdateNotifyButton(){v140SyncButton().catch(e=>{console.warn('Estado Push:',e);v140SetPushStatus('<strong>Não foi possível validar o Push.</strong> Tenta novamente.','error')})}
+function v130StockSnapshot(){return {}}
+async function v130NotifyStock(){return}
+function v130CheckStockChanges(){return}
+async function v140BackendSubscription(action,sub){
+  const payload={action,subscription:sub?sub.toJSON():null,userAgent:navigator.userAgent||'',platform:navigator.platform||'',locale:navigator.language||'pt-PT',collections:['*'],stores:['*']};
+  const r=await fetch(V140_PUSH_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),cache:'no-store'});const data=await r.json().catch(()=>({}));if(!r.ok||!data?.ok)throw new Error(data?.error||`Push API HTTP ${r.status}`);return data;
+}
+async function v140ShowActivationNotification(reg){
+  try{await reg.showNotification('Pokédex M7 · Push ativo',{body:'Avisos de stock configurados. Podes fechar a app — o servidor continua a verificar as lojas.',tag:'pokedexm7-push-ready',icon:'./icon-180.png',badge:'./icon-180.png',data:{url:location.href}})}catch(e){console.warn('Notificação de teste:',e)}
+}
+async function v130ToggleStockNotifications(){
+  const b=document.getElementById('stockNotifyBtn');if(b)b.disabled=true;
+  try{
+    if(v140IsIOS()&&!v140IsStandalone()){
+      alert('No iPhone, o Web Push funciona na Pokédex M7 instalada no Ecrã Principal.\n\n1. Abre esta página no Safari.\n2. Toca em Partilhar.\n3. Escolhe “Adicionar ao Ecrã Principal”.\n4. Abre a Pokédex M7 pelo novo ícone.\n5. Volta a Produtos / Stock e toca em “Ativar Push”.');return;
+    }
+    if(!v140PushCapable())throw new Error('Este navegador não suporta Web Push completo.');
+    const reg=await navigator.serviceWorker.ready;let sub=await reg.pushManager.getSubscription();
+    if(sub&&v130StockNotificationsEnabled()){
+      try{await v140BackendSubscription('unsubscribe',sub)}catch(e){console.warn('Backend unsubscribe:',e)}
+      await sub.unsubscribe();localStorage.setItem(V130_STOCK_NOTIFY_ENABLED,'0');await v140SyncButton();return;
+    }
+    let permission=Notification.permission;if(permission!=='granted')permission=await Notification.requestPermission();if(permission!=='granted')throw new Error('Permissão de notificações não concedida.');
+    const key=await v140GetPushConfig();sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:v140UrlBase64ToUint8Array(key)});
+    await v140BackendSubscription('subscribe',sub);localStorage.setItem(V130_STOCK_NOTIFY_ENABLED,'1');await v140ShowActivationNotification(reg);await v140SyncButton();
+  }catch(e){console.error('Ativar Push:',e);try{localStorage.setItem(V130_STOCK_NOTIFY_ENABLED,'0')}catch(_){};v140SetPushStatus(`<strong>Erro ao ativar Push.</strong> ${escapeHtml(e?.message||String(e))}`,'error')}
+  finally{if(b)b.disabled=false;v140UpdateNotifyButton()}
+}
+window.addEventListener('pageshow',()=>v130UpdateNotifyButton());
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')v130UpdateNotifyButton()});
 function v124RenderStock(){
-  const body=document.getElementById('stockBody'),search=v124WorldNorm(document.getElementById('stockSearch')?.value||''),region=document.getElementById('stockRegion')?.value||'all',store=document.getElementById('stockStore')?.value||'all',status=document.getElementById('stockStatus')?.value||'all';if(!body)return;
+  const body=document.getElementById('stockBody'),search=v124WorldNorm(document.getElementById('stockSearch')?.value||''),collection=document.getElementById('stockCollection')?.value||'all',region=document.getElementById('stockRegion')?.value||'all',store=document.getElementById('stockStore')?.value||'all',status=document.getElementById('stockStatus')?.value||'all';if(!body)return;
   let rows=V124_STOCK_ROWS.filter(row=>{
+    if(collection!=='all'&&v130StockCollection(row)!==collection)return false;
     if(region!=='all'&&v125StoreRegion(row)!==region)return false;
     if(store!=='all'&&String(row.store_name||'')!==store)return false;
     if(status!=='all'&&v124StockState(row)!==status)return false;
-    if(search&&!v124WorldNorm(`${row.name||''} ${v125StoreDisplayName(row)} ${v125StoreRegion(row)} ${row.price||''}`).includes(search))return false;
+    if(search&&!v124WorldNorm(`${row.name||''} ${v125StoreDisplayName(row)} ${v125StoreRegion(row)} ${v130StockCollection(row)} ${row.price||''}`).includes(search))return false;
     return true;
   });
   const rank={shop:0,pre:1,in:2,out:3};rows.sort((a,b)=>Number(v124StockLocal(b))-Number(v124StockLocal(a))||(rank[v124StockState(a)]??9)-(rank[v124StockState(b)]??9)||V125_REGION_ORDER.indexOf(v125StoreRegion(a))-V125_REGION_ORDER.indexOf(v125StoreRegion(b))||v125StoreDisplayName(a).localeCompare(v125StoreDisplayName(b))||String(a.name||'').localeCompare(String(b.name||'')));
   const shown=rows.slice(0,180),updated=v124StockTimestamp();
-  const cards=shown.map(row=>{const state=v124StockState(row),url=v124SafeHttpUrl(row.url),img=v124SafeHttpUrl(row.img),local=v124StockLocal(row),storeName=v125StoreDisplayName(row),storeRegion=v125StoreRegion(row);return `<article class="stock-card"><div class="stock-card-img">${img?`<img loading="lazy" src="${escapeHtml(img)}" alt="${escapeHtml(row.name||'Produto Pokémon')}" onerror="this.style.display='none'">`:''}</div><div class="stock-card-info"><div class="stock-card-top"><span class="stock-store">${escapeHtml(storeName)}</span><span class="stock-region ${local?'nearby':''}">${escapeHtml(storeRegion)}</span></div><h3>${escapeHtml(row.name||'Produto Pokémon')}</h3><div class="stock-card-bottom"><span class="stock-price">${escapeHtml(String(row.price||'Consultar'))}</span><span class="stock-state ${state}">${v124StockStateLabel(state)}</span></div>${url?`<a class="stock-open" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${row.__directory?'Abrir loja':'Ver produto na loja'} ↗</a>`:''}</div></article>`}).join('');
-  body.innerHTML=`<div class="stock-summary"><strong>${rows.length}</strong> produtos neste filtro · a mostrar ${shown.length}${updated?` · verificado ${escapeHtml(updated.toLocaleString('pt-PT'))}`:''}</div>${cards?`<div class="stock-grid">${cards}</div>`:'<div class="art-empty"><strong>Nenhum produto corresponde ao filtro.</strong><p>Experimenta outra região, loja, estado ou pesquisa.</p></div>'}<div class="stock-note">Lojas organizadas por região confirmada; as restantes aparecem em “Online / Nacional”. A <strong>PokéBox Store PT</strong> fica em Aveiro. Stock agregado pelo <a href="https://www.pokestockpt.com/" target="_blank" rel="noopener noreferrer">PokéStockPT</a>. Confirma sempre preço e disponibilidade na página da loja antes de comprar.</div>`;
+  const cards=shown.map(row=>{const state=v124StockState(row),url=v124SafeHttpUrl(row.url),img=v124SafeHttpUrl(row.img),local=v124StockLocal(row),storeName=v125StoreDisplayName(row),storeRegion=v125StoreRegion(row),collectionName=v130StockCollection(row);return `<article class="stock-card"><div class="stock-card-img">${img?`<img loading="lazy" src="${escapeHtml(img)}" alt="${escapeHtml(row.name||'Produto Pokémon')}" onerror="this.style.display='none'">`:''}</div><div class="stock-card-info"><div class="stock-card-top"><span class="stock-store">${escapeHtml(storeName)}</span><span class="stock-region ${local?'nearby':''}">${escapeHtml(storeRegion)}</span></div><h3>${escapeHtml(row.name||'Produto Pokémon')}</h3>${row.__directory?'':`<span class="stock-collection-chip">${escapeHtml(collectionName)}</span>`}<div class="stock-card-bottom"><span class="stock-price">${escapeHtml(String(row.price||'Consultar'))}</span><span class="stock-state ${state}">${v124StockStateLabel(state)}</span></div>${url?`<a class="stock-open" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${row.__directory?'Abrir loja':'Ver produto na loja'} ↗</a>`:''}</div></article>`}).join('');
+  body.innerHTML=`<div class="stock-summary"><strong>${rows.length}</strong> produtos neste filtro · a mostrar ${shown.length}${updated?` · verificado ${escapeHtml(updated.toLocaleString('pt-PT'))}`:''}</div>${cards?`<div class="stock-grid">${cards}</div>`:'<div class="art-empty"><strong>Nenhum produto corresponde ao filtro.</strong><p>Experimenta outra coleção, região, loja, estado ou pesquisa.</p></div>'}<div class="stock-note">Stock agregado pelo <a href="https://www.pokestockpt.com/" target="_blank" rel="noopener noreferrer">PokéStockPT</a>; confirma sempre preço e disponibilidade na loja. <strong>Push 24/7:</strong> o backend Supabase verifica o feed automaticamente de 5 em 5 minutos e envia avisos Web Push mesmo com a app fechada. No iPhone, instala a Pokédex M7 no Ecrã Principal antes de ativar.</div>`;
 }
 async function v124LoadStock(force=false){
   if(!force&&V124_STOCK_ROWS.length&&Date.now()-V124_STOCK_UPDATED<5*60*1000)return V124_STOCK_ROWS;
@@ -5284,6 +5781,7 @@ async function v124LoadStock(force=false){
     if(store){store.innerHTML='<option value="all">Todas as lojas</option>'+stores.map(x=>{const row={store_name:x};return `<option value="${escapeHtml(x)}">${escapeHtml(v125StoreDisplayName(row))} · ${escapeHtml(v125StoreRegion(row))}</option>`}).join('');store.value=stores.includes(selected)?selected:'all';}
     const region=document.getElementById('stockRegion'),selectedRegion=region?.value||'all',regions=[...new Set(V124_STOCK_ROWS.map(v125StoreRegion))].sort((a,b)=>{const ai=V125_REGION_ORDER.indexOf(a),bi=V125_REGION_ORDER.indexOf(b);return (ai<0?99:ai)-(bi<0?99:bi)||a.localeCompare(b)});
     if(region){region.innerHTML='<option value="all">Todas as regiões</option>'+regions.map(x=>`<option value="${escapeHtml(x)}">${escapeHtml(x)}</option>`).join('');region.value=regions.includes(selectedRegion)?selectedRegion:'all';}
+    v130PopulateStockCollections();v130CheckStockChanges(V124_STOCK_ROWS);v130UpdateNotifyButton();
     return V124_STOCK_ROWS;})().finally(()=>{V124_STOCK_PROMISE=null});return V124_STOCK_PROMISE;
 }
 async function v124OpenStock(){
@@ -5296,6 +5794,10 @@ document.getElementById('productStockBtn')?.addEventListener('click',v124OpenSto
 document.getElementById('stockClose')?.addEventListener('click',v124CloseStock);
 document.getElementById('stockModal')?.addEventListener('click',e=>{if(e.target.id==='stockModal')v124CloseStock()});
 document.getElementById('stockSearch')?.addEventListener('input',v124RenderStock);
+document.getElementById('stockCollection')?.addEventListener('change',v124RenderStock);
+document.getElementById('stockNotifyBtn')?.addEventListener('click',v130ToggleStockNotifications);
+v130UpdateNotifyButton();
+// v14: verificação de stock passou para o backend Supabase; sem polling em background no dispositivo.
 document.getElementById('stockRegion')?.addEventListener('change',v124RenderStock);
 document.getElementById('stockStore')?.addEventListener('change',v124RenderStock);
 document.getElementById('stockStatus')?.addEventListener('change',v124RenderStock);
@@ -5304,6 +5806,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElement
 // ---------- v12.6 · assistente de procura para Pokémon em falta ----------
 let V126_FINDER_POKEMON=null;
 let V126_FINDER_SETS=[];
+let V126_FINDER_CARDS=[];
 let V126_FINDER_TRIGGER=null;
 const V126_ENERGY_META={
   colorless:{label:'Incolor',symbol:'☆',color:'#7f8790',hint:'símbolo incolor'},
@@ -5322,11 +5825,10 @@ const V126_TYPE_TO_ENERGY={normal:'colorless',flying:'colorless',fire:'fire',wat
 
 function v126FinderEnergyMarkup(p){
   const types=window.__typeCache?.[p.id]||[];
-  if(!types.length)return '<div class="finder-empty">A identificar os símbolos de energia…</div>';
-  const keys=[...new Set(types.map(t=>V126_TYPE_TO_ENERGY[t]||'colorless'))];
-  return keys.map(key=>{const item=V126_ENERGY_META[key];return `<div class="finder-energy"><span class="finder-energy-icon" style="--energy:${item.color}" aria-hidden="true">${item.symbol}</span><span><strong>${escapeHtml(item.label)}</strong><small>${escapeHtml(item.hint)}</small></span></div>`}).join('');
+  if(!types.length)return '<div class="finder-empty">A identificar o símbolo TCG…</div>';
+  const keys=[...new Set(types.map(t=>TCG_TYPE_TO_ENERGY[t]||'colorless'))];
+  return keys.map(key=>{const item=V126_ENERGY_META[key]||V126_ENERGY_META.colorless;return `<div class="finder-energy"><span class="finder-energy-icon" aria-hidden="true">${tcgEnergyIcon(key,item.label)}</span><span><strong>${escapeHtml(item.label)}</strong><small>${escapeHtml(item.hint)}</small></span></div>`}).join('');
 }
-
 function v126AggregateSets(cards){
   const map=new Map();
   for(const card of cards||[]){
@@ -5368,42 +5870,108 @@ async function v126CopyFinderList(){
   }catch(_){alert('Não foi possível copiar automaticamente. Experimenta novamente com a app aberta em HTTPS.')}
 }
 
+const V131_FINDER_STORES=[
+  {id:'pokejotta',name:'PokeJotta',place:'Loja física · Braga',desc:'Singles Pokémon.',url:n=>`https://pokejotta.com/search?q=${encodeURIComponent(n)}&type=product`,check:'shopify',origin:'https://pokejotta.com',physical:true},
+  {id:'zukacards',name:'ZukaCards',place:'Guimarães',desc:'Singles no Cardmarket.',url:n=>`https://www.cardmarket.com/en/Pokemon/Users/ZukaCards/Offers/Singles?name=${encodeURIComponent(n)}&sortBy=name_asc`,check:'cardmarket',physical:true},
+  {id:'mysticmirage',name:'Mystic Mirage',place:'Guimarães',desc:'Singles / Pokémon TCG.',url:n=>`https://www.mysticmirage.shop/?s=${encodeURIComponent(n)}&post_type=product`,check:'woo',origin:'https://www.mysticmirage.shop',physical:true},
+  {id:'ptmerch',name:'PTMERCH',place:'Loja física · Queluz',desc:'Singles Pokémon.',url:()=>`https://ptmerch.com/pt/3768-single-cards-pokemon`,check:'manual',physical:true},
+  {id:'pokemarketlp',name:'Poke Market LP',place:'Loja online · Portugal',desc:'Singles e TCG.',url:n=>`https://pokemarketlp.pt/search?q=${encodeURIComponent(n)}&type=product`,check:'shopify',origin:'https://pokemarketlp.pt'},
+  {id:'zetatcg',name:'ZetaTCG',place:'Loja online · Portugal',desc:'Pokémon TCG / singles.',url:n=>`https://zetatcg.com/?s=${encodeURIComponent(n)}&post_type=product`,check:'woo',origin:'https://zetatcg.com'},
+  {id:'cardfever',name:'CardFever',place:'Loja online · Portugal',desc:'Pokémon TCG / singles.',url:n=>`https://www.cardfever.pt/?s=${encodeURIComponent(n)}&post_type=product`,check:'woo',origin:'https://www.cardfever.pt'}
+];
+function v130FinderStoreMarkup(p){
+  const name=pretty(p.name);
+  return V131_FINDER_STORES.map(st=>`<article class="finder-store ${st.physical?'physical':''}" data-finder-store="${escapeHtml(st.id)}"><div class="finder-store-main"><strong>${escapeHtml(st.name)}</strong><span>${escapeHtml(st.desc)}</span><span class="finder-store-badge">${escapeHtml(st.place)}</span></div><div class="finder-store-stock checking" data-store-stock>● A verificar stock…</div><a class="finder-store-link hidden" data-store-link href="${escapeHtml(st.url(name))}" target="_blank" rel="noopener noreferrer">Abrir loja ↗</a></article>`).join('');
+}
+function v131NormalizeProductTitle(v){return v124WorldNorm(String(v||''))}
+function v131NameMatchesProduct(title,name){const t=v131NormalizeProductTitle(title),n=v131NormalizeProductTitle(name);return !!n&&t.includes(n)}
+async function v131CheckStoreAvailability(store,name){
+  const signal=(typeof AbortSignal!=='undefined'&&typeof AbortSignal.timeout==='function')?AbortSignal.timeout(4800):undefined;
+  try{
+    if(store.check==='shopify'){
+      const u=`${store.origin}/search/suggest.json?q=${encodeURIComponent(name)}&resources[type]=product&resources[limit]=20`;
+      const r=await fetch(u,{cache:'no-store',mode:'cors',signal});if(!r.ok)throw new Error('HTTP '+r.status);const j=await r.json();
+      const products=j?.resources?.results?.products||[];const matches=products.filter(x=>v131NameMatchesProduct(x.title,name));if(!matches.length)return {state:'out',label:'ESGOTADO / SEM RESULTADOS'};
+      const known=matches.some(x=>typeof x.available==='boolean');if(!known)return {state:'unknown',label:'STOCK POR CONFIRMAR'};const available=matches.some(x=>x.available===true);return available?{state:'in',label:'EM STOCK'}:{state:'out',label:'ESGOTADO'};
+    }
+    if(store.check==='woo'){
+      const u=`${store.origin}/wp-json/wc/store/v1/products?search=${encodeURIComponent(name)}&per_page=20`;
+      const r=await fetch(u,{cache:'no-store',mode:'cors',signal});if(!r.ok)throw new Error('HTTP '+r.status);const products=await r.json();
+      const matches=(Array.isArray(products)?products:[]).filter(x=>v131NameMatchesProduct(x.name,name));if(!matches.length)return {state:'out',label:'ESGOTADO / SEM RESULTADOS'};
+      const known=matches.some(x=>typeof x.is_in_stock==='boolean'||typeof x.stock_status==='string');if(!known)return {state:'unknown',label:'STOCK POR CONFIRMAR'};const available=matches.some(x=>x.is_in_stock===true||x.stock_status==='instock');return available?{state:'in',label:'EM STOCK'}:{state:'out',label:'ESGOTADO'};
+    }
+    return {state:'unknown',label:'STOCK POR CONFIRMAR'};
+  }catch(_){return {state:'unknown',label:'STOCK POR CONFIRMAR'};}
+}
+async function v131HydrateFinderStoreStock(p){
+  const name=pretty(p.name),modal=document.getElementById('missingFinderModal');
+  await Promise.all(V131_FINDER_STORES.map(async st=>{
+    const res=await v131CheckStoreAvailability(st,name);if(V126_FINDER_POKEMON!==p||!modal?.classList.contains('open'))return;
+    const row=document.querySelector(`[data-finder-store="${CSS.escape(st.id)}"]`),badge=row?.querySelector('[data-store-stock]'),link=row?.querySelector('[data-store-link]');if(!row||!badge||!link)return;
+    badge.className=`finder-store-stock ${res.state}`;badge.textContent=res.state==='in'?`● ${res.label}`:res.state==='out'?`● ${res.label}`:`● ${res.label}`;
+    if(res.state==='out'){link.classList.add('hidden');link.removeAttribute('aria-label');}
+    else{link.classList.remove('hidden');link.textContent=res.state==='in'?'Em stock · Abrir ↗':'Verificar na loja ↗';}
+  }));
+}
+function v130FinderCardImage(card){
+  const candidates=cardImageCandidates(card);const url=candidates[0]||card?.images?.small||card?.images?.large||'';
+  return url?`<img loading="lazy" src="${escapeHtml(url)}" data-image-fallbacks="${escapeHtml(encodedImageFallbacks(candidates.slice(1)))}" alt="${escapeHtml(card.name||'Carta Pokémon')}" onerror="advanceCardImageFallback(this)">`:`${v124NoScanMarkup(card)}`;
+}
+function v130FinderCardMarkup(card){
+  const cm=cardmarketPrice(card),price=Number.isFinite(cm.value)?euro(cm.value):'—';
+  const set=[card?.set?.name,card?.set?.ptcgoCode||card?.set?.id,card?.number?`#${card.number}`:''].filter(Boolean).join(' · ');
+  const tags=[];if(v130IsPromoCard(card))tags.push('<span class="finder-card-tag promo">★ Promo</span>');if(card?.rarity)tags.push(`<span class="finder-card-tag">${escapeHtml(card.rarity)}</span>`);
+  return `<article class="finder-card-result" data-finder-card="${escapeHtml(card.id||'')}" tabindex="0" role="button" aria-label="Abrir ${escapeHtml(card.name||'carta')}"><div class="finder-card-img">${v130FinderCardImage(card)}</div><div class="finder-card-copy"><strong>${escapeHtml(card.name||'Carta Pokémon')}</strong><span>${escapeHtml(set)}</span><div class="finder-card-tags">${tags.join('')}</div><span class="finder-card-price">${escapeHtml(price)}</span><span class="finder-card-open">Ver variantes e mercados ↗</span></div></article>`;
+}
+function v130RenderFinderCards(p,limit=24){
+  const grid=document.getElementById('missingFinderCardGrid'),summary=document.getElementById('missingFinderCardSummary'),more=document.getElementById('missingFinderCardsMore');if(!grid||!summary)return;
+  const cards=[...V126_FINDER_CARDS].sort((a,b)=>String(b?.set?.releaseDate||'').localeCompare(String(a?.set?.releaseDate||''))||String(a?.set?.name||'').localeCompare(String(b?.set?.name||''))||String(a?.number||'').localeCompare(String(b?.number||''),'en',{numeric:true}));
+  const promoCount=cards.filter(v130IsPromoCard).length,shown=cards.slice(0,limit);
+  summary.innerHTML=`<strong>${cards.length}</strong> impressões encontradas${promoCount?` · <strong>${promoCount}</strong> promos`:''}`;
+  grid.innerHTML=shown.length?shown.map(v130FinderCardMarkup).join(''):'<div class="finder-empty">Ainda não há cartas indexadas para mostrar.</div>';
+  grid.querySelectorAll('[data-finder-card]').forEach(node=>{const open=async()=>{const card=cards.find(c=>String(c.id)===String(node.dataset.finderCard));if(card){v126CloseMissingFinder({restoreFocus:false});await openVariantModal(card,p)}};node.addEventListener('click',open);node.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open()}})});
+  if(more){if(cards.length>limit){more.hidden=false;more.textContent=`Mostrar todas (${cards.length})`;more.onclick=()=>v130RenderFinderCards(p,cards.length)}else more.hidden=true;}
+}
 function v126FinderScaffold(p){
-  const gen=genInfoFor(p.id),name=pretty(p.name),query=encodeURIComponent(name);
-  const zuka=`https://www.cardmarket.com/en/Pokemon/Users/ZukaCards/Offers/Singles?name=${query}&sortBy=name_asc`;
-  const mystic=`https://www.mysticmirage.shop/?s=${query}&post_type=product`;
-  return `<section class="finder-profile"><div><div class="finder-profile-name"><strong>#${String(p.id).padStart(3,'0')} ${escapeHtml(name)}</strong>${gen?`<span class="finder-gen">${escapeHtml(gen.label)} · ${escapeHtml(gen.name)}</span>`:''}</div><p>Guia rápido para procurar nas caixas da loja e confirmar singles disponíveis online.</p></div><button type="button" class="finder-catalog-open" id="missingFinderCatalog">Ver todas as cartas deste Pokémon</button></section>
+  const gen=genInfoFor(p.id),name=pretty(p.name);
+  return `<section class="finder-profile"><div><div class="finder-profile-name"><strong>#${String(p.id).padStart(3,'0')} ${escapeHtml(name)}</strong>${gen?`<span class="finder-gen">${escapeHtml(gen.label)} · ${escapeHtml(gen.name)}</span>`:''}</div><p>Cartas, promos, coleções e lojas portuguesas num só sítio.</p></div><button type="button" class="finder-catalog-open" id="missingFinderCatalog">Abrir seleção completa</button></section>
   <div class="finder-grid">
-    <section class="finder-section"><div class="finder-section-title"><h3>Tipo / símbolo para procurar</h3><span>equivalência TCG</span></div><div class="finder-energy-list" id="missingFinderEnergy">${v126FinderEnergyMarkup(p)}</div><div class="finder-energy-note">Guia baseado no tipo do Pokémon. Em algumas coleções, uma impressão concreta pode usar outro tipo; confirma sempre o símbolo impresso na carta.</div></section>
-    <section class="finder-section"><div class="finder-section-title"><h3>Singles em Guimarães</h3><span>pesquisa direta</span></div><div class="finder-store-list"><article class="finder-store zuka"><div><strong>ZukaCards · Guimarães</strong><span>Inventário oficial de singles da ZukaCards no Cardmarket.</span><span class="finder-store-badge">consultar stock</span></div><a href="${escapeHtml(zuka)}" target="_blank" rel="noopener noreferrer">Ver singles ↗</a></article><article class="finder-store"><div><strong>Mystic Mirage · Guimarães</strong><span>Pesquisa este Pokémon no catálogo da loja e mostra disponível / esgotado.</span><span class="finder-store-badge">consultar stock</span></div><a href="${escapeHtml(mystic)}" target="_blank" rel="noopener noreferrer">Ver disponibilidade ↗</a></article></div><div class="finder-stock-truth">A app abre a pesquisa exata, mas a confirmação final acontece na página da loja. Assim nunca apresenta stock antigo como se estivesse disponível.</div></section>
+    <section class="finder-section finder-energy-section"><div class="finder-section-title"><h3>Símbolo TCG</h3><span>energia</span></div><div class="finder-energy-list" id="missingFinderEnergy">${v126FinderEnergyMarkup(p)}</div><div class="finder-energy-note">Guia visual do tipo principal.</div></section>
+    <section class="finder-section"><div class="finder-section-title"><h3>Singles / bulk em Portugal</h3><span>lojas portuguesas</span></div><div class="finder-store-list">${v130FinderStoreMarkup(p)}</div><div class="finder-stock-truth">A app tenta verificar o stock antes de abrir a loja. Quando a loja não expõe stock por API, aparece “stock por confirmar”. Se a pesquisa confirmar esgotado, o botão de abertura fica oculto.</div></section>
   </div>
-  <section class="finder-section finder-sets"><div class="finder-section-title"><h3>Coleções onde ${escapeHtml(name)} saiu</h3><span id="missingFinderCatalogState">a consultar catálogo internacional…</span></div><div class="finder-set-toolbar"><input id="missingFinderSetSearch" type="search" placeholder="Filtrar coleção ou código…" autocomplete="off" disabled><select id="missingFinderSetSort" aria-label="Ordenar coleções" disabled><option value="newest">Mais recentes</option><option value="oldest">Mais antigas</option><option value="az">A–Z</option></select><button type="button" class="finder-copy" id="missingFinderCopy" disabled>Copiar lista para a loja</button></div><div class="finder-set-summary" id="missingFinderSetSummary">A reunir todas as coleções…</div><div class="finder-set-list" id="missingFinderSetList"><div class="finder-empty">A consultar impressões físicas, promos e coleções especiais…</div></div></section>`;
+  <section class="finder-section finder-cards-section"><div class="finder-section-title"><h3>Cartas de ${escapeHtml(name)}</h3><span id="missingFinderCardSummary">a reunir impressões e promos…</span></div><div class="finder-card-grid" id="missingFinderCardGrid"><div class="finder-empty">A carregar cartas…</div></div><div class="finder-cards-more"><button type="button" id="missingFinderCardsMore" hidden>Mostrar todas</button></div></section>
+  <section class="finder-section finder-sets"><div class="finder-section-title"><h3>Coleções onde ${escapeHtml(name)} saiu</h3><span id="missingFinderCatalogState">a consultar catálogo internacional…</span></div><div class="finder-set-toolbar"><input id="missingFinderSetSearch" type="search" placeholder="Filtrar coleção ou código…" autocomplete="off" disabled><select id="missingFinderSetSort" aria-label="Ordenar coleções" disabled><option value="newest">Mais recentes</option><option value="oldest">Mais antigas</option><option value="az">A–Z</option></select><button type="button" class="finder-copy" id="missingFinderCopy" disabled>Copiar lista</button></div><div class="finder-set-summary" id="missingFinderSetSummary">A reunir todas as coleções…</div><div class="finder-set-list" id="missingFinderSetList"><div class="finder-empty">A consultar impressões físicas, Black Star Promos, McDonald’s e coleções especiais…</div></div></section>`;
 }
 
 async function v126OpenMissingFinder(p){
   const modal=document.getElementById('missingFinderModal'),body=document.getElementById('missingFinderBody');if(!modal||!body)return;
-  V126_FINDER_POKEMON=p;V126_FINDER_SETS=[];V126_FINDER_TRIGGER=document.activeElement;
+  V126_FINDER_POKEMON=p;V126_FINDER_SETS=[];V126_FINDER_CARDS=[];V126_FINDER_TRIGGER=document.activeElement;
   document.getElementById('missingFinderTitle').textContent=`Onde encontrar ${pretty(p.name)}?`;
-  document.getElementById('missingFinderSub').textContent='Geração, símbolo de energia, coleções e singles em Guimarães.';
-  body.innerHTML=v126FinderScaffold(p);modal.classList.add('open');modal.setAttribute('aria-hidden','false');document.body.classList.add('modal-open');
+  document.getElementById('missingFinderSub').textContent='Cartas, promos, coleções, símbolo TCG e lojas portuguesas.';
+  body.innerHTML=v126FinderScaffold(p);v131HydrateFinderStoreStock(p).catch(()=>{});modal.classList.add('open');modal.setAttribute('aria-hidden','false');document.body.classList.add('modal-open');
   document.getElementById('missingFinderCatalog')?.addEventListener('click',()=>{v126CloseMissingFinder({restoreFocus:false});openArtModal(p)});
   document.getElementById('missingFinderSetSearch')?.addEventListener('input',v126RenderFinderSets);
   document.getElementById('missingFinderSetSort')?.addEventListener('change',v126RenderFinderSets);
   document.getElementById('missingFinderCopy')?.addEventListener('click',v126CopyFinderList);
   if(!window.__typeCache?.[p.id])ensureTypes([p.id]).then(()=>{if(V126_FINDER_POKEMON===p){const energy=document.getElementById('missingFinderEnergy');if(energy)energy.innerHTML=v126FinderEnergyMarkup(p)}}).catch(()=>{});
   try{
-    const cards=await fetchAllCardsForPokemon(p);if(V126_FINDER_POKEMON!==p)return;
-    V126_FINDER_SETS=v126AggregateSets(cards);
+    let cards=await fetchAllCardsForPokemon(p);if(V126_FINDER_POKEMON!==p)return;
+    V126_FINDER_CARDS=cards;V126_FINDER_SETS=v126AggregateSets(cards);v130RenderFinderCards(p);v126RenderFinderSets();
     const state=document.getElementById('missingFinderCatalogState'),search=document.getElementById('missingFinderSetSearch'),sort=document.getElementById('missingFinderSetSort'),copy=document.getElementById('missingFinderCopy');
-    if(state)state.textContent=`${V126_FINDER_SETS.length} coleções confirmadas`;if(search)search.disabled=false;if(sort)sort.disabled=false;if(copy)copy.disabled=!V126_FINDER_SETS.length;v126RenderFinderSets();
+    if(state)state.textContent=`${V126_FINDER_SETS.length} coleções confirmadas`;if(search)search.disabled=false;if(sort)sort.disabled=false;if(copy)copy.disabled=!V126_FINDER_SETS.length;
+    try{
+      const world=await v124LoadWorldCatalog(p,'en',{baseCards:cards,force:false});if(V126_FINDER_POKEMON!==p)return;
+      const merged=v124MergePhysicalCatalog(cards,world);
+      if(merged.length>=cards.length){V126_FINDER_CARDS=merged;V126_FINDER_SETS=v126AggregateSets(merged);CARD_BROWSER_CACHE.set(Number(p.id),merged);v130RenderFinderCards(p);v126RenderFinderSets();if(state)state.textContent=`${V126_FINDER_SETS.length} coleções · catálogo reconciliado`;}
+    }catch(e){console.warn('Reconciliação de promos/TCGdex no finder:',e)}
   }catch(e){
-    console.error('Assistente de carta em falta:',e);if(V126_FINDER_POKEMON!==p)return;
-    const state=document.getElementById('missingFinderCatalogState'),list=document.getElementById('missingFinderSetList'),summary=document.getElementById('missingFinderSetSummary');if(state)state.textContent='catálogo temporariamente indisponível';if(summary)summary.textContent='As pesquisas das lojas continuam disponíveis.';if(list)list.innerHTML='<div class="finder-empty">Não foi possível reunir as coleções agora. Fecha e volta a tentar; o teu binder não foi alterado.</div>';
+    console.error('Assistente de carta:',e);if(V126_FINDER_POKEMON!==p)return;
+    const state=document.getElementById('missingFinderCatalogState'),list=document.getElementById('missingFinderSetList'),summary=document.getElementById('missingFinderSetSummary'),grid=document.getElementById('missingFinderCardGrid');if(state)state.textContent='catálogo temporariamente indisponível';if(summary)summary.textContent='As pesquisas das lojas continuam disponíveis.';if(list)list.innerHTML='<div class="finder-empty">Não foi possível reunir as coleções agora. O binder não foi alterado.</div>';if(grid)grid.innerHTML='<div class="finder-empty">Não foi possível carregar as cartas agora.</div>';
   }
 }
 
 function v126CloseMissingFinder({restoreFocus=true}={}){
-  const modal=document.getElementById('missingFinderModal');if(!modal)return;modal.classList.remove('open');modal.setAttribute('aria-hidden','true');V126_FINDER_POKEMON=null;V126_FINDER_SETS=[];
+  const modal=document.getElementById('missingFinderModal');if(!modal)return;modal.classList.remove('open');modal.setAttribute('aria-hidden','true');V126_FINDER_POKEMON=null;V126_FINDER_SETS=[];V126_FINDER_CARDS=[];
   if(!document.querySelector('.art-modal.open,.variant-modal.open,.full-card-modal.open,.scanner-modal.open,.stock-modal.open'))document.body.classList.remove('modal-open');
   if(restoreFocus&&V126_FINDER_TRIGGER?.isConnected)V126_FINDER_TRIGGER.focus();V126_FINDER_TRIGGER=null;
 }
@@ -5411,9 +5979,95 @@ document.getElementById('missingFinderClose')?.addEventListener('click',()=>v126
 document.getElementById('missingFinderModal')?.addEventListener('click',e=>{if(e.target===e.currentTarget)v126CloseMissingFinder()});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElementById('missingFinderModal')?.classList.contains('open'))v126CloseMissingFinder()});
 
-console.info('POKÉDEX XL v12.7.0 MARKET VALUE carregada');
+console.info('POKÉDEX M7 v13.2.0 PRO FINISH carregada');
 
 document.getElementById('resetGenBtn').addEventListener('click',()=>{state.generation=null;state.page=1;renderCurrentPage()});
 </script>
+
+<script>
+/* v13.2 · máscara física adaptativa e renderer local controlado. */
+(function(){
+  function releaseYear(card){
+    const raw=String(card?.set?.releaseDate||card?.releaseDate||'');
+    const m=raw.match(/(19|20)\d{2}/);return m?Number(m[0]):0;
+  }
+  window.m7ArtBoxForCard=function(card){
+    const y=releaseYear(card);
+    if(y&&y<=2002)return {x:.080,y:.168,w:.840,h:.331};
+    if(y&&y<=2006)return {x:.077,y:.158,w:.846,h:.349};
+    if(y&&y<=2010)return {x:.075,y:.151,w:.850,h:.350};
+    if(y&&y<=2016)return {x:.074,y:.145,w:.852,h:.354};
+    if(y&&y<=2021)return {x:.073,y:.142,w:.854,h:.354};
+    return {x:.072,y:.139,w:.856,h:.356};
+  };
+  const oldFrame=window.variantFrameMode;
+  window.variantFrameMode=function(card,v){
+    const rarity=String(card?.rarity||'').toLowerCase(),subs=(card?.subtypes||[]).join(' ').toLowerCase(),name=String(card?.name||'').toLowerCase(),year=releaseYear(card);
+    if(/illustration|full art|ultra rare|hyper rare|secret|rainbow|gold|radiant|amazing|shiny rare|special/.test(rarity))return 'full';
+    if(/vmax|vstar|v-union|break|gx|\bv\b/.test(subs)||/ vmax| vstar| break| gx\b|\bv\b/.test(name))return 'full';
+    if(/\bex\b/.test(subs)||/\bex\b/.test(name))return year&&year<=2007?'standard':'full';
+    const eff=window.variantVisualEffect(v);if(['rainbow','gold','glitter','radiant','metal'].includes(eff))return 'full';
+    try{return oldFrame?oldFrame(card,v):'standard'}catch(_){return 'standard'}
+  };
+  window.m7EffectiveFoil=function(card,v){
+    const explicit=window.variantVisualEffect(v);if(explicit&&explicit!=='normal')return explicit;
+    const rarity=String(card?.rarity||'').toLowerCase(),subs=(card?.subtypes||[]).join(' ').toLowerCase(),name=String(card?.name||'').toLowerCase();
+    if(/radiant/.test(`${rarity} ${name}`))return 'radiant';
+    if(/rainbow/.test(rarity))return 'rainbow';
+    if(/hyper rare|gold/.test(rarity))return 'gold';
+    if(/special illustration|illustration rare|ultra rare|double rare|amazing rare|shiny rare/.test(rarity))return 'holo';
+    if(/gx|vmax|vstar|v-union|\bv\b|\bex\b/.test(`${subs} ${name}`))return 'holo';
+    return explicit||'normal';
+  };
+
+  const oldCreateReal=window.createRealFoilCard;
+  if(oldCreateReal){
+    window.createRealFoilCard=function(card,v,url,opts={}){
+      const vv=Object.assign({},v||{});const eff=window.m7EffectiveFoil(card,v);
+      if(eff!=='normal'&&window.variantVisualEffect(v)==='normal')vv.type=eff==='holo'?'holo':(v?.type||'normal'),vv.foil=eff;
+      const visual=oldCreateReal(card,vv,url,opts),root=visual?.element;
+      if(root){root.dataset.finish=eff;root.dataset.frame=window.variantFrameMode(card,vv);}
+      return visual;
+    };
+  }
+
+  window.proFoilEffect=function(card,v){
+    const eff=window.m7EffectiveFoil(card,v);
+    return ({normal:'none',reverse:'reverse',masterball:'reverse',pokeball:'reverse',cosmos:'cosmos',crystal:'crystal',rainbow:'aurora',gold:'gold',glitter:'holo',metal:'metal',radiant:'sunburst',holo:'holo'})[eff]||'holo';
+  };
+  window.proFoilVisual=function(v,compact=false){
+    const eff=window.variantVisualEffect(v);
+    const base={brightness:1.01,contrast:1.01,saturate:1.02,glareOpacity:compact?.10:.20,shineOpacity:compact?.24:.44,imageFit:'contain'};
+    if(eff==='normal')return {...base,glareOpacity:compact?.06:.12,shineOpacity:0};
+    if(eff==='holo'||eff==='cosmos')return {...base,saturate:1.04,glareOpacity:compact?.11:.22,shineOpacity:compact?.26:.46};
+    if(eff==='reverse')return {...base,saturate:1.02,glareOpacity:compact?.10:.18,shineOpacity:compact?.22:.40,lineSpace:7.5,lineAngle:128};
+    return base;
+  };
+
+  /* Para consistência entre Safari/desktop, usa o renderer local refinado.
+     Evita shaders/mosaicos que em certas GPUs apareciam como blocos quadrados. */
+  window.createProFoilCard=async function(card,v,url,opts={}){
+    const interactive=opts.interactive!==false,compact=!!opts.compact;
+    const visual=window.createRealFoilCard(card,v,url,{interactive,compact}),root=visual?.element,img=root?.querySelector?.('img');
+    let observer=null;
+    const align=()=>{
+      if(!root||!img?.naturalWidth||!img?.naturalHeight)return;
+      const w=root.clientWidth,h=root.clientHeight;if(!w||!h)return;
+      const imageRatio=img.naturalWidth/img.naturalHeight,boxRatio=w/h;let x=0,y=0,rw=w,rh=h;
+      if(imageRatio>boxRatio){rh=w/imageRatio;y=(h-rh)/2}else{rw=h*imageRatio;x=(w-rw)/2}
+      const a=window.m7ArtBoxForCard(card),box=(selector,bx,by,bw,bh)=>{const el=root.querySelector(selector);if(!el)return;el.style.left=`${bx}px`;el.style.top=`${by}px`;el.style.width=`${bw}px`;el.style.height=`${bh}px`;el.style.right='auto';el.style.bottom='auto'};
+      box('.realfoil-gloss',x,y,rw,rh);box('.realfoil-full',x,y,rw,rh);
+      box('.realfoil-art',x+rw*a.x,y+rh*a.y,rw*a.w,rh*a.h);
+      box('.realfoil-rev.rtop',x,y,rw,rh*a.y);
+      box('.realfoil-rev.rbottom',x,y+rh*(a.y+a.h),rw,rh*(1-a.y-a.h));
+      box('.realfoil-rev.rleft',x,y+rh*a.y,rw*a.x,rh*a.h);
+      box('.realfoil-rev.rright',x+rw*(a.x+a.w),y+rh*a.y,rw*(1-a.x-a.w),rh*a.h);
+    };
+    if(img){if(img.complete)requestAnimationFrame(align);else img.addEventListener('load',()=>requestAnimationFrame(align),{once:true});if(typeof ResizeObserver!=='undefined'){observer=new ResizeObserver(()=>requestAnimationFrame(align));observer.observe(root)}}
+    const destroy=visual?.destroy;return {element:root,destroy:()=>{observer?.disconnect?.();try{destroy?.()}catch(_){}}};
+  };
+})();
+</script>
+
 </body>
 </html>

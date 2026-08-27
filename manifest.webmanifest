@@ -1,24 +1,20 @@
 {
-  "name": "Pokédex XL — National Dex Master Set",
-  "short_name": "Pokédex XL",
+  "id": "./",
+  "name": "Pokédex M7 · Master Set",
+  "short_name": "Pokédex M7",
+  "description": "Binder digital Pokémon, coleção Master Set e alertas de stock em Portugal.",
+  "lang": "pt-PT",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#080f17",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "any",
+  "background_color": "#03070b",
   "theme_color": "#080f17",
-  "description": "Pokédex XL by Cigas — National Dex, coleção, ART e cartas com preços Cardmarket.",
+  "categories": ["games", "shopping", "utilities"],
   "icons": [
-    {
-      "src": "icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
+    {"src":"icon-180.png","sizes":"180x180","type":"image/png","purpose":"any"},
+    {"src":"icon-192.png","sizes":"192x192","type":"image/png","purpose":"any maskable"},
+    {"src":"icon-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}
   ]
 }
