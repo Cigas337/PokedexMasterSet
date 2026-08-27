@@ -135,15 +135,60 @@
     }
     return rows;
   }
-  function cardOwned(card,set){
-    const cid=norm(card?.id),num=norm(card?.localId||card?.number),name=norm(card?.name),sid=norm(set?.id),sname=norm(set?.name);
-    return ownedRecords().some(r=>{
-      if(cid&&(norm(r.id)===cid||norm(r.tdx)===cid))return true;
-      const sameSet=(sid&&(norm(r.setCode)===sid||norm(r.setCode).includes(sid)||sid.includes(norm(r.setCode))))||(sname&&norm(r.setName)===sname);
-      return sameSet&&num&&norm(r.number)===num&&(!r.name||!name||norm(r.name)===name);
+  function numKey(v){
+    const raw=String(v??'').trim().toLowerCase();
+    if(!raw)return '';
+    if(/^\d+$/.test(raw))return String(parseInt(raw,10));
+    return norm(raw).replace(/^([a-z]+)0+(\d+)$/,'$1$2');
+  }
+  function idKey(v){
+    return norm(v).replace(/([a-z])0+(\d+)$/,'$1$2');
+  }
+  function nameTokens(v){
+    const stop=new Set(['pokemon','tcg','set','series','expansion','black','star','promo','promos','the','and']);
+    return String(v||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').trim().split(/\s+/).filter(x=>x&&!stop.has(x));
+  }
+  function sameSetName(a,b){
+    const na=norm(a),nb=norm(b);if(!na||!nb)return false;if(na===nb)return true;
+    const aa=nameTokens(a),bb=nameTokens(b);if(!aa.length||!bb.length)return false;
+    const A=new Set(aa),B=new Set(bb),common=[...A].filter(x=>B.has(x));
+    const min=Math.min(A.size,B.size);
+    return min>=2&&common.length===min;
+  }
+  function recordSetId(r){
+    const direct=idKey(r?.setCode);if(direct)return direct;
+    const raw=String(r?.tdx||r?.id||'');
+    const m=raw.match(/^(.+?)[-_][^\-_]+$/);return m?idKey(m[1]):'';
+  }
+  function sameSetRecord(r,set){
+    const sid=idKey(set?.id),rid=recordSetId(r);
+    if(sid&&rid&&(sid===rid||sid.replace(/bsp$/,'')===rid.replace(/bsp$/,'')))return true;
+    if(r?.setName&&set?.name&&sameSetName(r.setName,set.name))return true;
+    return false;
+  }
+  function cardOwned(card,set,records){
+    const recs=records||ownedRecords();
+    const cid=idKey(card?.id),num=numKey(card?.localId||card?.number);
+    return recs.some(r=>{
+      const rid=idKey(r.id),rtdx=idKey(r.tdx);
+      if(cid&&(rid===cid||rtdx===cid))return true;
+      return sameSetRecord(r,set)&&num&&numKey(r.number)===num;
     });
   }
-  function ownedForSet(set,cards){return (cards||[]).filter(c=>cardOwned(c,set)).length}
+  function ownedForSet(set,cards){
+    const recs=ownedRecords();
+    return (cards||[]).filter(c=>cardOwned(c,set,recs)).length;
+  }
+  function ownedCountForSetSummary(set){
+    const seen=new Set();
+    for(const r of ownedRecords()){
+      if(!sameSetRecord(r,set))continue;
+      const n=numKey(r.number),rid=idKey(r.tdx||r.id),name=norm(r.name);
+      const key=n?`${numKey(n)}|${name}`:(rid||name);
+      if(key)seen.add(key);
+    }
+    return seen.size;
+  }
 
   /* ---------- IMAGE FALLBACKS ---------- */
   function uniq(a){return [...new Set(a.filter(Boolean))]}
@@ -218,7 +263,7 @@
     const list=sets.filter(s=>(!q||norm(`${s.name} ${s.id} ${s.series}`).includes(q))&&(series==='all'||s.series===series));
     if(!list.length){holder.innerHTML='<div class="m7-v155-state"><div><strong>Nenhuma expansão encontrada.</strong><span>Experimenta outro nome ou limpa os filtros.</span></div></div>';return}
     const groups=new Map();for(const s of list){if(!groups.has(s.series))groups.set(s.series,[]);groups.get(s.series).push(s)}
-    holder.innerHTML=[...groups.entries()].map(([group,rows])=>`<section class="m7-v155-exp-group"><h3>${esc(group)}</h3><div class="m7-v155-exp-grid">${rows.map(s=>{const known=s.total||0;const owned=ownedForSet(s,[]);const pct=known?owned/known*100:0;return `<button type="button" class="m7-v155-set" data-v155-set="${esc(s.id)}"><div class="m7-v155-set-top"><span class="m7-v155-code">${esc(s.id)}</span><span class="m7-v155-progress"><span>${owned} de ${known||'—'}</span><i class="m7-v155-ring" style="--p:${pct.toFixed(2)}"></i></span></div><div class="m7-v155-set-image"><img alt="${esc(s.name)}" data-v155-image="${esc(s.logo)}" data-v155-image-alt="${esc(s.symbol)}" data-v155-kind="set" data-v155-fallback="${esc(s.name)}"></div><strong>${esc(s.name)}</strong></button>`}).join('')}</div></section>`).join('');
+    holder.innerHTML=[...groups.entries()].map(([group,rows])=>`<section class="m7-v155-exp-group"><h3>${esc(group)}</h3><div class="m7-v155-exp-grid">${rows.map(s=>{const known=s.total||0;const owned=ownedCountForSetSummary(s);const pct=known?owned/known*100:0;return `<button type="button" class="m7-v155-set" data-v155-set="${esc(s.id)}"><div class="m7-v155-set-top"><span class="m7-v155-code">${esc(s.id)}</span><span class="m7-v155-progress"><span>${owned} de ${known||'—'}</span><i class="m7-v155-ring" style="--p:${pct.toFixed(2)}"></i></span></div><div class="m7-v155-set-image"><img alt="${esc(s.name)}" data-v155-image="${esc(s.logo)}" data-v155-image-alt="${esc(s.symbol)}" data-v155-kind="set" data-v155-fallback="${esc(s.name)}"></div><strong>${esc(s.name)}</strong></button>`}).join('')}</div></section>`).join('');
     hydrateImages(holder);
   }
   async function openSet(set){
