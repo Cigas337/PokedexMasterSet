@@ -1,0 +1,59 @@
+name: Apply v15.9 RC polish
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'v15.9.js'
+      - 'v15.9.css'
+      - 'scripts/apply_v15_9_rc_polish.py'
+      - '.github/workflows/apply-v15-9-rc-polish.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Apply v15.9 RC
+        run: python3 scripts/apply_v15_9_rc_polish.py
+
+      - name: Validate RC layer
+        run: |
+          node --check v15.9.js
+          python3 - <<'PY'
+          from pathlib import Path
+          css=Path('v15.9.css').read_text(encoding='utf-8')
+          js=Path('v15.9.js').read_text(encoding='utf-8')
+          html=Path('index.html').read_text(encoding='utf-8')
+          sw=Path('sw.js').read_text(encoding='utf-8')
+
+          assert 'body.m7-v159' in css
+          assert '#m7PortfolioView' in css and '#m7SearchView' in css
+          assert '#m7ShopView' in css and '#m7ExpansionsView' in css and '#m7ProfileView' in css
+          assert 'm7RcDiagnostics' in js and 'normalizeNavigation' in js
+          assert html.count('v15.9.css') == 1 and html.count('v15.9.js') == 1
+          assert 'v15.9.css?v=15.9.0' in html and 'v15.9.js?v=15.9.0' in html
+          assert "pokedexm7-shell-v15.9.0-rc1" in sw
+          assert "'./v15.9.css'" in sw and "'./v15.9.js'" in sw
+          print('v15.9.0 RC validation OK')
+          PY
+
+      - name: Commit activation
+        run: |
+          if git diff --quiet; then
+            echo 'Already active.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html sw.js
+          git commit -m 'chore: activate v15.9.0 RC visual polish'
+          git push
