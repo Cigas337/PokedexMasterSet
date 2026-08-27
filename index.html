@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="Pokédex M7">
 <link rel="manifest" href="manifest.webmanifest">
-<title>Pokédex M7 — Master Set · v14.0.2 PUSH AUTH HOTFIX</title>
+<title>Pokédex M7 — Master Set · v15.0.0 APP SHELL</title>
 <link rel="apple-touch-icon" href="icon-180.png">
 <style>
 :root{
@@ -1448,6 +1448,7 @@ window.__cardsCssReady=(async()=>{
   }catch(e){console.warn('Motor holográfico externo indisponível; a usar renderer local.',e);return null;}
 })();
 </script>
+<link rel="stylesheet" href="./v15.css?v=15.0.0">
 </head>
 <body class="auth-locked">
 
@@ -4289,7 +4290,7 @@ window.addEventListener('appinstalled',()=>{
 
 if('serviceWorker' in navigator && location.protocol!=='file:'){
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('./sw.js?v=14.0.2',{updateViaCache:'none'})
+    navigator.serviceWorker.register('./sw.js?v=15.0.0',{updateViaCache:'none'})
       .then(reg=>reg.update())
       .catch(err=>console.warn('Service Worker:',err));
   });
@@ -6092,5 +6093,7 @@ document.getElementById('resetGenBtn').addEventListener('click',()=>{state.gener
 })();
 </script>
 
+<script src="./v15.js?v=15.0.0"></script>
+<script src="./v15-fix.js?v=15.0.0"></script>
 </body>
 </html>
