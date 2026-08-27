@@ -11,6 +11,7 @@ ASSET_VERSION='15.10.0'
 CACHE_VERSION='pokedexm7-shell-v15.10.0-rc1'
 
 # v15.10 is an isolated final-polish layer loaded after v15.9.
+# Keep activation idempotent so PR validation and the final main push use the same path.
 if 'v15.10.css' not in html:
     anchor=re.search(r'(<link rel="stylesheet" href="\./v15\.9\.css\?v=[^"]+">)',html)
     if anchor:
