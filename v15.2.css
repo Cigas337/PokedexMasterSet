@@ -1,0 +1,8 @@
+/* Pokédex M7 v15.2.0 · strip dashboard/discovery chrome */
+.m7-v152 #m7PortfolioView,.m7-v152 #m7SearchView{padding-top:0!important}
+.m7-v152 #m7PortfolioView>.controls,.m7-v152 #m7SearchView>.controls{margin-top:0!important}
+.m7-v152 #m7PortfolioView>.stage,.m7-v152 #m7SearchView>.stage{margin-top:10px!important}
+.m7-v152 #m7PortfolioView .m7-home-hero,.m7-v152 #m7PortfolioView .m7-metric-grid,.m7-v152 #m7PortfolioView .m7-portfolio-grid,.m7-v152 #m7PortfolioView .m7-v151-collection-overview,.m7-v152 #m7PortfolioView .m7-section-card,.m7-v152 #m7SearchView .m7-view-heading,.m7-v152 #m7SearchView .m7-v151-discovery{display:none!important}
+.m7-v152 #m7PortfolioView .controls{position:sticky;top:8px;z-index:1200;padding:10px;border:1px solid rgba(255,255,255,.09)!important;border-radius:18px!important;background:rgba(7,12,18,.90)!important;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 14px 34px rgba(0,0,0,.25)!important}
+.m7-v152 #m7PortfolioView .search-wrap input,.m7-v152 #m7SearchView .search-wrap input{background:#0d151e!important;border-color:rgba(255,255,255,.10)!important}
+@media(max-width:760px){.m7-v152 #m7PortfolioView .controls,.m7-v152 #m7SearchView .controls{top:calc(4px + env(safe-area-inset-top));padding:7px!important;border-radius:15px!important}.m7-v152 #m7PortfolioView .stage,.m7-v152 #m7SearchView .stage{padding:9px!important;border-radius:17px!important}.m7-v152 #m7PortfolioView .stage-head h2,.m7-v152 #m7SearchView .stage-head h2{font-size:15px!important}}
