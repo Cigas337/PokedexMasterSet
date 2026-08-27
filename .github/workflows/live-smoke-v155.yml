@@ -1,0 +1,117 @@
+name: Live smoke v15.5
+
+on:
+  push:
+    branches:
+      - qa-v155-live-smoke
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Install browser
+        run: |
+          npm init -y >/dev/null 2>&1
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+
+      - name: Test live Pages in required order
+        env:
+          LIVE_URL: https://cigas337.github.io/PokedexMasterSet/
+        run: |
+          node <<'NODE'
+          const { chromium } = require('playwright');
+
+          (async () => {
+            const browser = await chromium.launch({ headless: true });
+            const context = await browser.newContext({
+              viewport: { width: 390, height: 844 },
+              userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Version/18.0 Mobile/15E148 Safari/604.1'
+            });
+            const page = await context.newPage();
+            const consoleErrors = [];
+            const pageErrors = [];
+            page.on('console', msg => {
+              if (msg.type() === 'error') consoleErrors.push(msg.text());
+            });
+            page.on('pageerror', err => pageErrors.push(String(err)));
+
+            const url = process.env.LIVE_URL;
+            const response = await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
+            if (!response || !response.ok()) throw new Error(`Initial navigation failed: HTTP ${response?.status()}`);
+            await page.waitForLoadState('networkidle', { timeout: 30000 }).catch(() => {});
+
+            // Activate the newly published service worker/cache, then test the same public PWA again.
+            await page.evaluate(async () => {
+              if ('serviceWorker' in navigator) await navigator.serviceWorker.ready;
+            }).catch(() => {});
+            await page.reload({ waitUntil: 'domcontentloaded', timeout: 60000 });
+            await page.waitForLoadState('networkidle', { timeout: 30000 }).catch(() => {});
+
+            console.log('LIVE', page.url());
+            console.log('TITLE', await page.title());
+            console.log('SW_CONTROLLER', await page.evaluate(() => !!navigator.serviceWorker?.controller));
+
+            // 1) SHOP — must be first.
+            console.log('TEST 1 SHOP');
+            await page.locator('[data-app-nav="shop"]').click();
+            await page.waitForSelector('#m7ShopView.active', { timeout: 10000 });
+            if (await page.locator('#m7ShopHost #stockModal').count() !== 1) {
+              throw new Error('SHOP: stockModal was not mounted inside Shop');
+            }
+            await Promise.race([
+              page.waitForSelector('#stockBody .stock-card', { timeout: 25000 }),
+              page.waitForSelector('#stockBody .art-empty', { timeout: 25000 })
+            ]).catch(() => {});
+            const stockCards = await page.locator('#stockBody .stock-card').count();
+            const stockText = (await page.locator('#stockBody').innerText().catch(() => '')).slice(0, 800);
+            console.log('SHOP_STOCK_CARDS', stockCards);
+            console.log('SHOP_TEXT', JSON.stringify(stockText));
+            if (stockCards < 1) throw new Error(`SHOP: no products rendered. ${stockText}`);
+            console.log('PASS SHOP');
+
+            // 2) POKÉDEX — only after Shop.
+            console.log('TEST 2 POKEDEX');
+            await page.locator('[data-app-nav="portfolio"]').click();
+            await page.waitForSelector('#m7PortfolioView.active', { timeout: 10000 });
+            await page.waitForFunction(() => {
+              const view = document.getElementById('m7PortfolioView');
+              return !!view?.querySelector('.controls') && !!view?.querySelector('.stage');
+            }, null, { timeout: 10000 });
+            const pokedexTitle = (await page.locator('#m7PortfolioView .stage-head h2').innerText().catch(() => '')).trim();
+            const pokemonRows = await page.locator('#m7PortfolioView .pokemon-card, #m7PortfolioView .poke-card, #m7PortfolioView [data-id]').count();
+            console.log('POKEDEX_TITLE', JSON.stringify(pokedexTitle));
+            console.log('POKEDEX_RENDERED_ITEMS', pokemonRows);
+            if (!/Pokédex Nacional/i.test(pokedexTitle)) throw new Error(`POKEDEX: wrong view title: ${pokedexTitle}`);
+            console.log('PASS POKEDEX');
+
+            // 3) EXPANSÕES — only after returning to Pokédex.
+            console.log('TEST 3 EXPANSIONS');
+            await page.locator('[data-app-nav="expansions"]').click();
+            await page.waitForSelector('#m7ExpansionsView.active', { timeout: 10000 });
+            await Promise.race([
+              page.waitForSelector('#v155SetResults .m7-v155-set', { timeout: 30000 }),
+              page.waitForSelector('#v155SetResults .m7-v155-state', { timeout: 30000 })
+            ]).catch(() => {});
+            const sets = await page.locator('#v155SetResults .m7-v155-set').count();
+            const expansionsText = (await page.locator('#v155SetResults').innerText().catch(() => '')).slice(0, 800);
+            console.log('EXPANSION_SETS', sets);
+            console.log('EXPANSIONS_TEXT', JSON.stringify(expansionsText));
+            if (sets < 1) throw new Error(`EXPANSIONS: no expansion sets rendered. ${expansionsText}`);
+            console.log('PASS EXPANSIONS');
+
+            console.log('PAGE_ERRORS', JSON.stringify(pageErrors));
+            console.log('CONSOLE_ERRORS', JSON.stringify(consoleErrors.slice(0, 20)));
+            if (pageErrors.length) throw new Error(`Runtime page errors: ${pageErrors.join(' | ')}`);
+
+            await browser.close();
+            console.log('ALL_REQUIRED_TESTS_PASS');
+          })().catch(async err => {
+            console.error('SMOKE_TEST_FAILED', err && err.stack ? err.stack : err);
+            process.exit(1);
+          });
+          NODE
