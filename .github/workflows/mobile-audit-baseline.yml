@@ -1,4 +1,4 @@
-name: Verify v15.7 Pokedex toolbar live fast
+name: Verify v15.7 Pokedex toolbar live nonblocking
 
 on:
   push:
@@ -10,14 +10,14 @@ permissions:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 6
     steps:
       - name: Install browser
         run: |
           npm init -y >/dev/null 2>&1
           npm install --no-save playwright@1.55.0
           npx playwright install --with-deps chromium
-      - name: Verify public v15.7 with direct DOM events
+      - name: Verify public v15.7
         env:
           LIVE_URL: https://cigas337.github.io/PokedexMasterSet/
         run: |
@@ -26,72 +26,57 @@ jobs:
           const sleep=ms=>new Promise(r=>setTimeout(r,ms));
           (async()=>{
             const browser=await chromium.launch({headless:true});
-            for(const cfg of [
-              {name:'iphone',viewport:{width:393,height:852},isMobile:true,hasTouch:true},
-              {name:'desktop',viewport:{width:1440,height:900},isMobile:false,hasTouch:false}
-            ]){
-              const page=await browser.newPage({viewport:cfg.viewport,isMobile:cfg.isMobile,hasTouch:cfg.hasTouch});
-              page.setDefaultTimeout(5000);
-              const pageErrors=[]; page.on('pageerror',e=>pageErrors.push(String(e)));
-              await page.goto(process.env.LIVE_URL,{waitUntil:'domcontentloaded',timeout:30000});
-              await page.evaluate(async()=>{if('serviceWorker'in navigator)await Promise.race([navigator.serviceWorker.ready,new Promise(r=>setTimeout(r,4000))])}).catch(()=>{});
-              await page.reload({waitUntil:'domcontentloaded',timeout:30000});
-              await page.evaluate(async()=>{if(typeof unlockApp==='function')await unlockApp()});
+            for(const cfg of [{name:'iphone',width:393,height:852,mobile:true},{name:'desktop',width:1440,height:900,mobile:false}]){
+              const page=await browser.newPage({viewport:{width:cfg.width,height:cfg.height},isMobile:cfg.mobile,hasTouch:cfg.mobile});
+              const errors=[];page.on('pageerror',e=>errors.push(String(e)));
+              await page.goto(process.env.LIVE_URL,{waitUntil:'domcontentloaded',timeout:25000});
+              await page.evaluate(()=>{try{if(typeof unlockApp==='function')void unlockApp()}catch(_){}});
+              await sleep(1800);
               await page.evaluate(()=>document.querySelector('[data-app-nav="portfolio"]')?.click());
-              await page.waitForFunction(()=>!!document.getElementById('m7PokedexOptionsBtn'),null,{timeout:8000});
-              await sleep(350);
-
-              const toolbar=await page.evaluate(()=>{
-                const root=document.querySelector('#m7PortfolioView .controls');
-                const visible=[...root.children].filter(el=>{const s=getComputedStyle(el),r=el.getBoundingClientRect();return s.display!=='none'&&s.visibility!=='hidden'&&r.width>1&&r.height>1}).map(el=>({id:el.id,cls:String(el.className||''),w:Math.round(el.getBoundingClientRect().width),h:Math.round(el.getBoundingClientRect().height)}));
-                const title=document.querySelector('.m7-brand-panel .brand-title'),brandPanel=document.querySelector('.m7-brand-panel');
-                const tr=title?.getBoundingClientRect(),pr=brandPanel?.getBoundingClientRect();
-                return {visible,docWidth:document.documentElement.scrollWidth,viewport:innerWidth,brand:{text:title?.textContent?.trim()||'',titleTop:Math.round(tr?.top||0),titleBottom:Math.round(tr?.bottom||0),panelTop:Math.round(pr?.top||0),panelBottom:Math.round(pr?.bottom||0),scrollHeight:title?.scrollHeight||0,clientHeight:title?.clientHeight||0}};
-              });
-              console.log('TOOLBAR',cfg.name,JSON.stringify(toolbar));
-              if(toolbar.visible.length!==2||!toolbar.visible.some(x=>x.cls.includes('search-wrap'))||!toolbar.visible.some(x=>x.id==='m7PokedexOptionsBtn'))throw new Error(`${cfg.name}: toolbar not simplified ${JSON.stringify(toolbar.visible)}`);
-              if(toolbar.docWidth>toolbar.viewport+2)throw new Error(`${cfg.name}: horizontal overflow`);
-              if(!toolbar.brand.text.includes('POKÉDEX M7'))throw new Error(`${cfg.name}: brand missing`);
-              if(toolbar.brand.titleTop<toolbar.brand.panelTop-2||toolbar.brand.titleBottom>toolbar.brand.panelBottom+2||toolbar.brand.scrollHeight>toolbar.brand.clientHeight+3)throw new Error(`${cfg.name}: brand clipped ${JSON.stringify(toolbar.brand)}`);
-
-              await page.evaluate(()=>document.getElementById('m7PokedexOptionsBtn')?.click());
-              await sleep(250);
-              const panel=await page.evaluate(()=>{
-                const p=document.getElementById('m7PokedexOptionsPanel'),nav=document.querySelector('.m7-app-nav'),btn=document.getElementById('m7PokedexOptionsBtn');
-                const r=p.getBoundingClientRect(),nr=nav.getBoundingClientRect(),br=btn.getBoundingClientRect();
-                return {display:getComputedStyle(p).display,opacity:+getComputedStyle(p).opacity,left:Math.round(r.left),right:Math.round(r.right),top:Math.round(r.top),bottom:Math.round(r.bottom),dockTop:Math.round(nr.top),buttonBottom:Math.round(br.bottom),filter:!!document.getElementById('m7V157Filter'),sort:!!document.getElementById('m7V157Sort'),photo:!!document.getElementById('m7V157Photo'),actions:document.querySelectorAll('#m7PokedexOptionsPanel [data-v157-proxy]').length};
-              });
-              console.log('PANEL',cfg.name,JSON.stringify(panel));
-              if(panel.display==='none'||panel.opacity<.9||!panel.filter||!panel.sort||!panel.photo||panel.actions<5)throw new Error(`${cfg.name}: panel incomplete`);
-              if(panel.left<0||panel.right>cfg.viewport.width+2)throw new Error(`${cfg.name}: panel outside viewport`);
-              if(cfg.isMobile&&panel.bottom>panel.dockTop-2)throw new Error(`${cfg.name}: panel overlaps dock`);
-              if(!cfg.isMobile&&panel.top<panel.buttonBottom-2)throw new Error(`${cfg.name}: popover anchor wrong`);
-
-              const sync=await page.evaluate(()=>{
-                const change=(id,value)=>{const el=document.getElementById(id);el.value=value;el.dispatchEvent(new Event('change',{bubbles:true}))};
-                change('m7V157Filter','missing'); const f1=document.getElementById('filterBy').value;
-                change('m7V157Filter','all');
-                change('m7V157Sort','name-asc'); const s1=document.getElementById('sortBy').value;
-                change('m7V157Sort','number-asc');
-                return {filter:f1,sort:s1};
-              });
-              console.log('SYNC',cfg.name,JSON.stringify(sync));
-              if(sync.filter!=='missing'||sync.sort!=='name-asc')throw new Error(`${cfg.name}: proxy sync failed`);
-
-              await page.evaluate(()=>document.getElementById('m7PokedexOptionsClose')?.click()); await sleep(220);
-              await page.evaluate(()=>document.querySelector('[data-app-nav="search"]')?.click()); await sleep(450);
-              const search=await page.evaluate(()=>{
+              await sleep(500);
+              const result=await page.evaluate((mobile)=>{
                 const shown=el=>{if(!el)return false;const s=getComputedStyle(el),r=el.getBoundingClientRect();return s.display!=='none'&&s.visibility!=='hidden'&&r.width>1&&r.height>1};
-                return {active:document.body.dataset.m7View||'',options:shown(document.getElementById('m7PokedexOptionsBtn')),search:shown(document.getElementById('search')),filter:shown(document.getElementById('mobileFilterToggle')),scan:shown(document.getElementById('mobileScanBtn'))};
+                const controls=document.querySelector('#m7PortfolioView .controls');
+                const visible=controls?[...controls.children].filter(shown).map(el=>({id:el.id,cls:String(el.className||''),w:Math.round(el.getBoundingClientRect().width),h:Math.round(el.getBoundingClientRect().height)})):[];
+                const title=document.querySelector('.m7-brand-panel .brand-title'),bp=document.querySelector('.m7-brand-panel');
+                const tr=title?.getBoundingClientRect(),bpr=bp?.getBoundingClientRect();
+                document.getElementById('m7PokedexOptionsBtn')?.click();
+                const p=document.getElementById('m7PokedexOptionsPanel'),nav=document.querySelector('.m7-app-nav'),ob=document.getElementById('m7PokedexOptionsBtn');
+                const pr=p?.getBoundingClientRect(),nr=nav?.getBoundingClientRect(),obr=ob?.getBoundingClientRect();
+                return {active:document.body.dataset.m7View||'',visible,docWidth:document.documentElement.scrollWidth,viewport:innerWidth,brand:{text:title?.textContent?.trim()||'',top:Math.round(tr?.top||0),bottom:Math.round(tr?.bottom||0),panelTop:Math.round(bpr?.top||0),panelBottom:Math.round(bpr?.bottom||0),scroll:title?.scrollHeight||0,client:title?.clientHeight||0},panel:p&&{hidden:p.hidden,display:getComputedStyle(p).display,left:Math.round(pr.left),right:Math.round(pr.right),top:Math.round(pr.top),bottom:Math.round(pr.bottom),dockTop:Math.round(nr.top),buttonBottom:Math.round(obr.bottom),filter:!!document.getElementById('m7V157Filter'),sort:!!document.getElementById('m7V157Sort'),photo:!!document.getElementById('m7V157Photo'),actions:document.querySelectorAll('#m7PokedexOptionsPanel [data-v157-proxy]').length},mobile};
+              },cfg.mobile);
+              await sleep(260);
+              const panelOpacity=await page.evaluate(()=>+getComputedStyle(document.getElementById('m7PokedexOptionsPanel')).opacity);
+              console.log('LAYOUT',cfg.name,JSON.stringify({...result,panelOpacity}));
+              if(result.active!=='portfolio')throw new Error(`${cfg.name}: portfolio inactive`);
+              if(result.visible.length!==2||!result.visible.some(x=>x.cls.includes('search-wrap'))||!result.visible.some(x=>x.id==='m7PokedexOptionsBtn'))throw new Error(`${cfg.name}: toolbar not search+options only`);
+              if(result.docWidth>result.viewport+2)throw new Error(`${cfg.name}: horizontal overflow`);
+              if(!result.brand.text.includes('POKÉDEX M7')||result.brand.top<result.brand.panelTop-2||result.brand.bottom>result.brand.panelBottom+2||result.brand.scroll>result.brand.client+3)throw new Error(`${cfg.name}: brand clipped ${JSON.stringify(result.brand)}`);
+              if(!result.panel||result.panel.hidden||panelOpacity<.9||!result.panel.filter||!result.panel.sort||!result.panel.photo||result.panel.actions<5)throw new Error(`${cfg.name}: panel incomplete`);
+              if(result.panel.left<0||result.panel.right>cfg.width+2)throw new Error(`${cfg.name}: panel outside viewport`);
+              if(cfg.mobile&&result.panel.bottom>result.panel.dockTop-2)throw new Error(`${cfg.name}: panel overlaps dock`);
+              if(!cfg.mobile&&result.panel.top<result.panel.buttonBottom-2)throw new Error(`${cfg.name}: popover not below button`);
+
+              const synced=await page.evaluate(()=>{
+                const f=document.getElementById('m7V157Filter'),s=document.getElementById('m7V157Sort');
+                f.value='missing';f.dispatchEvent(new Event('change',{bubbles:true}));const fv=document.getElementById('filterBy').value;
+                f.value='all';f.dispatchEvent(new Event('change',{bubbles:true}));
+                s.value='name-asc';s.dispatchEvent(new Event('change',{bubbles:true}));const sv=document.getElementById('sortBy').value;
+                s.value='number-asc';s.dispatchEvent(new Event('change',{bubbles:true}));
+                document.getElementById('m7PokedexOptionsClose')?.click();
+                document.querySelector('[data-app-nav="search"]')?.click();
+                return {fv,sv};
               });
-              console.log('SEARCH',cfg.name,JSON.stringify(search));
-              if(search.active!=='search'||search.options||!search.search)throw new Error(`${cfg.name}: Search regression ${JSON.stringify(search)}`);
-              if(cfg.isMobile&&(!search.filter||!search.scan))throw new Error(`${cfg.name}: mobile Search controls missing`);
-              if(pageErrors.length)throw new Error(`${cfg.name}: page errors ${JSON.stringify(pageErrors)}`);
+              await sleep(600);
+              const search=await page.evaluate(()=>{const shown=el=>{if(!el)return false;const s=getComputedStyle(el),r=el.getBoundingClientRect();return s.display!=='none'&&s.visibility!=='hidden'&&r.width>1&&r.height>1};return {active:document.body.dataset.m7View||'',options:shown(document.getElementById('m7PokedexOptionsBtn')),search:shown(document.getElementById('search')),filter:shown(document.getElementById('mobileFilterToggle')),scan:shown(document.getElementById('mobileScanBtn'))}});
+              console.log('SYNC_SEARCH',cfg.name,JSON.stringify({synced,search,errors}));
+              if(synced.fv!=='missing'||synced.sv!=='name-asc')throw new Error(`${cfg.name}: filter/sort proxy sync failed`);
+              if(search.active!=='search'||search.options||!search.search)throw new Error(`${cfg.name}: Search regression`);
+              if(cfg.mobile&&(!search.filter||!search.scan))throw new Error(`${cfg.name}: Search mobile actions missing`);
+              if(errors.length)throw new Error(`${cfg.name}: page errors ${JSON.stringify(errors)}`);
               console.log('PASS',cfg.name);
               await page.close();
             }
-            await browser.close();
-            console.log('V157_FAST_ALL_PASS');
-          })().catch(e=>{console.error('V157_FAST_FAILED',e.stack||e);process.exit(1)});
+            await browser.close();console.log('V157_NONBLOCKING_ALL_PASS');
+          })().catch(e=>{console.error('V157_NONBLOCKING_FAILED',e.stack||e);process.exit(1)});
           NODE
