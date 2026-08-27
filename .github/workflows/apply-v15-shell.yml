@@ -1,0 +1,59 @@
+name: Activate Pokédex M7 v15 app shell
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/apply-v15-shell.yml'
+      - 'scripts/apply_v15_shell.py'
+
+permissions:
+  contents: write
+
+jobs:
+  activate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Activate v15 shell
+        run: python scripts/apply_v15_shell.py
+
+      - name: Validate JavaScript files
+        run: |
+          node --check v15.js
+          node --check v15-fix.js
+          python - <<'PY'
+          from pathlib import Path
+          import re, subprocess
+          html=Path('index.html').read_text(encoding='utf-8')
+          scripts=re.findall(r'<script(?:\s[^>]*)?>(.*?)</script>',html,flags=re.S|re.I)
+          for i,code in enumerate(scripts):
+              if not code.strip(): continue
+              p=Path(f'/tmp/pokedex-inline-{i}.js')
+              p.write_text(code,encoding='utf-8')
+              subprocess.run(['node','--check',str(p)],check=True)
+          print('All JavaScript syntax checks passed')
+          PY
+
+      - name: Validate shell references
+        run: |
+          grep -q 'v15.css?v=15.0.0' index.html
+          grep -q 'v15.js?v=15.0.0' index.html
+          grep -q 'v15-fix.js?v=15.0.0' index.html
+          grep -q 'pokedexm7-shell-v15.0.0' sw.js
+
+      - name: Commit v15 activation
+        run: |
+          if git diff --quiet -- index.html sw.js; then
+            echo 'No activation changes needed.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html sw.js
+          git commit -m 'feat: activate Pokédex M7 v15 app experience'
+          git push
