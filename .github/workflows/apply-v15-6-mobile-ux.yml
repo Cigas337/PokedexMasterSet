@@ -1,0 +1,47 @@
+name: Apply v15.6 mobile UX
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/apply_v15_6_mobile_ux.py'
+      - '.github/workflows/apply-v15-6-mobile-ux.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Apply professional mobile UX
+        run: python3 scripts/apply_v15_6_mobile_ux.py
+      - name: Validate patch
+        run: |
+          grep -q 'Pokédex M7 v15.6.0 · Professional Mobile UX' v15.5.css
+          grep -q "pokedexm7-shell-v15.6.0" sw.js
+          python3 - <<'PY'
+          from pathlib import Path
+          css=Path('v15.5.css').read_text(encoding='utf-8')
+          assert css.count('{') == css.count('}'), 'CSS brace mismatch'
+          assert 'bottom:0!important' in css
+          assert 'env(safe-area-inset-bottom,0px)' in css
+          assert '.m7-v155-detail-logo{display:grid!important' in css
+          print('mobile UX validation OK')
+          PY
+      - name: Commit update
+        run: |
+          if git diff --quiet; then
+            echo 'Already applied.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add v15.5.css sw.js
+          git commit -m 'feat: professional mobile UX and bottom dock'
+          git push
