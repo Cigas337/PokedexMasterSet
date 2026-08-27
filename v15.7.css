@@ -1,0 +1,90 @@
+/* Pokédex M7 v15.7.0 · Professional Pokédex toolbar */
+body.m7-v157{--v157-accent:#56d8d2;--v157-accent-2:#8ff4ee;--v157-panel:#09121b;--v157-panel-2:#0d1822;--v157-line:rgba(255,255,255,.09);--v157-muted:#7f909f;--v157-text:#f3f8fb}
+
+/* Main Pokédex toolbar: only search + one options control. */
+.m7-v157 #m7PortfolioView>.controls.m7-v157-toolbar{display:grid!important;grid-template-columns:minmax(220px,1fr) auto!important;align-items:center!important;gap:9px!important;width:100%!important;margin:0!important;padding:9px!important;border:1px solid rgba(255,255,255,.085)!important;border-radius:20px!important;background:linear-gradient(180deg,rgba(8,14,21,.94),rgba(6,11,17,.94))!important;box-shadow:0 15px 38px rgba(0,0,0,.25)!important;backdrop-filter:blur(22px) saturate(130%)!important;-webkit-backdrop-filter:blur(22px) saturate(130%)!important}
+.m7-v157 #m7PortfolioView>.controls.m7-v157-toolbar>.search-wrap{grid-column:auto!important;grid-row:auto!important;min-width:0!important;width:100%!important;margin:0!important}
+.m7-v157 #m7PortfolioView>.controls.m7-v157-toolbar>.search-wrap input{width:100%!important;height:52px!important;min-height:52px!important;padding-right:14px!important;border:1px solid rgba(255,255,255,.10)!important;border-radius:16px!important;background:#0c1620!important;color:#f5f8fb!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.025)!important;transition:border-color .16s ease,box-shadow .16s ease,background .16s ease!important}
+.m7-v157 #m7PortfolioView>.controls.m7-v157-toolbar>.search-wrap input:focus{border-color:rgba(86,216,210,.48)!important;background:#0e1a25!important;box-shadow:0 0 0 3px rgba(86,216,210,.08)!important}
+.m7-v157 #m7PortfolioView>.controls.m7-v157-toolbar>.mobile-filter-toggle,.m7-v157 #m7PortfolioView>.controls.m7-v157-toolbar>.mobile-scan-btn,.m7-v157 #m7PortfolioView>.controls.m7-v157-toolbar>.select-wrap,.m7-v157 #m7PortfolioView>.controls.m7-v157-toolbar>#productStockBtn,.m7-v157 #m7PortfolioView>.controls.m7-v157-toolbar>#collectionMenuWrap{display:none!important}
+.m7-v157 #m7SearchView #m7PokedexOptionsBtn{display:none!important}
+
+#m7PokedexOptionsBtn{appearance:none;min-width:126px;height:52px;display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:0 15px;border:1px solid rgba(86,216,210,.18);border-radius:16px;background:linear-gradient(180deg,rgba(86,216,210,.13),rgba(86,216,210,.07));color:#eafffd;font-size:10px;font-weight:950;letter-spacing:.15px;cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.04);transition:transform .14s ease,border-color .14s ease,background .14s ease}
+#m7PokedexOptionsBtn:hover{transform:translateY(-1px);border-color:rgba(86,216,210,.34);background:linear-gradient(180deg,rgba(86,216,210,.19),rgba(86,216,210,.09))}
+#m7PokedexOptionsBtn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+#m7PokedexOptionsBtn .m7-v157-options-count{min-width:18px;height:18px;display:grid;place-items:center;padding:0 5px;border-radius:999px;background:var(--v157-accent);color:#062426;font-size:7px;font-weight:1000}
+#m7PokedexOptionsBtn .m7-v157-options-count[hidden]{display:none!important}
+
+/* Options overlay / panel. */
+.m7-v157-options-backdrop{position:fixed;inset:0;z-index:18980;background:rgba(0,5,9,.46);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .18s ease}
+.m7-v157-options-backdrop.open{opacity:1;pointer-events:auto}
+.m7-v157-options-panel{position:fixed;z-index:19000;width:min(420px,calc(100vw - 24px));max-height:min(660px,calc(100dvh - 36px));overflow:auto;overscroll-behavior:contain;padding:14px;border:1px solid rgba(255,255,255,.10);border-radius:22px;background:linear-gradient(160deg,rgba(14,25,35,.985),rgba(6,12,18,.99));color:var(--v157-text);box-shadow:0 30px 80px rgba(0,0,0,.48),inset 0 1px 0 rgba(255,255,255,.035);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);opacity:0;transform:translateY(8px) scale(.985);pointer-events:none;transition:opacity .17s ease,transform .17s ease}
+.m7-v157-options-panel.open{opacity:1;transform:none;pointer-events:auto}
+.m7-v157-options-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:3px 3px 12px}
+.m7-v157-options-head span{display:block;margin-bottom:3px;color:var(--v157-accent);font-size:7px;font-weight:1000;letter-spacing:1.2px;text-transform:uppercase}
+.m7-v157-options-head strong{display:block;color:#fff;font-size:17px;letter-spacing:-.25px}
+.m7-v157-options-close{width:38px;height:38px;display:grid;place-items:center;border:1px solid rgba(255,255,255,.08);border-radius:12px;background:rgba(255,255,255,.04);color:#dfe8ee;font-size:21px;line-height:1;cursor:pointer}
+.m7-v157-section{padding:12px;border:1px solid rgba(255,255,255,.065);border-radius:17px;background:rgba(255,255,255,.025)}
+.m7-v157-section+.m7-v157-section{margin-top:9px}
+.m7-v157-section-title{display:flex;align-items:center;gap:7px;margin:0 0 9px;color:#8192a0;font-size:7px;font-weight:950;letter-spacing:1px;text-transform:uppercase}
+.m7-v157-section-title svg{width:14px;height:14px;stroke:var(--v157-accent);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.m7-v157-photo-action{width:100%;min-height:48px;display:flex;align-items:center;justify-content:center;gap:9px;border:1px solid rgba(86,216,210,.16);border-radius:14px;background:linear-gradient(135deg,rgba(86,216,210,.15),rgba(86,216,210,.07));color:#eafffd;font-size:10px;font-weight:950;cursor:pointer}
+.m7-v157-photo-action svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.m7-v157-fields{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.m7-v157-field{min-width:0}
+.m7-v157-field label{display:block;margin:0 0 5px 2px;color:#738593;font-size:7px;font-weight:900;letter-spacing:.55px;text-transform:uppercase}
+.m7-v157-field select{width:100%;height:46px;min-width:0;padding:0 34px 0 11px;border:1px solid rgba(255,255,255,.08);border-radius:13px;background:#0d1923;color:#edf5f9;outline:none;font-size:10px;font-weight:850}
+.m7-v157-field select:focus{border-color:rgba(86,216,210,.42);box-shadow:0 0 0 3px rgba(86,216,210,.07)}
+.m7-v157-collection-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.m7-v157-action{min-height:45px;display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid rgba(255,255,255,.07);border-radius:13px;background:#0d1822;color:#dfe9ef;text-align:left;font-size:8px;font-weight:900;line-height:1.2;cursor:pointer}
+.m7-v157-action:hover{border-color:rgba(86,216,210,.22);background:#101e29}
+.m7-v157-action .m7-v157-action-icon{width:25px;height:25px;flex:0 0 auto;display:grid;place-items:center;border-radius:8px;background:rgba(86,216,210,.08);color:var(--v157-accent);font-size:12px}
+.m7-v157-action.wide{grid-column:1/-1}
+.m7-v157-action.danger{border-color:rgba(255,99,99,.12);color:#ffaaa6}.m7-v157-action.danger .m7-v157-action-icon{background:rgba(255,99,99,.08);color:#ff8782}
+.m7-v157-details{margin-top:8px;border-top:1px solid rgba(255,255,255,.06);padding-top:8px}
+.m7-v157-details summary{min-height:38px;display:flex;align-items:center;justify-content:space-between;gap:8px;color:#91a0ab;font-size:8px;font-weight:900;cursor:pointer;list-style:none}.m7-v157-details summary::-webkit-details-marker{display:none}
+.m7-v157-details summary:after{content:'+';font-size:17px;color:#667987}.m7-v157-details[open] summary:after{content:'−'}
+.m7-v157-data-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;padding-top:5px}
+.m7-v157-data-actions .m7-v157-action{justify-content:center;text-align:center}
+
+/* Header repair: allow the identity block to breathe instead of clipping glyphs. */
+.m7-v157 .hero-shell,.m7-v157 .m7-hero,.m7-v157 .m7-brand-panel,.m7-v157 .m7-brand-row,.m7-v157 .m7-brand-row>div:nth-child(2){overflow:visible!important}
+.m7-v157 .m7-brand-panel .brand-title{line-height:1.12!important;padding:2px 0 1px!important;overflow:visible!important;text-overflow:clip!important}
+
+@media(min-width:761px){
+  .m7-v157-options-panel{top:var(--m7-v157-popover-top,120px);right:var(--m7-v157-popover-right,24px)}
+  .m7-v157-options-backdrop{background:transparent;backdrop-filter:none;-webkit-backdrop-filter:none}
+}
+
+@media(max-width:760px){
+  .m7-v157 #m7PortfolioView>.controls.m7-v157-toolbar{top:calc(5px + env(safe-area-inset-top,0px))!important;grid-template-columns:minmax(0,1fr) 101px!important;gap:7px!important;padding:7px!important;border-radius:16px!important}
+  .m7-v157 #m7PortfolioView>.controls.m7-v157-toolbar>.search-wrap input{height:48px!important;min-height:48px!important;border-radius:13px!important;font-size:16px!important;padding-left:39px!important}
+  #m7PokedexOptionsBtn{min-width:101px!important;width:101px!important;height:48px!important;min-height:48px!important;padding:0 10px!important;border-radius:13px!important;gap:7px!important;font-size:9px!important}
+  #m7PokedexOptionsBtn svg{width:17px;height:17px}
+  .m7-v157-options-panel{left:8px;right:8px;bottom:calc(72px + env(safe-area-inset-bottom,0px));width:auto;max-height:calc(100dvh - 112px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));padding:12px;border-radius:22px;transform:translateY(18px) scale(.99)}
+  .m7-v157-options-panel.open{transform:none}
+  .m7-v157-options-head{padding:2px 2px 10px}.m7-v157-options-head strong{font-size:18px}.m7-v157-options-close{width:42px;height:42px;border-radius:13px}
+  .m7-v157-section{padding:11px;border-radius:16px}
+  .m7-v157-photo-action{min-height:48px;font-size:10px}
+  .m7-v157-fields{grid-template-columns:1fr;gap:8px}.m7-v157-field select{height:48px;font-size:16px!important}
+  .m7-v157-collection-grid{grid-template-columns:1fr 1fr;gap:7px}.m7-v157-action{min-height:50px;padding:8px;font-size:8.5px}.m7-v157-action .m7-v157-action-icon{width:27px;height:27px}
+  .m7-v157-data-actions{grid-template-columns:1fr 1fr}
+  body.m7-v157-options-open{overflow:hidden!important;overscroll-behavior:none!important}
+
+  /* More top breathing room, while retaining the compact app identity. */
+  .m7-v157 .hero-shell{padding-top:7px!important;margin-top:1px!important}
+  .m7-v157 .m7-brand-panel{min-height:76px!important;padding:13px 11px 11px!important}
+  .m7-v157 .m7-brand-panel .brand-title{font-size:24px!important;line-height:1.14!important;padding-top:2px!important;padding-bottom:2px!important;white-space:normal!important}
+  .m7-v157 .m7-brand-panel .brand-sub{margin-top:3px!important;line-height:1.3!important}
+  .m7-v157 .m7-brand-signature{margin-top:1px!important}
+  .m7-v157 #m7PortfolioView>.stage{margin-top:9px!important}
+  .m7-v157 #m7PortfolioView .stage-head{padding:2px 1px 8px!important}
+}
+
+@media(max-width:380px){
+  .m7-v157 #m7PortfolioView>.controls.m7-v157-toolbar{grid-template-columns:minmax(0,1fr) 92px!important;gap:6px!important}
+  #m7PokedexOptionsBtn{min-width:92px!important;width:92px!important;padding:0 8px!important;font-size:8.5px!important}
+  #m7PokedexOptionsBtn .m7-v157-options-count{display:none!important}
+  .m7-v157-collection-grid{grid-template-columns:1fr}
+  .m7-v157-action.wide{grid-column:auto}
+}
