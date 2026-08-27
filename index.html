@@ -1449,6 +1449,7 @@ window.__cardsCssReady=(async()=>{
 })();
 </script>
 <link rel="stylesheet" href="./v15.css?v=15.0.0">
+<link rel="stylesheet" href="./v15.1.css?v=15.1.0">
 </head>
 <body class="auth-locked">
 
@@ -4290,7 +4291,7 @@ window.addEventListener('appinstalled',()=>{
 
 if('serviceWorker' in navigator && location.protocol!=='file:'){
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('./sw.js?v=15.0.0',{updateViaCache:'none'})
+    navigator.serviceWorker.register('./sw.js?v=15.1.0',{updateViaCache:'none'})
       .then(reg=>reg.update())
       .catch(err=>console.warn('Service Worker:',err));
   });
@@ -6095,5 +6096,6 @@ document.getElementById('resetGenBtn').addEventListener('click',()=>{state.gener
 
 <script src="./v15.js?v=15.0.0"></script>
 <script src="./v15-fix.js?v=15.0.0"></script>
+<script src="./v15.1.js?v=15.1.0"></script>
 </body>
 </html>
