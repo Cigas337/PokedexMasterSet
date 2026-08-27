@@ -1,4 +1,4 @@
-name: Verify v15.7 Pokedex toolbar live nonblocking
+name: Verify v15.7.1 Pokedex toolbar live
 
 on:
   push:
@@ -17,7 +17,7 @@ jobs:
           npm init -y >/dev/null 2>&1
           npm install --no-save playwright@1.55.0
           npx playwright install --with-deps chromium
-      - name: Verify public v15.7
+      - name: Verify public v15.7.1
         env:
           LIVE_URL: https://cigas337.github.io/PokedexMasterSet/
         run: |
@@ -30,6 +30,8 @@ jobs:
               const page=await browser.newPage({viewport:{width:cfg.width,height:cfg.height},isMobile:cfg.mobile,hasTouch:cfg.mobile});
               const errors=[];page.on('pageerror',e=>errors.push(String(e)));
               await page.goto(process.env.LIVE_URL,{waitUntil:'domcontentloaded',timeout:25000});
+              const liveVersion=await page.evaluate(async()=>await (await fetch('./v15.7.js?v=15.7.1',{cache:'reload'})).text());
+              if(!liveVersion.includes('v15.7.1 · Professional Pokédex toolbar'))throw new Error(`${cfg.name}: v15.7.1 JS is not live`);
               await page.evaluate(()=>{try{if(typeof unlockApp==='function')void unlockApp()}catch(_){}});
               await sleep(1800);
               await page.evaluate(()=>document.querySelector('[data-app-nav="portfolio"]')?.click());
@@ -77,6 +79,6 @@ jobs:
               console.log('PASS',cfg.name);
               await page.close();
             }
-            await browser.close();console.log('V157_NONBLOCKING_ALL_PASS');
-          })().catch(e=>{console.error('V157_NONBLOCKING_FAILED',e.stack||e);process.exit(1)});
+            await browser.close();console.log('V1571_ALL_PASS');
+          })().catch(e=>{console.error('V1571_FAILED',e.stack||e);process.exit(1)});
           NODE
