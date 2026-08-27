@@ -1,4 +1,4 @@
-/* Pokédex M7 v15.8.1 · Integration polish + cross-device profile + expansion progress hotfix */
+/* Pokédex M7 v15.8.2 · Integration polish + release-candidate stabilization */
 (function(){
   const NAME_KEY='pokedexm7-v15-nickname';
   const AVATAR_KEY='pokedexm7-v15-avatar';
@@ -12,6 +12,7 @@
     installNavAvatar();
     installCloudProfileSync();
     installPromoImageRepair();
+    installStockRecovery();
   });
 
   /* v15.5 still asks for getCardDetails(), while the current core exposes
@@ -258,5 +259,87 @@
     });
     obs.observe(document.documentElement,{subtree:true,childList:true,attributes:true,attributeFilter:['src','data-v155-image','data-v155-image-alt']});
     document.addEventListener('error',e=>{if(e.target instanceof HTMLImageElement)repairPromoImage(e.target)},true);
+  }
+
+  /* Release candidate: keep Produtos / Stock attached to the Shop view and
+     re-render it after older navigation handlers have finished. This is
+     intentionally idempotent so it is safe on iOS resume/pageshow as well. */
+  function installStockRecovery(){
+    let running=false;
+    let queued=0;
+
+    const isShopActive=()=>{
+      const view=document.getElementById('m7ShopView');
+      return document.body.dataset.m7View==='shop'||view?.classList.contains('active');
+    };
+
+    const mountStock=()=>{
+      const host=document.getElementById('m7ShopHost');
+      const modal=document.getElementById('stockModal');
+      if(!host||!modal)return null;
+      if(modal.parentElement!==host){
+        host.innerHTML='';
+        host.appendChild(modal);
+      }
+      modal.classList.add('open');
+      modal.classList.remove('m7-stock-detached');
+      modal.setAttribute('aria-hidden','false');
+      modal.style.removeProperty('display');
+      modal.style.removeProperty('visibility');
+      modal.style.removeProperty('opacity');
+      modal.style.removeProperty('pointer-events');
+      document.body.classList.add('m7-v158-stock-ready','m7-v155-shop-open');
+      document.body.classList.remove('modal-open','stock-open');
+      document.documentElement.style.overflow='';
+      document.body.style.overflow='';
+      document.body.style.pointerEvents='';
+      return modal;
+    };
+
+    const ensureStock=async(force=false)=>{
+      if(!isShopActive()||running)return;
+      const modal=mountStock();
+      const body=document.getElementById('stockBody');
+      if(!modal||!body)return;
+      running=true;
+      try{
+        const hasCards=!!body.querySelector('.stock-grid .stock-card');
+        const hasSummary=!!body.querySelector('.stock-summary');
+        if(typeof window.v124LoadStock==='function'&&typeof window.v124RenderStock==='function'){
+          if(force||!hasCards||!hasSummary)await window.v124LoadStock(!!force);
+          window.v124RenderStock();
+        }else if(typeof window.v124OpenStock==='function'){
+          await window.v124OpenStock();
+        }
+      }catch(err){
+        console.warn('[M7 v15.8] Stock recovery:',err);
+        if(!body.querySelector('.stock-grid,.stock-summary')){
+          const msg=String(err?.message||'Erro de ligação').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+          body.innerHTML=`<div class="art-empty"><strong>Não foi possível carregar Produtos / Stock.</strong><p>${msg}</p><button type="button" class="m7-v158-stock-retry" data-m7-stock-retry>Tentar novamente</button></div>`;
+        }
+      }finally{
+        running=false;
+        if(isShopActive())mountStock();
+      }
+    };
+
+    const queue=(force=false)=>{
+      clearTimeout(queued);
+      queued=setTimeout(()=>ensureStock(force),60);
+      setTimeout(()=>ensureStock(false),260);
+      setTimeout(()=>ensureStock(false),900);
+    };
+
+    document.addEventListener('click',e=>{
+      if(e.target.closest?.('#m7AppNav [data-app-nav="shop"],[data-v15-action="notifications"]'))queue(false);
+      if(e.target.closest?.('[data-m7-stock-retry]')){e.preventDefault();queue(true)}
+    },true);
+
+    const shopView=document.getElementById('m7ShopView');
+    if(shopView)new MutationObserver(()=>{if(isShopActive())queue(false)}).observe(shopView,{attributes:true,attributeFilter:['class']});
+    new MutationObserver(()=>{if(isShopActive())queue(false)}).observe(document.body,{attributes:true,attributeFilter:['data-m7-view']});
+    addEventListener('pageshow',()=>{if(isShopActive())queue(false)});
+    document.addEventListener('visibilitychange',()=>{if(!document.hidden&&isShopActive())queue(false)});
+    if(isShopActive())queue(false);
   }
 })();
