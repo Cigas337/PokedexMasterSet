@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="Pokédex M7">
 <link rel="manifest" href="manifest.webmanifest">
-<title>Pokédex M7 — Master Set · v14.0.1 PUSH PHASE 2 HOTFIX</title>
+<title>Pokédex M7 — Master Set · v14.0.2 PUSH AUTH HOTFIX</title>
 <link rel="apple-touch-icon" href="icon-180.png">
 <style>
 :root{
@@ -4289,7 +4289,7 @@ window.addEventListener('appinstalled',()=>{
 
 if('serviceWorker' in navigator && location.protocol!=='file:'){
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('./sw.js?v=14.0.1',{updateViaCache:'none'})
+    navigator.serviceWorker.register('./sw.js?v=14.0.2',{updateViaCache:'none'})
       .then(reg=>reg.update())
       .catch(err=>console.warn('Service Worker:',err));
   });
@@ -5713,6 +5713,7 @@ function v130PopulateStockCollections(){
 }
 const V130_STOCK_NOTIFY_ENABLED='pokedexm7-stock-notify-enabled-v2';
 const V140_PUSH_API='https://wdljzuqoftrontqhhatr.supabase.co/functions/v1/push-subscriptions';
+const V140_SUPABASE_PUBLISHABLE_KEY='sb_publishable_MslRW16TUUxlAEnUNiQ2sQ_3FrG4sLy';
 let V140_PUSH_PUBLIC_KEY='';
 function v130StockNotificationsEnabled(){try{return localStorage.getItem(V130_STOCK_NOTIFY_ENABLED)==='1'}catch(_){return false}}
 function v140IsIOS(){return /iphone|ipad|ipod/i.test(navigator.userAgent||'')}
@@ -5726,7 +5727,7 @@ function v140UrlBase64ToUint8Array(base64String){
 }
 async function v140GetPushConfig(){
   if(V140_PUSH_PUBLIC_KEY)return V140_PUSH_PUBLIC_KEY;
-  const r=await fetch(V140_PUSH_API,{method:'GET',cache:'no-store'});if(!r.ok)throw new Error(`Push config HTTP ${r.status}`);const data=await r.json();if(!data?.vapidPublicKey)throw new Error('Chave pública VAPID indisponível');V140_PUSH_PUBLIC_KEY=data.vapidPublicKey;return V140_PUSH_PUBLIC_KEY;
+  const r=await fetch(V140_PUSH_API,{method:'GET',headers:{'apikey':V140_SUPABASE_PUBLISHABLE_KEY},cache:'no-store'});if(!r.ok)throw new Error(`Push config HTTP ${r.status}`);const data=await r.json();if(!data?.vapidPublicKey)throw new Error('Chave pública VAPID indisponível');V140_PUSH_PUBLIC_KEY=data.vapidPublicKey;return V140_PUSH_PUBLIC_KEY;
 }
 async function v140GetSubscription(){
   if(!v140PushCapable())return null;try{const reg=await navigator.serviceWorker.ready;return await reg.pushManager.getSubscription()}catch(_){return null}
@@ -5753,7 +5754,7 @@ async function v130NotifyStock(){return}
 function v130CheckStockChanges(){return}
 async function v140BackendSubscription(action,sub){
   const payload={action,subscription:sub?sub.toJSON():null,userAgent:navigator.userAgent||'',platform:navigator.platform||'',locale:navigator.language||'pt-PT',collections:['*'],stores:['*']};
-  const r=await fetch(V140_PUSH_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),cache:'no-store'});const data=await r.json().catch(()=>({}));if(!r.ok||!data?.ok)throw new Error(data?.error||`Push API HTTP ${r.status}`);return data;
+  const r=await fetch(V140_PUSH_API,{method:'POST',headers:{'Content-Type':'application/json','apikey':V140_SUPABASE_PUBLISHABLE_KEY},body:JSON.stringify(payload),cache:'no-store'});const data=await r.json().catch(()=>({}));if(!r.ok||!data?.ok)throw new Error(data?.error||`Push API HTTP ${r.status}`);return data;
 }
 async function v140ShowActivationNotification(reg){
   try{await reg.showNotification('Pokédex M7 · Push ativo',{body:'Avisos de stock configurados. Podes fechar a app — o servidor continua a verificar as lojas.',tag:'pokedexm7-push-ready',icon:'./icon-180.png',badge:'./icon-180.png',data:{url:location.href}})}catch(e){console.warn('Notificação de teste:',e)}

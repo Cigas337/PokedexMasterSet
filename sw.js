@@ -1,5 +1,6 @@
-const CACHE_NAME='pokedexm7-shell-v14.0.1';
+const CACHE_NAME='pokedexm7-shell-v14.0.2';
 const PUSH_API='https://wdljzuqoftrontqhhatr.supabase.co/functions/v1/push-subscriptions';
+const PUSH_API_KEY='sb_publishable_MslRW16TUUxlAEnUNiQ2sQ_3FrG4sLy';
 const CORE=['./','./index.html','./manifest.webmanifest'];
 
 self.addEventListener('install',event=>{
@@ -79,7 +80,7 @@ self.addEventListener('pushsubscriptionchange',event=>{
       const key=event.oldSubscription?.options?.applicationServerKey;
       if(!key)return;
       const sub=await self.registration.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:key});
-      await fetch(PUSH_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'subscribe',subscription:sub.toJSON(),userAgent:self.navigator?.userAgent||'',platform:'service-worker',locale:'pt-PT',collections:['*'],stores:['*']})});
+      await fetch(PUSH_API,{method:'POST',headers:{'Content-Type':'application/json','apikey':PUSH_API_KEY},body:JSON.stringify({action:'subscribe',subscription:sub.toJSON(),userAgent:self.navigator?.userAgent||'',platform:'service-worker',locale:'pt-PT',collections:['*'],stores:['*']})});
     }catch(e){console.warn('pushsubscriptionchange',e)}
   })());
 });
