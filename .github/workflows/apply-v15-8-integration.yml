@@ -1,0 +1,58 @@
+name: Apply v15.8 integration fixes
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'v15.8.js'
+      - 'v15.8.css'
+      - 'scripts/apply_v15_8_integration.py'
+      - '.github/workflows/apply-v15-8-integration.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Apply v15.8
+        run: python3 scripts/apply_v15_8_integration.py
+      - name: Validate JavaScript and integration
+        run: |
+          node --check v15.5.js
+          node --check v15.8.js
+          python3 - <<'PY'
+          from pathlib import Path
+          js=Path('v15.5.js').read_text(encoding='utf-8')
+          rt=Path('v15.8.js').read_text(encoding='utf-8')
+          html=Path('index.html').read_text(encoding='utf-8')
+          sw=Path('sw.js').read_text(encoding='utf-8')
+          assert 'ownedCountForSetSummary' in js
+          assert 'const owned=ownedCountForSetSummary(s);' in js
+          assert 'ownedForSet(s,[])' not in js
+          assert 'function numKey' in js and 'function sameSetRecord' in js
+          assert html.count('v15.8.css') == 1 and html.count('v15.8.js') == 1
+          assert 'v15.8.js?v=15.8.0' in html and 'v15.8.css?v=15.8.0' in html
+          assert "pokedexm7-shell-v15.8.0" in sw
+          assert "'./v15.8.css'" in sw and "'./v15.8.js'" in sw
+          assert 'Signed by Cigas' in rt and 'Unofficial fan project' in rt and 'Legendary as ♥♥♥♥' in rt
+          assert 'mep/0?29' in rt or 'MEP_029' in rt
+          print('v15.8 validation OK')
+          PY
+      - name: Commit activation
+        run: |
+          if git diff --quiet; then
+            echo 'Already active.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html sw.js v15.5.js
+          git commit -m 'fix: link Expansions to Pokedex and polish profile v15.8'
+          git push
