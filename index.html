@@ -4297,7 +4297,7 @@ window.addEventListener('appinstalled',()=>{
 
 if('serviceWorker' in navigator && location.protocol!=='file:'){
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('./sw.js?v=15.5.0',{updateViaCache:'none'})
+    navigator.serviceWorker.register('./sw.js?v=15.10.2-push1',{updateViaCache:'none'})
       .then(reg=>reg.update())
       .catch(err=>console.warn('Service Worker:',err));
   });
@@ -5774,12 +5774,17 @@ async function v130ToggleStockNotifications(){
       alert('No iPhone, o Web Push funciona na Pokédex M7 instalada no Ecrã Principal.\n\n1. Abre esta página no Safari.\n2. Toca em Partilhar.\n3. Escolhe “Adicionar ao Ecrã Principal”.\n4. Abre a Pokédex M7 pelo novo ícone.\n5. Volta a Produtos / Stock e toca em “Ativar Push”.');return;
     }
     if(!v140PushCapable())throw new Error('Este navegador não suporta Web Push completo.');
+    const locallyEnabled=v130StockNotificationsEnabled();
+    if(!locallyEnabled&&Notification.permission!=='granted'){
+      const permission=await Notification.requestPermission();
+      if(permission!=='granted')throw new Error('Permissão de notificações não concedida.');
+    }
     const reg=await navigator.serviceWorker.ready;let sub=await reg.pushManager.getSubscription();
-    if(sub&&v130StockNotificationsEnabled()){
+    if(sub&&locallyEnabled){
       try{await v140BackendSubscription('unsubscribe',sub)}catch(e){console.warn('Backend unsubscribe:',e)}
       await sub.unsubscribe();localStorage.setItem(V130_STOCK_NOTIFY_ENABLED,'0');await v140SyncButton();return;
     }
-    let permission=Notification.permission;if(permission!=='granted')permission=await Notification.requestPermission();if(permission!=='granted')throw new Error('Permissão de notificações não concedida.');
+    if(Notification.permission!=='granted')throw new Error('Permissão de notificações não concedida.');
     const key=await v140GetPushConfig();sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:v140UrlBase64ToUint8Array(key)});
     await v140BackendSubscription('subscribe',sub);localStorage.setItem(V130_STOCK_NOTIFY_ENABLED,'1');await v140ShowActivationNotification(reg);await v140SyncButton();
   }catch(e){console.error('Ativar Push:',e);try{localStorage.setItem(V130_STOCK_NOTIFY_ENABLED,'0')}catch(_){};v140SetPushStatus(`<strong>Erro ao ativar Push.</strong> ${escapeHtml(e?.message||String(e))}`,'error')}

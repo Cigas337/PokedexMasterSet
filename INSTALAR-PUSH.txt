@@ -1,15 +1,17 @@
-POKÉDEX M7 · PUSH PHASE 2 · v14.0.0
-====================================
+POKÉDEX M7 · PUSH PHASE 2 · v15.10.2
+======================================
 
-BACKEND
-- Supabase Pokédex M7 já está configurado.
+ESTADO EM PRODUÇÃO · 27/08/2026
+- GitHub Pages: publicação HTTPS ativa.
+- Supabase Pokédex M7: ACTIVE_HEALTHY.
 - Edge Function push-subscriptions: ativa.
-- Edge Function stock-push-worker: ativa.
-- Cron: a cada 5 minutos.
-- Baseline de stock: 1743 produtos.
-- VAPID privado fica apenas no backend; NÃO está no index.html nem nestes ficheiros.
+- Edge Function stock-push-worker: ativa (v4).
+- Cron: */5 * * * * — verifica stock de 5 em 5 minutos.
+- Baseline atual: 1743 produtos.
+- Teste VAPID completo: 2/2 subscrições ativas aceitaram a notificação, 0 falhas.
+- Chave VAPID privada e segredo do cron: apenas no backend; nunca no GitHub/frontend.
 
-FICHEIROS A COLOCAR NA RAIZ DO REPOSITÓRIO
+FICHEIROS PWA NA RAIZ
 1. index.html
 2. sw.js
 3. manifest.webmanifest
@@ -17,32 +19,39 @@ FICHEIROS A COLOCAR NA RAIZ DO REPOSITÓRIO
 5. icon-192.png
 6. icon-512.png
 
-IMPORTANTE
-- Todos estes ficheiros devem ficar na mesma pasta/raiz publicada pelo GitHub Pages.
-- O site tem de abrir por HTTPS (GitHub Pages já usa HTTPS).
-- Depois de publicar, faz refresh completo no PC.
-
-IPHONE (principal)
-1. Usa iOS/iPadOS 16.4 ou superior.
-2. Abre a Pokédex M7 no Safari.
+IPHONE (ALVO PRINCIPAL)
+1. Requer iOS/iPadOS 16.4 ou superior.
+2. Abre https://cigas337.github.io/PokedexMasterSet/ no Safari.
 3. Partilhar > Adicionar ao Ecrã Principal.
-4. Fecha o Safari e abre a Pokédex M7 através do ícone criado no Ecrã Principal.
-5. Abre Produtos / Stock.
-6. Carrega em “Ativar Push”.
-7. Aceita a permissão de notificações.
-8. Deve aparecer uma notificação de teste: “Pokédex M7 · Push ativo”.
-9. A partir daí podes fechar a app. O servidor continua a verificar stock de 5 em 5 minutos.
+4. Abre a Pokédex M7 pelo ícone criado.
+5. Produtos / Stock > Ativar Push.
+6. Aceita a permissão.
+7. A notificação “Pokédex M7 · Push ativo” confirma a subscrição.
+8. Podes fechar a app; o Supabase continua a trabalhar.
 
 PC
-1. Abre a Pokédex M7 num navegador moderno (Chrome/Edge/Firefox compatível).
+1. Abre a Pokédex M7 num Chrome, Edge ou Firefox compatível.
 2. Produtos / Stock > Ativar Push.
-3. Aceita notificações.
-4. A subscrição fica guardada no Supabase.
+3. Aceita as notificações.
+4. A subscrição fica guardada por dispositivo.
 
-COMO FUNCIONA
-- O Service Worker recebe Push mesmo com a PWA fechada.
-- O backend consulta o feed PokéStockPT a cada 5 minutos.
-- Só dispara para transições reais: novo produto disponível, reposição ou pré-venda.
-- Ao tocar na notificação abre o produto da loja.
-- Endpoints inválidos/expirados (404/410) são desativados automaticamente.
-- A subscrição é por dispositivo; podes ativar no iPhone e no PC em simultâneo.
+FUNCIONAMENTO
+- O Service Worker recebe Web Push com a PWA fechada.
+- O backend consulta o feed PokéStockPT de 5 em 5 minutos.
+- Só envia em transições reais: novo produto, reposição ou pré-venda.
+- Tocar na notificação abre o produto da loja.
+- Endpoints expirados 404/410 são desativados automaticamente.
+- iPhone e PC podem ficar ativos ao mesmo tempo.
+- A renovação de subscrição volta a obter a chave pública VAPID se o browser não fornecer a chave antiga.
+- O cache offline inclui todos os ficheiros externos usados pela versão v15.10.1.
+
+BACKEND VERSIONADO
+- supabase/functions/push-subscriptions/index.ts
+- supabase/functions/stock-push-worker/index.ts
+- supabase/README.md
+
+SEGURANÇA
+- A chave sb_publishable_ no frontend é pública por definição.
+- service_role, VAPID privada e x-cron-secret nunca são publicados.
+- As tabelas Push têm RLS ativo, sem grants para anon/authenticated.
+- O worker não aceita pedidos sem o x-cron-secret correto.
