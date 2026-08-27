@@ -1,0 +1,33 @@
+name: Activate Pokédex M7 v15.4.1 hotfix
+on:
+  push:
+    paths:
+      - 'v15.4.1.js'
+      - 'v15.4.1.css'
+      - 'scripts/apply_v15_4_1_hotfix.py'
+      - '.github/workflows/apply-v15-4-1-hotfix.yml'
+permissions:
+  contents: write
+jobs:
+  activate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Activate v15.4.1
+        run: python scripts/apply_v15_4_1_hotfix.py
+      - name: Validate JavaScript
+        run: node --check v15.4.1.js
+      - name: Validate references
+        run: |
+          grep -F 'v15.4.1.css?v=15.4.1' index.html
+          grep -F 'v15.4.1.js?v=15.4.1' index.html
+          grep -F 'sw.js?v=15.4.1' index.html
+      - name: Commit v15.4.1 activation
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html sw.js
+          if ! git diff --cached --quiet; then
+            git commit -m 'fix: stabilize Shop and Expansions in v15.4.1'
+            git push
+          fi
