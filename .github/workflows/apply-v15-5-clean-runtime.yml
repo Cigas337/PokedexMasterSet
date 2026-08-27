@@ -1,0 +1,43 @@
+name: Activate Pokédex M7 v15.5 clean runtime
+
+on:
+  push:
+    paths:
+      - 'v15.5.css'
+      - 'v15.5.js'
+      - 'scripts/apply_v15_5_clean_runtime.py'
+      - '.github/workflows/apply-v15-5-clean-runtime.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  activate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Activate v15.5 clean runtime
+        run: python3 scripts/apply_v15_5_clean_runtime.py
+      - name: Validate JavaScript
+        run: node --check v15.5.js
+      - name: Validate references
+        run: |
+          grep -q 'v15.5.css?v=15.5.0' index.html
+          grep -q 'v15.5.js?v=15.5.0' index.html
+          ! grep -q 'src="./v15.4.js' index.html
+          ! grep -q 'src="./v15.4.1.js' index.html
+          grep -q 'pokedexm7-shell-v15.5.0' sw.js
+      - name: Commit v15.5 activation
+        run: |
+          if git diff --quiet; then
+            echo 'Already activated.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html sw.js
+          git commit -m 'fix: replace broken Shop and Expansions runtime in v15.5'
+          git push
