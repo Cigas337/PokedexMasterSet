@@ -1,4 +1,4 @@
-const CACHE_NAME='pokedexm7-shell-v15.10.2-rc1';
+const CACHE_NAME='pokedexm7-shell-v15.10.3';
 const PUSH_API='https://wdljzuqoftrontqhhatr.supabase.co/functions/v1/push-subscriptions';
 const PUSH_API_KEY='sb_publishable_MslRW16TUUxlAEnUNiQ2sQ_3FrG4sLy';
 const CORE=[
@@ -8,7 +8,7 @@ const CORE=[
   './v15.5.css?v=15.5.0','./v15.7.css?v=15.7.1','./v15.8.css?v=15.8.2','./v15.9.css?v=15.9.0','./v15.10.css?v=15.10.0',
   './v15.js?v=15.0.0','./v15-fix.js?v=15.0.0','./v15.1.js?v=15.1.0','./v15.2.js?v=15.2.0','./v15.3.js?v=15.3.0',
   './v15.5.js?v=15.5.0','./v15.7.js?v=15.7.1','./v15.8.js?v=15.8.2','./v15.9.js?v=15.9.0',
-  './v15.10.js?v=15.10.0','./v15.10.1.js?v=15.10.1','./v15.10.2.js'];
+  './v15.10.js?v=15.10.0','./v15.10.1.js?v=15.10.1','./v15.10.2.js','./v15.10.3.js?v=15.10.3'];
 
 function urlBase64ToUint8Array(value){
   const padding='='.repeat((4-value.length%4)%4);
