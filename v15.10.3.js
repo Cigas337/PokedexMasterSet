@@ -123,3 +123,11 @@
     init();
   }
 })();
+
+/* Carrega a função de cópia da identificação da carta (v15.10.4). */
+(function(){
+  const script=document.createElement('script');
+  script.src='./v15.10.4.js?v=15.10.4';
+  script.async=true;
+  document.head.appendChild(script);
+})();
