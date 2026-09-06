@@ -2,7 +2,7 @@
 (function(){
   'use strict';
 
-  const VERSION='15.10.4';
+  const VERSION='15.10.5';
 
   function pokemonId(card){
     const value=Number(card?.dataset?.pokemonId||card?.dataset?.id||0);
@@ -72,17 +72,24 @@
 
   function decorateCard(card){
     const id=pokemonId(card);
-    const tools=card.querySelector('.m7-card-top-tools');
-    if(!id||!tools)return;
+    const name=card.querySelector('.dex-name');
+    if(!id||!name)return;
 
-    let button=tools.querySelector('[data-copy-card-id]');
+    let row=card.querySelector('.m7-card-name-row');
+    if(!row){
+      row=document.createElement('div');
+      row.className='m7-card-name-row';
+      name.before(row);
+      row.appendChild(name);
+    }
+    let button=card.querySelector('[data-copy-card-id]');
     if(!button){
       button=document.createElement('button');
       button.type='button';
       button.className='m7-copy-card-btn';
       button.dataset.copyCardId=String(id);
       button.innerHTML='<span aria-hidden="true">⧉</span>';
-      tools.insertBefore(button,tools.firstChild);
+      row.appendChild(button);
       button.addEventListener('click',async event=>{
         event.preventDefault();
         event.stopPropagation();
@@ -106,6 +113,7 @@
         }
       });
     }
+    if(button.parentElement!==row)row.appendChild(button);
     refreshButton(button,id);
   }
 
@@ -118,6 +126,16 @@
     const style=document.createElement('style');
     style.id='m7-v15104-copy-style';
     style.textContent=`
+      body.m7-v15104 .dex-card .m7-card-name-row{
+        order:4;display:flex;align-items:center;justify-content:center;
+        gap:6px;width:100%;min-width:0;flex:0 0 auto;margin:3px 0 6px;
+        position:relative;z-index:2;
+      }
+      body.m7-v15104 .dex-card .m7-card-name-row .dex-name{
+        flex:0 1 auto!important;min-width:0!important;max-width:calc(100% - 33px)!important;
+        margin:0!important;overflow-wrap:anywhere!important;
+      }
+
       body.m7-v15104 .m7-copy-card-btn{
         position:relative!important;inset:auto!important;display:inline-flex!important;
         align-items:center!important;justify-content:center!important;flex:0 0 auto!important;
