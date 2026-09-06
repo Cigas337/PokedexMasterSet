@@ -34,6 +34,13 @@ variantCardmarketPrice=function(card,variant){
  const p=resolved.pricing?.cardmarket||resolved.pricing?.cardMarket;
  const wanted=Number(v.cardmarketId||resolved.cardmarketId)||null;
  if(wanted&&p?.idProduct&&wanted!==Number(p.idProduct))return missing();
+ // If normal and holo coexist under one product, the base price cannot tell them apart.
+ const detailed=card.__tcgdexVariantsDetailed;
+ if(Array.isArray(detailed)&&detailed.length){
+  if(!candidates.some(x=>x.type===v.type))return missing();
+  const baseVariants=candidates.filter(x=>x.type!=='reverse'&&!special(x));
+  if(v.type!=='reverse'&&baseVariants.some(x=>x.type!==v.type&&(!wanted||!x.cardmarketId||x.cardmarketId===wanted)))return missing();
+ }
  // A shared product ID cannot distinguish two special printings.
  if(special(v)){
    if(!exact||!wanted)return missing();
