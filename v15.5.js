@@ -124,9 +124,8 @@
   /* ---------- OWNED CARD INDEX ---------- */
   function ownedRecords(){
     const rows=[];
-    const mons=Array.isArray(window.__all)?window.__all:[];
-    for(const p of mons){
-      let d=null;try{d=typeof getCardDetails==='function'?getCardDetails(p.id):null}catch(_){}
+    const details=typeof loadCardDetailStore==='function'?Object.values(loadCardDetailStore()||{}):[];
+    for(const d of details){
       const owned=d?.owned;if(!owned||typeof owned!=='object')continue;
       for(const c of Object.values(owned)){
         if(!c||typeof c!=='object')continue;
@@ -162,6 +161,8 @@
   }
   function sameSetRecord(r,set){
     const sid=idKey(set?.id),rid=recordSetId(r);
+    const aliases=[r.setCode,...[r.tdx,r.id].map(x=>String(x||'').replace(/^[a-z-]+::/i,'').replace(/-[^-]+$/,''))];
+    if(aliases.some(x=>(typeof tcgdexSetCandidates==='function'?tcgdexSetCandidates(x):[x]).some(a=>idKey(a)===sid)))return true;
     if(sid&&rid&&(sid===rid||sid.replace(/bsp$/,'')===rid.replace(/bsp$/,'')))return true;
     if(r?.setName&&set?.name&&sameSetName(r.setName,set.name))return true;
     return false;
@@ -259,6 +260,14 @@
     sel.innerHTML='<option value="all">▦ Era</option>'+values.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join('');if(values.includes(cur))sel.value=cur;
   }
   function renderSets(){
+    const target=document.getElementById('v155SetList');
+    if(target){
+      let note=document.getElementById('m7ExpansionCoverage');
+      if(!note){note=document.createElement('p');note.id='m7ExpansionCoverage';note.style.cssText='color:#a9bacb;font:500 12px/1.5 system-ui;margin:12px 0';target.prepend(note);}
+      const marked=(window.__supabaseData||[]).filter(p=>p.card===true);
+      const known=marked.filter(p=>Object.keys(pokemonCardDetail(p.pokemon_id)?.owned||{}).length>0).length;
+      note.textContent=marked.length+' Pokémon marcados · '+known+' com carta identificada · '+(marked.length-known)+' por identificar a coleção. As expansões contam números de carta distintos; Holo e Reverse do mesmo número ocupam uma posição.';
+    }
     const holder=document.getElementById('v155SetResults'),q=norm(document.getElementById('v155SetQuery')?.value||''),series=String(document.getElementById('v155SetSeries')?.value||'all');
     const list=sets.filter(s=>(!q||norm(`${s.name} ${s.id} ${s.series}`).includes(q))&&(series==='all'||s.series===series));
     if(!list.length){holder.innerHTML='<div class="m7-v155-state"><div><strong>Nenhuma expansão encontrada.</strong><span>Experimenta outro nome ou limpa os filtros.</span></div></div>';return}
