@@ -146,3 +146,5 @@ function init(){
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
+
+(function(){const s=document.createElement('script');s.src='./v15.10.8.js?v=15.10.8';document.head.appendChild(s);})();
