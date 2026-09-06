@@ -15,6 +15,9 @@ function init(){
  };
  const countBox=metric('Pokémon na coleção',count,'m7-panel-count');
  const valueBox=metric('Valor estimado',value,'m7-panel-value');
+ const walletLine=document.createElement('div');walletLine.style.cssText='display:flex;align-items:center;justify-content:flex-end;gap:10px;min-width:0;max-width:100%';
+ const icon=document.createElement('span');icon.className='poke-wallet-icon';icon.setAttribute('aria-hidden','true');icon.innerHTML='<span class="poke-wallet-ball"></span>';
+ value.before(walletLine);walletLine.append(icon,value);
  const status=document.createElement('span');status.className='m7-panel-status';status.setAttribute('role','status');valueBox.appendChild(status);
  const trackBox=document.createElement('div');trackBox.className='m7-panel-progress';
  const heading=document.createElement('div');heading.className='m7-panel-progress-heading';
