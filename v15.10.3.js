@@ -131,3 +131,11 @@
   script.async=true;
   document.head.appendChild(script);
 })();
+
+/* Escolha rápida por número. */
+(function(){
+ const script=document.createElement('script');
+ script.src='./v15.10.6.js?v=15.10.6';
+ script.async=true;
+ document.head.appendChild(script);
+})();
