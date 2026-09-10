@@ -155,7 +155,11 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 (function(){
  const s=document.createElement('script');s.src='./v15.10.8.js?v=15.10.8';
  s.addEventListener('load',()=>{
-  const wallet=document.createElement('script');wallet.src='./v15.10.10.js?v=15.10.10';document.head.appendChild(wallet);
+  const ownership=document.createElement('script');ownership.src='./v15.10.11.js?v=15.10.11';
+  ownership.addEventListener('load',()=>{
+   const wallet=document.createElement('script');wallet.src='./v15.10.10.js?v=15.10.11';document.head.appendChild(wallet);
+  },{once:true});
+  document.head.appendChild(ownership);
  },{once:true});
  document.head.appendChild(s);
 })();

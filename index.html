@@ -2702,8 +2702,10 @@ async function hydrateAndMigrateCardDetails(rows){
     const cloud=normalizeCardDetails(row.card_details);
     const localDetails=normalizeCardDetails(local[k]);
 
-    if(hasMeaningfulCardDetails(cloud)){
-      local[k]=cloud; // servidor é a fonte de verdade
+    if(row.card_details!==null && typeof row.card_details==='object' && !Array.isArray(row.card_details)){
+      // An explicitly empty cloud collection is a saved removal, not a legacy cache to migrate.
+      if(hasMeaningfulCardDetails(cloud)) local[k]=cloud;
+      else delete local[k];
     }else if(hasMeaningfulCardDetails(localDetails) && window.__cardDetailsCloudReady!==false){
       // Migração transparente dos dados v7 guardados neste aparelho.
       row.card_details=localDetails;
@@ -3087,11 +3089,16 @@ async function refreshOwnedCardPriceCache(){
   saveCardDetailStore(); updateCollectionValueUI();
   if(window.__cardDetailsCloudReady!==false){
     const changedIds=[...changedPokemon];
-    for(let i=0;i<changedIds.length;i+=100){
-      const rows=changedIds.slice(i,i+100).map(id=>{const cur=supaFor(id)||{};return {pokemon_id:id,card:cur.card===true,full_art:cur.full_art===true,card_details:normalizeCardDetails(pokemonCardDetail(id))};});
-      const {error}=await supabaseClient.from('pokemon_cards').upsert(rows,{onConflict:'pokemon_id'});
-      if(error){console.warn('Não foi possível sincronizar preços estimados:',error);break;}
-    }
+    const savePrices=async()=>{
+      for(let i=0;i<changedIds.length;i+=100){
+        // Read current ownership when this write runs, after any queued removal.
+        const rows=changedIds.slice(i,i+100).map(id=>{const cur=supaFor(id)||{};return {pokemon_id:id,card:cur.card===true,full_art:cur.full_art===true,card_details:normalizeCardDetails(pokemonCardDetail(id))};});
+        const {error}=await supabaseClient.from('pokemon_cards').upsert(rows,{onConflict:'pokemon_id'});
+        if(error){console.warn('Não foi possível sincronizar preços estimados:',error);break;}
+      }
+    };
+    if(typeof window.m7QueueOwnershipWrite==='function')await window.m7QueueOwnershipWrite(savePrices);
+    else await savePrices();
   }
 }
 

@@ -32,6 +32,13 @@ function init(){
  #m7WalletDialog .m7-wallet-variant-column{width:20%}
  #m7WalletDialog .m7-wallet-price-column{width:18%;text-align:right}
  #m7WalletDialog td.m7-wallet-price-column{font-weight:650;font-variant-numeric:tabular-nums}
+ #m7WalletDialog .m7-wallet-price-tools{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+ #m7WalletDialog .m7-wallet-remove{display:grid;place-items:center;width:44px;height:44px;padding:0;border:1px solid #ff938344;border-radius:10px;background:#68181044;color:#ffb2a7;font:400 24px/1 system-ui;cursor:pointer}
+ #m7WalletDialog .m7-wallet-remove:disabled{opacity:.55;cursor:wait}
+ #m7WalletDialog .m7-wallet-remove:focus-visible{outline:2px solid #ffb2a7;outline-offset:2px}
+ #m7WalletDialog .m7-wallet-message{margin:0;padding:0 22px 12px;color:#bfdacb;font-size:14px;flex-shrink:0}
+ #m7WalletDialog .m7-wallet-message:empty{display:none}
+ #m7WalletDialog .m7-wallet-message.error{color:#ffb2a7}
  #m7WalletDialog .m7-wallet-card{display:flex;align-items:center;gap:12px;min-width:0}
  #m7WalletDialog .m7-wallet-card img{width:40px;height:56px;flex:0 0 40px;object-fit:contain;border-radius:4px;background:#15232f}
  #m7WalletDialog .m7-wallet-card-copy{min-width:0}
@@ -68,6 +75,7 @@ function init(){
    <button type="button" class="m7-wallet-close" aria-label="Fechar carteira" autofocus>×</button>
   </div>
   <div class="m7-wallet-summary" role="status"><strong class="m7-wallet-total"></strong><span class="m7-wallet-coverage"></span></div>
+  <p class="m7-wallet-message" role="status"></p>
   <div class="m7-wallet-scroll" tabindex="0" role="region" aria-label="Cartas da carteira">
    <table aria-label="Cartas da coleção por valor estimado">
     <thead><tr><th scope="col" class="m7-wallet-card-column">Carta</th><th scope="col" class="m7-wallet-set-column">Coleção / n.º</th><th scope="col" class="m7-wallet-variant-column">Variante</th><th scope="col" class="m7-wallet-price-column" aria-sort="descending">Valor ↓</th></tr></thead>
@@ -81,6 +89,8 @@ function init(){
  const total=dialog.querySelector('.m7-wallet-total');
  const coverage=dialog.querySelector('.m7-wallet-coverage');
  const scroll=dialog.querySelector('.m7-wallet-scroll');
+ const message=dialog.querySelector('.m7-wallet-message');
+ const pending=new Set();
  let lastRows='';
  function element(tag,className,text){
   const el=document.createElement(tag);el.className=className;if(text!==undefined)el.textContent=text;return el;
@@ -90,9 +100,12 @@ function init(){
   total.textContent=stats.priced?'~ '+euro(stats.total):stats.cards?'Sem cotação':'0,00 €';
   coverage.textContent=`${stats.priced} / ${stats.cards} cartas avaliadas`;
   const rows=stats.items.map(({key,card,value})=>({key,value,name:String(card.name||card.id),set:String(card.setName||card.setCode||'Coleção não indicada'),number:String(card.number||'—'),variant:String(card.variantLabel||'Variante por confirmar'),image:String(card.variantImage||card.imageSmall||card.imageLarge||'')}));
-  const signature=JSON.stringify(rows);
+  const signature=JSON.stringify([rows,[...pending]]);
   if(signature===lastRows)return;
   lastRows=signature;
+  const focused=document.activeElement;
+  const focusedKey=tbody.contains(focused)?focused.dataset?.removeKey:null;
+  const focusedIndex=focusedKey?Array.from(tbody.querySelectorAll('.m7-wallet-remove')).indexOf(focused):-1;
   const fragment=document.createDocumentFragment();
   rows.forEach(card=>{
    const tr=document.createElement('tr');
@@ -110,7 +123,20 @@ function init(){
    const variantCell=element('td','m7-wallet-variant-column');
    variantCell.appendChild(element('span','m7-wallet-variant',card.variant));
    const priceCell=element('td','m7-wallet-price-column');
-   priceCell.appendChild(element('span',card.value===null?'m7-wallet-unpriced':'',card.value===null?'Sem cotação':euro(card.value)));
+   const priceTools=element('div','m7-wallet-price-tools');
+   priceTools.appendChild(element('span',card.value===null?'m7-wallet-unpriced':'',card.value===null?'Sem cotação':euro(card.value)));
+   const remove=element('button','m7-wallet-remove',pending.has(card.key)?'…':'×');
+   remove.type='button';remove.dataset.removeKey=card.key;remove.disabled=pending.has(card.key);
+   remove.title='Remover da coleção';
+   remove.setAttribute('aria-label',`Remover ${card.name} · ${card.set} #${card.number} · ${card.variant} da coleção`);
+   remove.addEventListener('click',async event=>{
+    event.stopPropagation();if(pending.has(card.key))return;
+    pending.add(card.key);remove.disabled=true;remove.textContent='…';message.classList.remove('error');message.textContent='A remover carta…';
+    try{await window.m7RemoveOwnedVariant(card.key);message.textContent='Carta removida da coleção.';}
+    catch(_){message.textContent='Não foi possível remover. Verifica a ligação e tenta novamente.';message.classList.add('error');}
+    finally{pending.delete(card.key);render();}
+   });
+   priceTools.appendChild(remove);priceCell.appendChild(priceTools);
    tr.append(nameCell,setCell,variantCell,priceCell);fragment.appendChild(tr);
   });
   if(!rows.length){
@@ -118,6 +144,11 @@ function init(){
    cell.colSpan=4;tr.appendChild(cell);fragment.appendChild(tr);
   }
   tbody.replaceChildren(fragment);
+  if(focusedKey&&dialog.open){
+   const controls=Array.from(tbody.querySelectorAll('.m7-wallet-remove'));
+   const next=controls.find(el=>el.dataset.removeKey===focusedKey)||controls[Math.min(focusedIndex,controls.length-1)]||dialog.querySelector('.m7-wallet-close');
+   next?.focus({preventScroll:true});
+  }
  }
  button.title='Ver cartas da mais cara para a mais barata';
  button.setAttribute('aria-haspopup','dialog');
@@ -125,6 +156,7 @@ function init(){
  let previousOverflow='';
  button.addEventListener('click',()=>{
   if(dialog.open)return;
+  message.textContent='';message.classList.remove('error');
   // Refresh the header too, so a price that has just expired is excluded everywhere.
   updateCollectionValueUI();render();
   previousOverflow=document.body.style.overflow;

@@ -1,8 +1,9 @@
-const CACHE_NAME='pokedexm7-shell-v15.10.10-wallet';
+const CACHE_NAME='pokedexm7-shell-v15.10.11-remove';
 const PUSH_API='https://wdljzuqoftrontqhhatr.supabase.co/functions/v1/push-subscriptions';
 const PUSH_API_KEY='sb_publishable_MslRW16TUUxlAEnUNiQ2sQ_3FrG4sLy';
 const CORE=[
- './v15.10.10.js?v=15.10.10',
+ './v15.10.11.js?v=15.10.11',
+ './v15.10.10.js?v=15.10.11',
  './v15.10.8.js?v=15.10.8',
   './v15.10.7.js?v=15.10.7',
   './v15.10.6.js?v=15.10.6',
