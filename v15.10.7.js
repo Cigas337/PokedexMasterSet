@@ -93,8 +93,13 @@ collectionValueStats=function(){
   const k=variantItemKey(s.id,s.variantKey);if(s.id&&!unique.has(k))unique.set(k,s);
  }));
  let total=0,priced=0;
- unique.forEach(s=>{if(s.priceAudit===AUDIT&&usableDate(s.priceAuditUpdated)&&hasMarketPriceValue(s.marketPrice)){total+=Number(s.marketPrice);priced++;}});
- return {total,priced,cards:unique.size};
+ const items=Array.from(unique,([key,card])=>{
+  const value=card.priceAudit===AUDIT&&usableDate(card.priceAuditUpdated)&&hasMarketPriceValue(card.marketPrice)?Number(card.marketPrice):null;
+  if(value!==null){total+=value;priced++;}
+  return {key,card,value};
+ });
+ items.sort((a,b)=>(b.value??-1)-(a.value??-1)||String(a.card.name||a.card.id).localeCompare(String(b.card.name||b.card.id),'pt-PT',{numeric:true})||a.key.localeCompare(b.key));
+ return {total,priced,cards:unique.size,items};
 };
 updateCollectionValueUI=function(){
  const el=document.getElementById('collectionValue'),meta=document.getElementById('collectionValueMeta');
@@ -147,4 +152,10 @@ function init(){
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
 
-(function(){const s=document.createElement('script');s.src='./v15.10.8.js?v=15.10.8';document.head.appendChild(s);})();
+(function(){
+ const s=document.createElement('script');s.src='./v15.10.8.js?v=15.10.8';
+ s.addEventListener('load',()=>{
+  const wallet=document.createElement('script');wallet.src='./v15.10.10.js?v=15.10.10';document.head.appendChild(wallet);
+ },{once:true});
+ document.head.appendChild(s);
+})();
