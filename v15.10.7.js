@@ -1,7 +1,7 @@
-/* Cardmarket NM pricing audit v16.1.1: exact identity, variant channels and honest estimates. */
+/* Cardmarket NM pricing audit v16.1.2: normal-base fallback, exact identity and variant channels. */
 (function(){
 'use strict';
-const AUDIT='cardmarket-nm-20260911';
+const AUDIT='cardmarket-nm-base-20260911';
 const DAY=86400000;
 const missing=()=>({value:Infinity,label:'Preço NM indisponível',key:null,source:null,condition:'Near Mint (NM)'});
 function dateMs(x){return typeof x==='number'? (x<1e12?x*1000:x):Date.parse(String(x||'').replace(/^(\d{4})\/(\d{2})\/(\d{2})/,'$1-$2-$3'));}
@@ -59,33 +59,66 @@ cardmarketReversePrice=function(card){return choose([
 ]);};
 variantExplicitCardmarketPrice=function(v){const p=v?.pricing?.cardmarket||v?.pricing?.cardMarket;return price(p,v?.type==='reverse','Cardmarket',p?.updated);};
 function special(v){return !!(v.foil||v.stamps?.length||(v.subtype&&v.subtype!=='unlimited')||(v.size&&v.size!=='standard'));}
+function usablePrice(p){return p&&Number.isFinite(Number(p.value))&&Number(p.value)>0?p:null;}
+function firstUsable(rows){return rows.map(usablePrice).find(Boolean)||missing();}
+function markedNormalBase(p){
+ const usable=usablePrice(p);
+ return usable?{...usable,label:'Cardmarket · Near Mint (NM) · base normal',baseVariant:'normal'}:null;
+}
+function normalBaseCardmarketPrice(card,candidates){
+ const vars=Array.isArray(candidates)?candidates:cardVariants(card);
+ const normals=vars.filter(v=>v.type==='normal'&&!special(v));
+ for(const normal of normals){
+  const direct=usablePrice(variantExplicitCardmarketPrice(normal));
+  if(direct)return direct;
+ }
+ const generic=usablePrice(cardmarketPrice(card));
+ if(normals.length&&generic)return markedNormalBase(generic);
+ if(vars.length===1){
+  const only=usablePrice(variantExplicitCardmarketPrice(vars[0]));
+  if(only)return only;
+  const channel=usablePrice(vars[0].type==='reverse'?cardmarketReversePrice(card):cardmarketPrice(card));
+  if(channel)return vars[0].type==='normal'?markedNormalBase(channel):channel;
+ }
+ if(generic)return markedNormalBase(generic);
+ for(const candidate of vars){
+  const direct=usablePrice(variantExplicitCardmarketPrice(candidate));
+  if(direct)return direct;
+ }
+ return missing();
+}
 variantCardmarketPrice=function(card,variant){
- const v=variant||defaultVariantForCard(card);
- if(v.key==='default'&&/confirmar/i.test(v.label||''))return missing();
  const candidates=cardVariants(card);
+ const v=variant||defaultVariantForCard(card);
+ const base=()=>normalBaseCardmarketPrice(card,candidates);
+ if(v.key==='default'&&/confirmar/i.test(v.label||''))return base();
  const exact=candidates.find(x=>x.key===v.key)||candidates.find(x=>x.type===v.type&&String(x.foil||'')===String(v.foil||'')&&String(x.subtype||'')===String(v.subtype||'')&&JSON.stringify(x.stamps||[])===JSON.stringify(v.stamps||[])&&(!v.cardmarketId||x.cardmarketId===v.cardmarketId));
  const resolved=exact||v;
  const p=resolved.pricing?.cardmarket||resolved.pricing?.cardMarket;
  const wanted=Number(v.cardmarketId||resolved.cardmarketId)||null;
- if(wanted&&p?.idProduct&&wanted!==Number(p.idProduct))return missing();
- // If normal and holo coexist under one product, the base price cannot tell them apart.
+ if(wanted&&p?.idProduct&&wanted!==Number(p.idProduct))return base();
+ // If normal and holo coexist under one product, the base price is still a usable normal reference.
  const detailed=card.__tcgdexVariantsDetailed;
  if(Array.isArray(detailed)&&detailed.length){
-  if(!candidates.some(x=>x.type===v.type))return missing();
+  if(!candidates.some(x=>x.type===v.type))return base();
   const baseVariants=candidates.filter(x=>x.type!=='reverse'&&!special(x));
-  if(v.type!=='reverse'&&baseVariants.some(x=>x.type!==v.type&&(!wanted||!x.cardmarketId||x.cardmarketId===wanted)))return missing();
+  if(v.type!=='reverse'&&baseVariants.some(x=>x.type!==v.type&&(!wanted||!x.cardmarketId||x.cardmarketId===wanted)))return base();
  }
- // A shared product ID cannot distinguish two special printings.
+ // A shared product ID cannot distinguish two special printings; use the normal base until corrected.
  if(special(v)){
-   if(!exact||!wanted)return missing();
-   const aliases=candidates.filter(x=>x.cardmarketId===wanted);
-   if(aliases.some(x=>String(x.subtype||'')!==String(resolved.subtype||'')||JSON.stringify(x.stamps||[])!==JSON.stringify(resolved.stamps||[])||String(x.foil||'')!==String(resolved.foil||'')))return missing();
-   return variantExplicitCardmarketPrice(resolved);
+  if(!exact)return base();
+  const aliases=wanted?candidates.filter(x=>x.cardmarketId===wanted):[];
+  if(aliases.some(x=>String(x.subtype||'')!==String(resolved.subtype||'')||JSON.stringify(x.stamps||[])!==JSON.stringify(resolved.stamps||[])||String(x.foil||'')!==String(resolved.foil||'')))return base();
+  const direct=usablePrice(variantExplicitCardmarketPrice(resolved));
+  return direct||base();
  }
  const mapped=Number(card.__tcgdexCardmarket?.idProduct)||null;
- if(wanted&&mapped&&wanted!==mapped)return variantExplicitCardmarketPrice(resolved);
- // Holo is the base printing; the extra holo channel represents Reverse.
- return choose([variantExplicitCardmarketPrice(resolved),v.type==='reverse'?cardmarketReversePrice(card):cardmarketPrice(card)]);
+ if(wanted&&mapped&&wanted!==mapped)return base();
+ const direct=usablePrice(variantExplicitCardmarketPrice(resolved));
+ if(direct)return direct;
+ const channel=usablePrice(v.type==='reverse'?cardmarketReversePrice(card):cardmarketPrice(card));
+ if(channel)return channel;
+ return base();
 };
 const oldScore=scoreTcgdexMatch;
 scoreTcgdexMatch=function(card,detail){
@@ -107,7 +140,7 @@ cardSnapshot=function(card,variant){
  const out=oldSnapshot(card,variant),p=variantCardmarketPrice(card,variant);
  out.priceAudit=AUDIT;out.priceAuditUpdated=p.updated||null;
  out.marketPriceUpdated=p.updated||'';
- out.priceModelLabel='Cardmarket · Near Mint (NM) · EUR';
+ out.priceModelLabel='Cardmarket · Near Mint (NM) · base normal quando a variante é incerta · EUR';
  return out;
 };
 const oldMerge=mergeSnapshotWithCard;
@@ -139,9 +172,9 @@ updateCollectionValueUI=function(){
  const el=document.getElementById('collectionValue'),meta=document.getElementById('collectionValueMeta');
  if(!el||!meta)return;
  const s=collectionValueStats();el.textContent=s.priced?'~ '+euro(s.total):'—';
- meta.textContent=s.cards?`${s.priced}/${s.cards} com preço · Cardmarket · Near Mint (NM)`:'Escolhe cartas para calcular o valor';
+ meta.textContent=s.cards?`${s.priced}/${s.cards} com preço · Cardmarket · Near Mint (NM) · base normal quando necessário`:'Escolhe cartas para calcular o valor';
  const coverage=document.getElementById('m7PriceCoverage');if(coverage)coverage.textContent=meta.textContent;
- el.title='Referência Cardmarket em euros, com condição Near Mint (NM); valores em falta excluídos.';
+ el.title='Cardmarket em euros e Near Mint (NM). Variante normal como base quando a variante física é incerta; valores sem cotação ficam fora.';
 };
 const oldResult=renderPokemonCardResult;
 renderPokemonCardResult=function(...args){
@@ -189,7 +222,7 @@ function init(){
   const button=document.createElement('button');button.id='m7RefreshPrices';button.type='button';button.textContent='Atualizar preços';
   button.style.cssText='display:block;margin-top:5px;padding:5px 8px;border:1px solid #ffffff40;border-radius:8px;background:#182633;color:white;font:700 10px system-ui;cursor:pointer';
   const panel=document.createElement('section');panel.className='m7-section-card';
-  const note=document.createElement('p');note.textContent='Cardmarket em euros · referência Near Mint (NM). O botão Cardmarket abre as ofertas filtradas para NM; preços sem correspondência segura ou com mais de 7 dias ficam fora do total.';
+  const note=document.createElement('p');note.textContent='Cardmarket em euros · referência Near Mint (NM). Enquanto a variante não estiver confirmada, o total usa a base normal; se a carta só tiver uma variante, usa essa variante. O botão Cardmarket abre as ofertas filtradas para NM.';
   const coverage=document.createElement('p');coverage.id='m7PriceCoverage';
   panel.append(note,coverage,button);host.appendChild(panel);updateCollectionValueUI();
   button.onclick=async()=>{
@@ -205,9 +238,9 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 (function(){
  const s=document.createElement('script');s.src='./v15.10.8.js?v=15.10.8';
  s.addEventListener('load',()=>{
-  const ownership=document.createElement('script');ownership.src='./v15.10.11.js?v=16.1.1';
+  const ownership=document.createElement('script');ownership.src='./v15.10.11.js?v=16.1.2';
   ownership.addEventListener('load',()=>{
-   const wallet=document.createElement('script');wallet.src='./v15.10.10.js?v=16.1.1';document.head.appendChild(wallet);
+   const wallet=document.createElement('script');wallet.src='./v15.10.10.js?v=16.1.2';document.head.appendChild(wallet);
   },{once:true});
   document.head.appendChild(ownership);
  },{once:true});
