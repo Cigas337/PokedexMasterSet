@@ -1500,7 +1500,7 @@ window.__cardsCssReady=(async()=>{
         <div class="m7-stats-row">
           <div class="stats-count m7-count-wrap"><div class="big-count" id="count">000 / 1025</div></div>
           <div class="m7-progress-wrap" aria-label="Progresso da Pokédex"><div class="m7-progress-line"><div class="progress-track"><div class="progress-fill" id="progressFill"></div></div><strong class="m7-visible-percent" id="m7VisiblePercent">0.0%</strong></div></div>
-          <div class="collection-value-chip m7-wallet-value" title="Estimativa do valor das cartas escolhidas no binder.">
+          <div class="collection-value-chip m7-wallet-value" title="Valor confirmado por ofertas Cardmarket Near Mint das cartas escolhidas no binder.">
             <span class="poke-wallet-icon" aria-hidden="true"><span class="poke-wallet-ball"></span></span>
             <strong id="collectionValue">~ 0,00 €</strong>
           </div>
@@ -1594,7 +1594,7 @@ window.__cardsCssReady=(async()=>{
     </div>
     <div class="art-modal-toolbar">
       <div class="art-modal-summary" id="artModalSummary">A carregar…</div>
-      <div class="art-modal-source">Cardmarket Trend (Europa) · TCGplayer Market (EUA) · impressão e variante exatas</div>
+      <div class="art-modal-source">Cardmarket · Near Mint · EUR · impressão e variante exatas</div>
     </div>
     <div class="art-modal-body" id="artModalBody"></div>
   </div>
@@ -1626,7 +1626,7 @@ window.__cardsCssReady=(async()=>{
           <div><span>VARIANTE SELECIONADA</span><strong id="variantSelectedName">—</strong></div>
           <div class="variant-owned-pill" id="variantOwnedPill">NÃO MARCADA</div>
         </div>
-        <div class="variant-market-title">PREÇOS E MERCADOS</div>
+        <div class="variant-market-title">PREÇO CARDMARKET · NEAR MINT</div>
         <div class="variant-market-grid" id="variantMarketGrid"></div>
         <div class="variant-meta-card" id="variantMetaCard"></div>
         <div class="variant-data-note" id="variantDataNote"></div>
@@ -1927,9 +1927,9 @@ const CARD_REQUEST_RETRIES=4;
 const TCGDEX_PRICE_CACHE=new Map();
 const TCGDEX_NAME_SEARCH_CACHE=new Map();
 const TCGDEX_PRICE_CONCURRENCY=5;
-const PRICE_MODEL_VERSION=3;
-const PRICE_MODEL_ID='cardmarket-trend-eu-nm-v1';
-const PRICE_MODEL_LABEL='Cardmarket Trend · Europa · raw NM';
+const PRICE_MODEL_VERSION=4;
+const PRICE_MODEL_ID='cardmarket-nm-offers-eur-v1';
+const PRICE_MODEL_LABEL='Cardmarket · Near Mint · EUR';
 let currentModalPokemon=null;
 let currentModalCards=[];
 let currentModalVisibleLimit=120;
@@ -1938,7 +1938,7 @@ const MODAL_PAGE_STEP=120;
 
 // 30.º ANIVERSÁRIO — First Partner Illustration Collection (MEP 037–063)
 // Estas 27 promos exclusivas podem chegar mais tarde às bases generalistas; por isso
-// ficam garantidas aqui e recebem preço Cardmarket através do fallback TCGdex já existente.
+// ficam garantidas aqui; os preços só entram depois de uma cotação NM confirmada da Cardmarket.
 const FIRST_PARTNER_30TH_PROMOS={
   1:{mep:'037',name:'Bulbasaur',releaseDate:'2026-03-20'},
   4:{mep:'038',name:'Charmander',releaseDate:'2026-03-20'},
@@ -2547,17 +2547,7 @@ function cardSnapshot(card,variant=null){
   };
 }
 function mergeSnapshotWithCard(oldSnapshot,card,variant=null){
-  const v=variant||variantFromSnapshot(oldSnapshot)||defaultVariantForCard(card);
-  const fresh=cardSnapshot(card,v);
-  const samePriceModel=Number(oldSnapshot?.priceModelVersion||0)===PRICE_MODEL_VERSION&&String(oldSnapshot?.priceModelId||'')===PRICE_MODEL_ID;
-  if(samePriceModel&&!hasMarketPriceValue(fresh.marketPrice) && hasMarketPriceValue(oldSnapshot?.marketPrice)){
-    fresh.marketPrice=Number(oldSnapshot.marketPrice);
-    fresh.marketPriceLabel=oldSnapshot.marketPriceLabel||null;
-    fresh.marketPriceSource=oldSnapshot.marketPriceSource||null;
-    fresh.marketPriceUpdated=oldSnapshot.marketPriceUpdated||'';
-    fresh.priceCheckedAt=oldSnapshot.priceCheckedAt||fresh.priceCheckedAt;
-  }
-  return {...oldSnapshot,...fresh};
+  return {...oldSnapshot,...cardSnapshot(card,variant||variantFromSnapshot(oldSnapshot)||defaultVariantForCard(card))};
 }
 function ownedVariantEntriesForCard(pokemonId,cardId){
   const d=pokemonCardDetail(pokemonId); if(!d) return [];
@@ -2780,55 +2770,10 @@ function bestPriceFromPairs(pairs){
   return {value:Infinity,label:'sem preço',key:null};
 }
 
-function primaryCardmarketPrice(card){
-  const p=card.cardmarket?.prices||{};
-  return bestPriceFromPairs([
-    ['trendPrice',p.trendPrice,'Trend europeu'],
-    ['avg7',p.avg7,'média de vendas 7d'],
-    ['averageSellPrice',p.averageSellPrice,'média de vendas'],
-    ['avg30',p.avg30,'média de vendas 30d'],
-    ['avg1',p.avg1,'média de vendas 24h']
-  ]);
-}
-
-function tcgdexCardmarketPrice(card){
-  const p=card.__tcgdexCardmarket||{};
-  return bestPriceFromPairs([
-    ['trend',p.trend,'Trend europeu'],
-    ['avg7',p.avg7,'média de vendas 7d'],
-    ['avg',p.avg,'média de vendas'],
-    ['avg30',p.avg30,'média de vendas 30d'],
-    ['avg1',p.avg1,'média de vendas 24h']
-  ]);
-}
-
-function cardmarketPrice(card){
-  const primary=primaryCardmarketPrice(card);
-  if(Number.isFinite(primary.value)) return {...primary,source:'Cardmarket via Pokémon TCG API'};
-  const fallback=tcgdexCardmarketPrice(card);
-  if(Number.isFinite(fallback.value)) return {...fallback,source:'Cardmarket via TCGdex'};
-  return {...primary,source:null};
-}
-
-function cardmarketReversePrice(card){
-  const p=card.cardmarket?.prices||{};
-  const primary=bestPriceFromPairs([
-    ['reverseHoloTrend',p.reverseHoloTrend,'Reverse Trend europeu'],
-    ['reverseHoloAvg7',p.reverseHoloAvg7,'Reverse média de vendas 7d'],
-    ['reverseHoloSell',p.reverseHoloSell,'Reverse média de vendas'],
-    ['reverseHoloAvg30',p.reverseHoloAvg30,'Reverse média de vendas 30d'],
-    ['reverseHoloAvg1',p.reverseHoloAvg1,'Reverse média de vendas 24h']
-  ]);
-  if(Number.isFinite(primary.value)) return primary;
-  const t=card.__tcgdexCardmarket||{};
-  return bestPriceFromPairs([
-    ['trend-holo',t['trend-holo'],'Holo Trend europeu'],
-    ['avg7-holo',t['avg7-holo'],'Holo média de vendas 7d'],
-    ['avg-holo',t['avg-holo'],'Holo média de vendas'],
-    ['avg30-holo',t['avg30-holo'],'Holo média de vendas 30d'],
-    ['avg1-holo',t['avg1-holo'],'Holo média de vendas 24h']
-  ]);
-}
+function primaryCardmarketPrice(card){return window.M7Prices?.price(card)||{value:Infinity,label:'Preço NM indisponível',source:null};}
+function tcgdexCardmarketPrice(card){return primaryCardmarketPrice(card);}
+function cardmarketPrice(card){return primaryCardmarketPrice(card);}
+function cardmarketReversePrice(card){return {value:Infinity,label:'Preço NM indisponível',source:null};}
 
 function safeVariantToken(v){return String(v||'').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'none';}
 function foilPretty(foil){
@@ -2899,41 +2844,8 @@ function variantFromSnapshot(snap){
   if(!snap) return null;
   return {key:String(snap.variantKey||'default'),label:String(snap.variantLabel||'Variante não definida'),type:String(snap.variantType||'normal'),foil:String(snap.variantFoil||''),subtype:String(snap.variantSubtype||''),stamps:Array.isArray(snap.variantStamps)?snap.variantStamps:[],cardmarketId:Number(snap.variantCardmarketId)||null,tcgplayerId:Number(snap.variantTcgplayerId)||null};
 }
-function variantExplicitCardmarketPrice(v){
-  const p=v?.pricing?.cardmarket||v?.pricing?.cardMarket||null;
-  if(!p) return {value:Infinity,label:'sem preço',source:null};
-  const holoLike=String(v?.type||'').toLowerCase()==='holo'||String(v?.type||'').toLowerCase()==='reverse'||Boolean(v?.foil);
-  const r=holoLike
-    ? bestPriceFromPairs([['trend-holo',p['trend-holo']??p.reverseHoloTrend,'Holo Trend europeu'],['avg7-holo',p['avg7-holo']??p.reverseHoloAvg7,'Holo média de vendas 7d'],['avg-holo',p['avg-holo']??p.reverseHoloSell,'Holo média de vendas'],['avg30-holo',p['avg30-holo']??p.reverseHoloAvg30,'Holo média de vendas 30d'],['avg1-holo',p['avg1-holo']??p.reverseHoloAvg1,'Holo média de vendas 24h']])
-    : bestPriceFromPairs([['trend',p.trend??p.trendPrice,'Trend europeu'],['avg7',p.avg7,'média de vendas 7d'],['avg',p.avg??p.averageSellPrice,'média de vendas'],['avg30',p.avg30,'média de vendas 30d'],['avg1',p.avg1,'média de vendas 24h']]);
-  return {...r,source:Number.isFinite(r.value)?'Cardmarket via TCGdex · variante exata':null};
-}
-function variantCardmarketPrice(card,variant){
-  const v=variant||defaultVariantForCard(card);
-  const explicit=variantExplicitCardmarketPrice(v); if(Number.isFinite(explicit.value)) return explicit;
-  const t=card.__tcgdexCardmarket||{};
-  const mappedId=Number(t.idProduct||t.idproduct)||null;
-  const variantId=Number(v?.cardmarketId)||null;
-  // Se a TCGdex ligou esta variante a um produto Cardmarket específico e o pricing pertence ao mesmo produto, é o preço mais seguro.
-  if(variantId&&mappedId&&variantId===mappedId){
-    const exact=v?.type==='holo'||v?.type==='reverse'
-      ? bestPriceFromPairs([['trend-holo',t['trend-holo'],'Holo Trend europeu'],['avg7-holo',t['avg7-holo'],'Holo média de vendas 7d'],['avg-holo',t['avg-holo'],'Holo média de vendas'],['avg30-holo',t['avg30-holo'],'Holo média de vendas 30d']])
-      : bestPriceFromPairs([['trend',t.trend,'Trend europeu'],['avg7',t.avg7,'média de vendas 7d'],['avg',t.avg,'média de vendas'],['avg30',t.avg30,'média de vendas 30d']]);
-    return {...exact,source:Number.isFinite(exact.value)?'Cardmarket via TCGdex · variante exata':null};
-  }
-  // Foils especiais têm valor próprio; nunca reutilizar um preço genérico e correr o risco de avaliar uma Master Ball como uma reverse normal.
-  if(v?.foil) return {value:Infinity,label:'consultar Cardmarket',key:null,source:null};
-  if(v?.type==='reverse'){
-    const r=cardmarketReversePrice(card); return {...r,source:Number.isFinite(r.value)?(card.cardmarket?.prices?.reverseHoloTrend?'Cardmarket via Pokémon TCG API':'Cardmarket via TCGdex'):null};
-  }
-  if(v?.type==='holo'){
-    const p=card.__tcgdexCardmarket||{};
-    const r=bestPriceFromPairs([['trend-holo',p['trend-holo'],'Holo Trend europeu'],['avg7-holo',p['avg7-holo'],'Holo média de vendas 7d'],['avg-holo',p['avg-holo'],'Holo média de vendas'],['avg30-holo',p['avg30-holo'],'Holo média de vendas 30d'],['avg1-holo',p['avg1-holo'],'Holo média de vendas 24h']]);
-    if(Number.isFinite(r.value)) return {...r,source:'Cardmarket via TCGdex'};
-    return cardmarketPrice(card);
-  }
-  return cardmarketPrice(card);
-}
+function variantExplicitCardmarketPrice(v){return {value:Infinity,label:'Preço NM indisponível',source:null};}
+function variantCardmarketPrice(card,variant){return window.M7Prices?.price(card,variant)||{value:Infinity,label:'Preço NM indisponível',source:null};}
 function variantCardmarketUrl(card,variant){
   const id=Number(variant?.cardmarketId)||null;
   if(id) return `https://www.cardmarket.com/en/Pokemon/Products?idProduct=${id}`;
@@ -2948,33 +2860,10 @@ function hasMarketPriceValue(value){
   return value!==null&&value!==''&&Number.isFinite(Number(value))&&Number(value)>0;
 }
 
-function collectionValueStats(){
-  const unique=new Map();
-  const store=loadCardDetailStore();
-  Object.values(store||{}).forEach(raw=>{
-    const d=normalizeCardDetails(raw);
-    Object.values(d.owned||{}).forEach(snap=>{
-      const id=variantItemKey(snap?.id||'',snap?.variantKey||'default');
-      if(snap?.id&&!unique.has(id)) unique.set(id,snap);
-    });
-  });
-  let total=0,priced=0;
-  unique.forEach(snap=>{
-    const p=Number(snap?.marketPrice);
-    const currentModel=Number(snap?.priceModelVersion||0)===PRICE_MODEL_VERSION&&String(snap?.priceModelId||'')===PRICE_MODEL_ID;
-    if(currentModel&&hasMarketPriceValue(snap?.marketPrice)){total+=p;priced++;}
-  });
-  return {total,priced,cards:unique.size};
-}
+function collectionValueStats(){return {total:0,priced:0,cards:0,items:[]};}
 function updateCollectionValueUI(){
-  const valueEl=document.getElementById('collectionValue');
-  const metaEl=document.getElementById('collectionValueMeta');
-  if(!valueEl||!metaEl) return;
-  const s=collectionValueStats();
-  valueEl.textContent=`~ ${euro(s.total)}`;
-  if(!s.cards) metaEl.textContent='Marca cartas específicas para calcular';
-  else if(s.priced===s.cards) metaEl.textContent=`${s.cards} carta${s.cards===1?'':'s'} · Trend/média de vendas · raw NM`;
-  else metaEl.textContent=`${s.priced}/${s.cards} com valor de mercado · raw NM`;
+ const el=document.getElementById('collectionValue'),meta=document.getElementById('collectionValueMeta');
+ if(el)el.textContent='—';if(meta)meta.textContent='A consultar preços NM…';
 }
 
 function snapshotNeedsPriceRefresh(snap){
@@ -3022,86 +2911,7 @@ async function inspectFeaturedBinderCard(pokemon){
   try{await requestV12MotionPermission()}catch(_){}
   await openVariantModal(card,pokemon);
 }
-async function refreshOwnedCardPriceCache(){
-  const store=loadCardDetailStore();
-  const byCard=new Map();
-  Object.entries(store||{}).forEach(([pokemonId,raw])=>{
-    const d=normalizeCardDetails(raw);
-    Object.entries(d.owned||{}).forEach(([itemKey,snap])=>{
-      if(!snapshotNeedsPriceRefresh(snap) && !snapshotNeedsVisualRepair(snap)) return;
-      const cardId=String(snap?.id||''); if(!cardId) return;
-      if(!byCard.has(cardId)) byCard.set(cardId,{snap,items:[]});
-      byCard.get(cardId).items.push({pokemonId:Number(pokemonId),itemKey,snap});
-    });
-  });
-  if(!byCard.size){updateCollectionValueUI();return;}
-  const priceMeta=document.getElementById('collectionValueMeta');
-  if(priceMeta)priceMeta.textContent=`A atualizar ${byCard.size} preço${byCard.size===1?'':'s'} pelo Cardmarket Trend…`;
-
-  const cardIds=[...byCard.keys()];
-  const primaryIds=cardIds.filter(id=>!id.includes('::')&&!/^(30c-|classic30-|future30-|tot\d{2}-)/i.test(id));
-  const liveCards=new Map();
-  for(let i=0;i<primaryIds.length;i+=40){
-    const ids=primaryIds.slice(i,i+40);
-    const q=`(${ids.map(id=>`id:"${lucenePhrase(id)}"`).join(' OR ')})`;
-    try{
-      const select=encodeURIComponent('id,name,number,rarity,set,images,cardmarket,tcgplayer');
-      const payload=await fetchJsonWithRetry(`https://api.pokemontcg.io/v2/cards?q=${encodeURIComponent(q)}&page=1&pageSize=250&select=${select}`);
-      (payload.data||[]).forEach(c=>{c.__source='Pokémon TCG API · atualização de valor';liveCards.set(String(c.id),c);});
-    }catch(e){console.warn('Atualização em lote de preços falhou:',e);}
-  }
-
-  // O Cardmarket é a referência europeia. Para cartas não inglesas, variantes
-  // especiais e impressões ausentes no primeiro feed, consulta também o registo
-  // exato da TCGdex. A concorrência limitada evita sobrecarregar a app/API.
-  let enrichIndex=0;
-  const enrichRows=[...byCard.entries()];
-  const enrichWorkers=Array.from({length:Math.min(4,enrichRows.length)},async()=>{
-    while(enrichIndex<enrichRows.length){
-      const [cardId,info]=enrichRows[enrichIndex++];
-      const card=liveCards.get(cardId)||pseudoCardFromSnapshot(info.snap);
-      const identity=tcgdexIdentityForCard(card);
-      const hasSpecialVariant=info.items.some(({snap})=>Boolean(snap?.variantFoil||snap?.variantCardmarketId));
-      const needsTcgdex=identity.language!=='en'||hasSpecialVariant||!Number.isFinite(primaryCardmarketPrice(card).value);
-      if(needsTcgdex){try{await enrichCardmarketPriceFromTcgdex(card,{force:true});}catch(e){console.warn('Atualização Cardmarket/TCGdex falhou:',cardId,e);}}
-      liveCards.set(cardId,card);
-    }
-  });
-  await Promise.all(enrichWorkers);
-
-  const changedPokemon=new Set();
-  for(const [cardId,info] of byCard){
-    let card=liveCards.get(cardId)||pseudoCardFromSnapshot(info.snap);
-    info.items.forEach(({pokemonId,itemKey,snap})=>{
-      const d=pokemonCardDetail(pokemonId,true); const old=d.owned[itemKey]; if(!old) return;
-      const variant=variantFromSnapshot(old);
-      const fresh=mergeSnapshotWithCard(old,card,variant);
-      const price=variantCardmarketPrice(card,variant);
-      fresh.priceCheckedAt=new Date().toISOString();
-      if(Number.isFinite(price.value)){
-        fresh.marketPrice=Number(price.value);fresh.marketPriceLabel=price.label||'preço';fresh.marketPriceSource=price.source||'Cardmarket';
-        fresh.marketPriceUpdated=String(card.cardmarket?.updatedAt||card.__tcgdexPriceUpdated||fresh.marketPriceUpdated||'');
-      }else{
-        fresh.marketPrice=null;fresh.marketPriceLabel=null;fresh.marketPriceSource=null;
-      }
-      d.owned[itemKey]=fresh; store[String(pokemonId)]=d; changedPokemon.add(pokemonId);
-    });
-  }
-  saveCardDetailStore(); updateCollectionValueUI();
-  if(window.__cardDetailsCloudReady!==false){
-    const changedIds=[...changedPokemon];
-    const savePrices=async()=>{
-      for(let i=0;i<changedIds.length;i+=100){
-        // Read current ownership when this write runs, after any queued removal.
-        const rows=changedIds.slice(i,i+100).map(id=>{const cur=supaFor(id)||{};return {pokemon_id:id,card:cur.card===true,full_art:cur.full_art===true,card_details:normalizeCardDetails(pokemonCardDetail(id))};});
-        const {error}=await supabaseClient.from('pokemon_cards').upsert(rows,{onConflict:'pokemon_id'});
-        if(error){console.warn('Não foi possível sincronizar preços estimados:',error);break;}
-      }
-    };
-    if(typeof window.m7QueueOwnershipWrite==='function')await window.m7QueueOwnershipWrite(savePrices);
-    else await savePrices();
-  }
-}
+async function refreshOwnedCardPriceCache(){return window.M7Prices?.refresh();}
 
 function wait(ms){ return new Promise(resolve=>setTimeout(resolve,ms)); }
 
@@ -3426,14 +3236,10 @@ function specialCatalogTags(card){
 function renderPokemonCardResult(card, cheapestId){
   const price=cardmarketPrice(card);
   const reverse=cardmarketReversePrice(card);
-  const priceText=Number.isFinite(price.value)?euro(price.value):(card.__tcgdexPriceChecked?'Consultar Cardmarket':'A confirmar…');
-  const priceSource=price.source||null;
-  const tcgdexUpdated=card.__tcgdexPriceUpdated?String(card.__tcgdexPriceUpdated):'';
-  const updated=String(priceSource||'').includes('TCGdex')
-    ? `Cardmarket via TCGdex · ${escapeHtml(tcgdexUpdated?tcgdexUpdated.slice(0,10):'atualização diária')}`
-    : (card.cardmarket?.updatedAt?`Cardmarket · ${escapeHtml(card.cardmarket.updatedAt)}`:(card.__tcgdexPriceChecked?'Cardmarket · sem preço no feed':'A confirmar preço Cardmarket…'));
-  const directMarketUrl=card.cardmarket?.url || card.__marketUrl || '';
-  const marketUrl=directMarketUrl || cardmarketFallbackUrl(card);
+  const priceText=Number.isFinite(price.value)?euro(price.value):'Preço NM indisponível';
+  const updated=price.updated?'Cardmarket · '+escapeHtml(String(price.updated).slice(0,10)):'Cardmarket · preço NM indisponível';
+  const directMarketUrl=variantCardmarketUrl(card,defaultVariantForCard(card));
+  const marketUrl=directMarketUrl;
   const special=artCategory(card);
   const setName=card.set?.name||'Set desconhecido';
   const setCode=card.set?.ptcgoCode||card.set?.id||'';
@@ -3450,7 +3256,7 @@ function renderPokemonCardResult(card, cheapestId){
 
   return `
     <article class="art-result ${cheapest?'cheapest':''} ${owned?'my-card':''} ${wanted?'wish-card':''} ${featured?'featured-card':''}" data-result-card-id="${escapeHtml(card.id)}">
-      ${featured?'<div class="featured-ribbon">★ NA TUA POKÉDEX</div>':(cheapest?'<div class="cheapest-ribbon">★ Menor valor de mercado</div>':'')}
+      ${featured?'<div class="featured-ribbon">★ NA TUA POKÉDEX</div>':(cheapest?'<div class="cheapest-ribbon">★ Menor preço NM</div>':'')}
       ${wanted&&!featured?'<div class="wishlist-ribbon">♥ WISHLIST</div>':''}
       <div class="art-result-img" data-open-variants="${escapeHtml(card.id)}" role="button" tabindex="0" aria-label="Ver variantes de ${escapeHtml(card.name)}"><img loading="lazy" src="${escapeHtml(imageCandidates[0]||'')}" data-image-fallbacks="${escapeHtml(encodedImageFallbacks(imageCandidates.slice(1)))}" onerror="advanceCardImageFallback(this)" alt="${escapeHtml(card.name)}"></div>
       <div class="art-result-info">
@@ -3467,10 +3273,10 @@ function renderPokemonCardResult(card, cheapestId){
         <div class="card-variant-summary"><span class="card-variant-chip">✦ ${variantsKnown} variante${variantsKnown===1?'':'s'}</span>${ownedVariantCount?`<span class="card-variant-chip mine">✓ ${ownedVariantCount} minha${ownedVariantCount===1?'':'s'}</span>`:''}${featured&&featuredSnap?.variantLabel?`<span class="card-variant-chip featured">★ ${escapeHtml(featuredSnap.variantLabel)}</span>`:''}</div>
         <div class="art-price-box">
           <div>
-            <div class="art-price-label">${Number.isFinite(price.value)?escapeHtml(price.label):'Cardmarket Trend'}</div>
+            <div class="art-price-label">${Number.isFinite(price.value)?escapeHtml(price.label):'Cardmarket · Near Mint'}</div>
             <div class="art-price ${Number.isFinite(price.value)?'':'na'}">${priceText}</div>
             ${Number.isFinite(reverse.value)?`<div class="reverse-price">Reverse Holo: ${euro(reverse.value)}</div>`:''}
-            <div class="art-price-updated">${updated} · raw NM</div>
+            <div class="art-price-updated">${updated}</div>
           </div>
           <a class="cardmarket-btn ${directMarketUrl?'':'fallback'}" href="${escapeHtml(marketUrl)}" target="_blank" rel="noopener noreferrer">${directMarketUrl?'Cardmarket ↗':'Procurar Cardmarket ↗'}</a>
         </div>
@@ -3527,7 +3333,7 @@ function renderModalCards(resetLimit=false,skipEnrich=false){
   const mineCount=ownedSpecificCount(currentModalPokemon?.id);
   const wishCount=wishlistSpecificCount(currentModalPokemon?.id);
 
-  summary.innerHTML=`<strong>${currentModalCards.length}</strong> cartas encontradas · <strong>${specialCount}</strong> especiais/ART · <strong>${mineCount}</strong> minhas · <strong>${wishCount}</strong> wishlist${cheapest?` · menor valor de mercado: <strong>${euro(cheapestPrice)}</strong>`:''}`;
+  summary.innerHTML=`<strong>${currentModalCards.length}</strong> cartas encontradas · <strong>${specialCount}</strong> especiais/ART · <strong>${mineCount}</strong> minhas · <strong>${wishCount}</strong> wishlist${cheapest?` · menor preço NM confirmado: <strong>${euro(cheapestPrice)}</strong>`:''}`;
 
   const controls=`
     <div class="card-browser-controls">
@@ -3535,7 +3341,7 @@ function renderModalCards(resetLimit=false,skipEnrich=false){
       <select id="cardBrowserFilter" aria-label="Filtrar cartas">
         <option value="all">Todas as cartas</option>
         <option value="art">Só especiais / ART</option>
-        <option value="priced">Só com valor Cardmarket</option>
+        <option value="priced">Só com preço NM Cardmarket</option>
         <option value="promo">Promos</option>
         <option value="owned">Só as minhas cartas</option>
         <option value="wishlist">Só Wishlist</option>
@@ -3543,8 +3349,8 @@ function renderModalCards(resetLimit=false,skipEnrich=false){
       <select id="cardBrowserSort" aria-label="Ordenar cartas">
         <option value="newest">Mais recentes primeiro</option>
         <option value="oldest">Mais antigas primeiro</option>
-        <option value="price-asc">Valor: menor → maior</option>
-        <option value="price-desc">Valor: maior → menor</option>
+        <option value="price-asc">Preço NM: menor → maior</option>
+        <option value="price-desc">Preço NM: maior → menor</option>
         <option value="name">Nome / número</option>
       </select>
       <div class="card-browser-count" id="cardBrowserCount"></div>
@@ -3631,8 +3437,7 @@ function renderVariantModal(){
   const featured=variantIsFeatured(pokemon.id,card,v);
   const image=variantImageInfo(card,v);
   const cm=variantCardmarketPrice(card,v);
-  const tp=variantTcgplayerPrice(card,v);
-  const cmUrl=variantCardmarketUrl(card,v),tpUrl=variantTcgplayerUrl(card,v),viUrl=vintedVariantUrl(card,v),olxUrl=olxVariantUrl(card,v);
+  const cmUrl=variantCardmarketUrl(card,v);
   document.getElementById('variantModalTitle').textContent=card.name;
   document.getElementById('variantModalSub').textContent=`${card.set?.name||'Set'} · #${card.number||'—'} · variante física`;
   const imageShell=document.getElementById('variantImageShell'),hasFullImage=cardImageCandidates(card,image?.url||'').length>0;
@@ -3645,14 +3450,11 @@ function renderVariantModal(){
   const pill=document.getElementById('variantOwnedPill'); pill.textContent=owned?'✓ NA COLEÇÃO':'NÃO MARCADA'; pill.classList.toggle('owned',owned);
   const ownBtn=document.getElementById('variantOwnBig'); ownBtn.textContent=owned?'✓ TENHO ESTA':'＋ TENHO ESTA'; ownBtn.classList.toggle('active',owned);
   const featureBtn=document.getElementById('variantFeatureBig'); featureBtn.textContent=featured?'★ NO BINDER':'☆ USAR NO BINDER'; featureBtn.classList.toggle('active',featured);
-  const cmPrice=Number.isFinite(cm.value)?`<strong>${euro(cm.value)}</strong><small>${escapeHtml(cm.label||'valor de mercado')}</small>`:'<strong>—</strong><small>sem valor fiável</small>';
-  const tpPrice=Number.isFinite(tp.value)?`<strong>${usd(tp.value)}</strong><small>${escapeHtml(tp.label||'market')}</small>`:'<strong>—</strong><small>sem preço fiável</small>';
+  const cmPrice=Number.isFinite(cm.value)?`<strong>${euro(cm.value)}</strong><small>${escapeHtml(cm.label||'Oferta NM')}</small>`:'<strong>—</strong><small>Preço NM indisponível</small>';
   document.getElementById('variantMarketGrid').innerHTML=
-    marketCardHtml('cardmarket','CM','Cardmarket · Europa',cmPrice,Number.isFinite(cm.value)?`${cm.source||PRICE_MODEL_LABEL} · estimativa raw NM`:'Abre a impressão/variante correspondente para confirmar',cmUrl,'Cardmarket')+
-    marketCardHtml('tcgplayer','TCG','TCGplayer · EUA',tpPrice,Number.isFinite(tp.value)?`Market Price de vendas recentes · comparação em USD`:'Pesquisa pelo produto/variante',tpUrl,'TCGplayer')+
-    marketCardHtml('vinted','V','Vinted','<strong>Pesquisa</strong><small>anúncios atuais</small>','Sem API pública de pesquisa de preços; abre uma pesquisa específica',viUrl,'Ver anúncios')+
-    marketCardHtml('olx','O','OLX','<strong>Pesquisa</strong><small>anúncios atuais</small>','A API oficial não permite ler anúncios de outros utilizadores; abre pesquisa específica',olxUrl,'Ver anúncios');
-  const meta=[`<strong>Tipo:</strong> ${escapeHtml(v.type||'normal')}`,v.foil?`<strong>Foil:</strong> ${escapeHtml(foilPretty(v.foil))}`:'',v.subtype?`<strong>Subtipo:</strong> ${escapeHtml(v.subtype.replace(/-/g,' '))}`:'',v.stamps?.length?`<strong>Selo:</strong> ${escapeHtml(v.stamps.join(', ').replace(/-/g,' '))}`:'',v.cardmarketId?`<strong>Cardmarket:</strong> #${v.cardmarketId}`:'',v.tcgplayerId?`<strong>TCGPlayer:</strong> #${v.tcgplayerId}`:''].filter(Boolean).join('<br>');
+    marketCardHtml('cardmarket','CM','Cardmarket · Near Mint',cmPrice,
+      Number.isFinite(cm.value)?'Oferta NM em euros · sem portes · '+String(cm.updated||'').slice(0,10):'Preço NM indisponível para esta variante',cmUrl,'Ver ofertas');
+  const meta=[`<strong>Tipo:</strong> ${escapeHtml(v.type||'normal')}`,v.foil?`<strong>Foil:</strong> ${escapeHtml(foilPretty(v.foil))}`:'',v.subtype?`<strong>Subtipo:</strong> ${escapeHtml(v.subtype.replace(/-/g,' '))}`:'',v.stamps?.length?`<strong>Selo:</strong> ${escapeHtml(v.stamps.join(', ').replace(/-/g,' '))}`:'',v.cardmarketId?`<strong>Cardmarket:</strong> #${v.cardmarketId}`:''].filter(Boolean).join('<br>');
   document.getElementById('variantMetaCard').innerHTML=meta||'Versão física desta carta.';
   document.getElementById('variantDataNote').innerHTML='<b>Movimento 3D:</b> a digitalização original é apresentada sem filtros holográficos. A carta responde ao rato, ao dedo e ao movimento do iPhone quando autorizado.';
   document.querySelectorAll('[data-variant-select]').forEach(btn=>btn.addEventListener('click',()=>{currentVariantSelectedKey=btn.dataset.variantSelect;requestV12MotionPermission();renderVariantModal();}));
@@ -3676,10 +3478,10 @@ async function openVariantModal(card,pokemon){
   document.getElementById('variantImageBadge').textContent='A confirmar variante…';
   document.getElementById('variantIdentity').innerHTML=`<strong>${escapeHtml(card.name)}</strong><span>${escapeHtml(card.set?.name||'')} · #${escapeHtml(card.number||'—')}</span>`;
   document.getElementById('variantSelector').innerHTML='<div class="art-loading"><div class="art-spinner"></div></div>';
-  document.getElementById('variantMarketGrid').innerHTML='<div class="art-loading"><div class="art-spinner"></div><div>A consultar Cardmarket e TCGPlayer…</div></div>';
+  document.getElementById('variantMarketGrid').innerHTML='<div class="art-loading"><div class="art-spinner"></div><div>A consultar preços NM da Cardmarket…</div></div>';
   document.getElementById('variantMetaCard').innerHTML='A confirmar dados da variante…';
   document.getElementById('variantDataNote').textContent='';
-  try{await enrichCardmarketPriceFromTcgdex(card);}catch(e){console.warn('Variantes/mercados TCGdex indisponíveis:',e);}
+  try{await enrichCardmarketPriceFromTcgdex(card);await window.M7Prices?.loadCards([card]);}catch(e){console.warn('Variantes/mercados indisponíveis:',e);}
   if(currentVariantCard===card) renderVariantModal();
 }
 function closeVariantModal(){
@@ -3705,7 +3507,7 @@ async function openArtModal(p){
   title.textContent=`#${String(p.id).padStart(3,'0')} ${pretty(p.name)} · Todas as cartas`;
   sub.textContent='Pesquisa alargada por nº da Pokédex + nome, sem filtro de raridade ou estilo.';
   summary.textContent='A carregar todas as cartas e preços…';
-  body.innerHTML='<div class="art-loading"><div class="art-spinner"></div><div>A consultar o catálogo e o Cardmarket Trend…</div></div>';
+  body.innerHTML='<div class="art-loading"><div class="art-spinner"></div><div>A consultar os preços NM da Cardmarket…</div></div>';
   modal.classList.add('open');
   modal.setAttribute('aria-hidden','false');
   document.body.classList.add('modal-open');
@@ -5270,7 +5072,7 @@ function v124EnglishPhysicalImage(setId,number){
   return null;
 }
 function v124NoScanMarkup(card){
-  return `<div class="no-scan-card"><div class="no-scan-mark">●</div><strong>Impressão confirmada</strong><span>Sem scan público compatível após verificar TCGdex, TCGplayer e Pokémon TCG API · ${escapeHtml(card?.set?.name||'Set')} #${escapeHtml(card?.number||'—')}</span></div>`;
+  return `<div class="no-scan-card"><div class="no-scan-mark">●</div><strong>Impressão confirmada</strong><span>Sem scan público compatível após verificar TCGdex e Pokémon TCG API · ${escapeHtml(card?.set?.name||'Set')} #${escapeHtml(card?.number||'—')}</span></div>`;
 }
 
 const V124_ORIGINAL_IMAGE_CANDIDATES=cardImageCandidates;
@@ -5959,7 +5761,7 @@ function v130FinderCardImage(card){
   return url?`<img loading="lazy" src="${escapeHtml(url)}" data-image-fallbacks="${escapeHtml(encodedImageFallbacks(candidates.slice(1)))}" alt="${escapeHtml(card.name||'Carta Pokémon')}" onerror="advanceCardImageFallback(this)">`:`${v124NoScanMarkup(card)}`;
 }
 function v130FinderCardMarkup(card){
-  const cm=cardmarketPrice(card),price=Number.isFinite(cm.value)?euro(cm.value):'—';
+  const cm=cardmarketPrice(card),price=Number.isFinite(cm.value)?euro(cm.value):'Preço NM indisponível';
   const set=[card?.set?.name,card?.set?.ptcgoCode||card?.set?.id,card?.number?`#${card.number}`:''].filter(Boolean).join(' · ');
   const tags=[];if(v130IsPromoCard(card))tags.push('<span class="finder-card-tag promo">★ Promo</span>');if(card?.rarity)tags.push(`<span class="finder-card-tag">${escapeHtml(card.rarity)}</span>`);
   return `<article class="finder-card-result" data-finder-card="${escapeHtml(card.id||'')}" tabindex="0" role="button" aria-label="Abrir ${escapeHtml(card.name||'carta')}"><div class="finder-card-img">${v130FinderCardImage(card)}</div><div class="finder-card-copy"><strong>${escapeHtml(card.name||'Carta Pokémon')}</strong><span>${escapeHtml(set)}</span><div class="finder-card-tags">${tags.join('')}</div><span class="finder-card-price">${escapeHtml(price)}</span><span class="finder-card-open">Ver variantes e mercados ↗</span></div></article>`;
@@ -6114,14 +5916,19 @@ document.getElementById('resetGenBtn').addEventListener('click',()=>{state.gener
 <script src="./v15-fix.js?v=15.0.0"></script>
 <script src="./v15.1.js?v=15.1.0"></script>
 <script src="./v15.2.js?v=15.2.0"></script>
-<script src="./v15.3.js?v=15.3.0"></script>
+<script src="./v15.3.js?v=16.1.0"></script>
   <script src="./v15.5.js?v=15.5.0"></script>
 <script src="./v15.7.js?v=15.7.1"></script><script src="./v15.8.js?v=15.8.2"></script>
 <script src="./v15.9.js?v=15.9.0"></script>
 <script src="./v15.10.js?v=15.10.0"></script>
 <script src="./v15.10.1.js?v=15.10.1"></script>
 <script src="./v15.10.2.js?v=15.10.2"></script>
-<script src="./v15.10.3.js?v=15.10.3"></script>
+<script src="./v15.10.3.js?v=16.1.0"></script>
+<script src="./pricing-core.js?v=16.1.0"></script>
+<script src="./pricing.js?v=16.1.0"></script>
+<script src="./v15.10.8.js?v=15.10.8"></script>
+<script src="./v15.10.11.js?v=16.1.0"></script>
+<script src="./v15.10.10.js?v=16.1.0"></script>
 <script src="./scanner-core.js?v=16.0.0"></script>
 <script src="./scanner.js?v=16.0.0"></script>
 </body>
