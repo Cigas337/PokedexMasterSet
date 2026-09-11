@@ -1,4 +1,4 @@
-/* Wallet breakdown v16.1.1: exact owned variants and Cardmarket NM prices. */
+/* Wallet breakdown v16.1.3: exact owned variants and Cardmarket NM prices. */
 (function(){
 'use strict';
 function init(){
@@ -272,10 +272,17 @@ function init(){
  button.addEventListener('click',()=>{
   if(dialog.open)return;
   message.textContent='';message.classList.remove('error');
-  // Refresh the header too, so a price that has just expired is excluded everywhere.
+  // Refresh the header and retry missing Cardmarket NM prices when the wallet opens.
   updateCollectionValueUI();render();
   previousOverflow=document.body.style.overflow;
   dialog.showModal();document.body.style.overflow='hidden';scroll.scrollTop=0;
+  if(typeof refreshOwnedCardPriceCache==='function'){
+   const refresh=refreshOwnedCardPriceCache();
+   if(refresh&&typeof refresh.then==='function'){
+    refresh.then(()=>{if(dialog.open){message.textContent='';message.classList.remove('error');render();}})
+      .catch(error=>{console.warn('Atualização Cardmarket da carteira falhou:',error);if(dialog.open){message.textContent='Não foi possível atualizar todos os preços agora.';message.classList.add('error');render();}});
+   }
+  }
  });
  dialog.querySelector('.m7-wallet-close').addEventListener('click',()=>dialog.close());
  dialog.addEventListener('click',event=>{if(event.target===dialog)dialog.close();});
