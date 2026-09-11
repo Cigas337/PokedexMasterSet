@@ -1,14 +1,18 @@
-/* Cardmarket NM pricing audit v16.1.2: normal-base fallback, exact identity and variant channels. */
+/* Cardmarket NM pricing audit v16.1.3: all available NM prices, normal-base fallback and exact variant channels. */
 (function(){
 'use strict';
-const AUDIT='cardmarket-nm-base-20260911';
+const AUDIT='cardmarket-nm-base-20260911-v2';
 const DAY=86400000;
 const missing=()=>({value:Infinity,label:'Preço NM indisponível',key:null,source:null,condition:'Near Mint (NM)'});
 function dateMs(x){return typeof x==='number'? (x<1e12?x*1000:x):Date.parse(String(x||'').replace(/^(\d{4})\/(\d{2})\/(\d{2})/,'$1-$2-$3'));}
 function usableDate(x){const t=dateMs(x);return Number.isFinite(t)&&Date.now()-t<=7*DAY&&t<=Date.now()+DAY;}
 function price(p,reverse,source,updated){
- if(!p||!usableDate(updated)||p.unit&&String(p.unit).toUpperCase()!=='EUR')return missing();
- const stamp=new Date(dateMs(updated)).toISOString();
+ // Cardmarket's public feeds may expose a valid last-known price with an older
+ // updatedAt (or without a timestamp). A price is still a Cardmarket NM price;
+ // freshness must not turn every card into "Sem cotação".
+ if(!p||p.unit&&String(p.unit).toUpperCase()!=='EUR')return missing();
+ const updatedMs=dateMs(updated);
+ const stamp=Number.isFinite(updatedMs)?new Date(updatedMs).toISOString():null;
  const finish=(value,key,label)=>({value,key,label:'Cardmarket · Near Mint (NM) · '+label,source:'Cardmarket',updated:stamp,condition:'Near Mint (NM)'});
  const read=(node,fields)=>{
   if(node==null)return null;
@@ -44,7 +48,7 @@ function price(p,reverse,source,updated){
  }
  const flatFields=reverse
   ?[['reverseHoloNearMintTrend','trend-reverse','Trend'],['nearMintReverseHoloTrend','trend-reverse','Trend'],['reverseNearMintTrend','trend-reverse','Trend'],['reverseTrend','trend-reverse','Trend'],['reverseHoloTrend','trend-reverse','Trend'],['reverseHoloAvg7','avg7-reverse','Média 7d'],['reverseHoloAvg30','avg30-reverse','Média 30d'],['reverseHoloAvg1','avg1-reverse','Média 24h']]
-  :[['nearMintTrend','nearMint-trend','Trend'],['nmTrend','nm-trend','Trend'],['trendPrice','trend','Trend'],['trend','trend','Trend'],['nearMintAvg7','nearMint-avg7','Média 7d'],['avg7','avg7','Média 7d'],['nearMintAvg30','nearMint-avg30','Média 30d'],['avg30','avg30','Média 30d'],['nearMintAvg1','nearMint-avg1','Média 24h'],['avg1','avg1','Média 24h'],['nearMintLow','nearMint-low','Mínimo'],['low','low','Mínimo']];
+  :[['trendPrice','trend','Trend'],['trend','trend','Trend'],['nearMintTrend','nearMint-trend','Trend'],['nmTrend','nm-trend','Trend'],['averageSellPrice','average','Média de vendas'],['average','average','Média de vendas'],['avg','avg','Média de vendas'],['nearMintAvg7','nearMint-avg7','Média 7d'],['avg7','avg7','Média 7d'],['nearMintAvg30','nearMint-avg30','Média 30d'],['avg30','avg30','Média 30d'],['nearMintAvg1','nearMint-avg1','Média 24h'],['avg1','avg1','Média 24h'],['lowPrice','low','Mínimo'],['nearMintLow','nearMint-low','Mínimo'],['low','low','Mínimo']];
  const flat=read(p,flatFields);
  if(flat)return flat;
  return missing();
@@ -120,6 +124,22 @@ variantCardmarketPrice=function(card,variant){
  if(channel)return channel;
  return base();
 };
+const originalCardVariants=cardVariants;
+cardVariants=function(card){
+ const vars=originalCardVariants(card)||[];
+ if(vars.length===1&&vars[0]?.type==='normal'&&!card?.__v123ManualVariants?.length){
+  const tp=card?.tcgplayer?.prices||{},cm=card?.cardmarket?.prices||{};
+  const hasExplicitNormal=!!tp.normal;
+  const hasHolo=!!tp.holofoil||!!tp.holo||Number(cm.holoTrend)>0||Number(cm.holoAvg7)>0;
+  const rarity=String(card?.rarity||'').toLowerCase();
+  if((!hasExplicitNormal&&hasHolo)||(!hasExplicitNormal&&/(holo|radiant|amazing|shining|prism star|shiny|legend)/.test(rarity))){
+   const v={...vars[0],type:'holo',foil:''};
+   v.label='Holo';
+   return [v];
+  }
+ }
+ return vars;
+};
 const oldScore=scoreTcgdexMatch;
 scoreTcgdexMatch=function(card,detail){
  if(!detail||!card.number||normalizeLocalCardNumber(card.number)!==normalizeLocalCardNumber(detail.localId))return -1;
@@ -161,7 +181,7 @@ collectionValueStats=function(){
  }));
  let total=0,priced=0;
  const items=Array.from(unique,([key,card])=>{
-  const value=card.priceAudit===AUDIT&&usableDate(card.priceAuditUpdated)&&hasMarketPriceValue(card.marketPrice)?Number(card.marketPrice):null;
+  const value=card.priceAudit===AUDIT&&hasMarketPriceValue(card.marketPrice)?Number(card.marketPrice):null;
   if(value!==null){total+=value;priced++;}
   return {key,card,value};
  });
