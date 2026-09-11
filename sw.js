@@ -1,7 +1,10 @@
-const CACHE_NAME='pokedexm7-shell-v15.10.11-remove';
+const CACHE_NAME='pokedexm7-shell-v16.0.0-scanner';
 const PUSH_API='https://wdljzuqoftrontqhhatr.supabase.co/functions/v1/push-subscriptions';
 const PUSH_API_KEY='sb_publishable_MslRW16TUUxlAEnUNiQ2sQ_3FrG4sLy';
 const CORE=[
+ './scanner.css?v=16.0.0',
+ './scanner-core.js?v=16.0.0',
+ './scanner.js?v=16.0.0',
  './v15.10.11.js?v=15.10.11',
  './v15.10.10.js?v=15.10.11',
  './v15.10.8.js?v=15.10.8',

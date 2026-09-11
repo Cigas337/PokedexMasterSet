@@ -1456,6 +1456,7 @@ window.__cardsCssReady=(async()=>{
 <link rel="stylesheet" href="./v15.7.css?v=15.7.1"><link rel="stylesheet" href="./v15.8.css?v=15.8.2">
 <link rel="stylesheet" href="./v15.9.css?v=15.9.0">
 <link rel="stylesheet" href="./v15.10.css?v=15.10.0">
+<link rel="stylesheet" href="./scanner.css?v=16.0.0">
 </head>
 <body class="auth-locked">
 
@@ -4729,11 +4730,8 @@ closeScanner=function(){
   const preview=document.getElementById('scannerPreview');try{if(preview?.dataset?.objectUrl)URL.revokeObjectURL(preview.dataset.objectUrl)}catch(_){}if(preview)delete preview.dataset.objectUrl;
   V12_1_CLOSE_SCANNER();document.getElementById('scannerModal')?.classList.remove('photo-search');
 };
-document.getElementById('mobileScanBtn')?.addEventListener('click',openPhotoSearchFilePicker);
-document.getElementById('scannerClose')?.addEventListener('click',closeScanner);
-document.getElementById('scannerModal')?.addEventListener('click',e=>{if(e.target===e.currentTarget)closeScanner()});
-document.getElementById('scannerPhotoBtn')?.addEventListener('click',openPhotoSearchFilePicker);
-document.getElementById('scannerFile')?.addEventListener('change',async e=>{const f=e.target.files?.[0];e.target.value='';if(!f)return;showPhotoSearchModal(f);await identifyScannedCard(f,{auto:false});});
+// Scanner entry points are owned by scanner.js. Legacy helpers below are kept
+// for catalogue compatibility, without camera listeners or background OCR.
 
 
 
@@ -4952,9 +4950,9 @@ createProFoilCard=async function(card,v,url,opts={}){
 };
 requestProFoilMotionPermission=requestV12MotionPermission;
 
-// Pré-aquecimento: o scanner e os shaders ficam prontos antes do primeiro uso.
+// Prepare catalogue storage; the scanner loads OCR only after a capture.
 window.addEventListener('load',()=>{
-  setTimeout(()=>{ensureScannerOCRWorker().catch(()=>{});v12OpenDB().catch?.(()=>{});},900);
+  setTimeout(()=>{v12OpenDB().catch?.(()=>{});},900);
 });
 
 // ============================================================================
@@ -6124,5 +6122,7 @@ document.getElementById('resetGenBtn').addEventListener('click',()=>{state.gener
 <script src="./v15.10.1.js?v=15.10.1"></script>
 <script src="./v15.10.2.js?v=15.10.2"></script>
 <script src="./v15.10.3.js?v=15.10.3"></script>
+<script src="./scanner-core.js?v=16.0.0"></script>
+<script src="./scanner.js?v=16.0.0"></script>
 </body>
 </html>
