@@ -1,8 +1,9 @@
-POKÉDEX M7 · CARDMARKET NM + CARTEIRA · v16.1.1
+POKÉDEX M7 · CARDMARKET NM + CARTEIRA · v16.1.2
 ======================================
 
 ESTADO EM PRODUÇÃO · 11/09/2026
 - Cardmarket: euros + condição Near Mint (NM), com seleção de variante e preço recalculado.
+- Base normal usada enquanto a variante física não for confirmada; carta com uma única variante usa essa variante.
 - Carteira: seletor de variante disponível em desktop e mobile.
 - GitHub Pages: publicação HTTPS ativa.
 - Supabase Pokédex M7: ACTIVE_HEALTHY.
