@@ -163,6 +163,8 @@ function init(){
   pending.add(rowKey);if(select)select.disabled=true;message.classList.remove('error');message.textContent='A atualizar variante e preço Cardmarket NM…';render();
   const write=async()=>{
    const details=pokemonCardDetail(owner.pokemonId,true),current=details.owned[rowKey]||owner.snapshot;
+   try{await window.M7Prices?.loadCards([state.card]);}
+   catch(error){console.warn('Cotações Cardmarket indisponíveis; a variante será guardada:',error);}
    const fresh=mergeSnapshotWithCard(current,state.card,variant);
    const nextKey=variantItemKey(current.id,variant.key||'default');
    if(nextKey!==rowKey){
@@ -175,7 +177,7 @@ function init(){
   try{
    const queue=window.m7QueueOwnershipWrite;
    await (typeof queue==='function'?queue(write):write());
-   message.textContent='Variante atualizada e preço Cardmarket NM recalculado.';
+   message.textContent='Variante atualizada. '+(window.M7Prices?.statusMessage()||'Preço Cardmarket NM recalculado.');
   }catch(error){
    console.warn('Não foi possível atualizar variante da carteira:',error);
    message.textContent='Não foi possível guardar a variante. Verifica a ligação e tenta novamente.';message.classList.add('error');
@@ -279,7 +281,7 @@ function init(){
   if(typeof refreshOwnedCardPriceCache==='function'){
    const refresh=refreshOwnedCardPriceCache();
    if(refresh&&typeof refresh.then==='function'){
-    refresh.then(()=>{if(dialog.open){message.textContent='';message.classList.remove('error');render();}})
+    refresh.then(()=>{if(dialog.open){message.textContent=window.M7Prices?.statusMessage()||'';message.classList.remove('error');render();}})
       .catch(error=>{console.warn('Atualização Cardmarket da carteira falhou:',error);if(dialog.open){message.textContent='Não foi possível atualizar todos os preços agora.';message.classList.add('error');render();}});
    }
   }

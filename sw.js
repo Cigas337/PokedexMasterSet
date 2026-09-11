@@ -1,22 +1,24 @@
-const CACHE_NAME='pokedexm7-shell-v16.1.3-cardmarket-nm-base';
+const CACHE_NAME='pokedexm7-shell-v16.1.4-cardmarket-nm-loader';
 const PUSH_API='https://wdljzuqoftrontqhhatr.supabase.co/functions/v1/push-subscriptions';
 const PUSH_API_KEY='sb_publishable_MslRW16TUUxlAEnUNiQ2sQ_3FrG4sLy';
 const CORE=[
+ './pricing-core.js?v=16.1.2',
+ './pricing.js?v=16.1.2',
  './scanner.css?v=16.0.0',
  './scanner-core.js?v=16.0.0',
  './scanner.js?v=16.0.0',
- './v15.10.11.js?v=16.1.3',
- './v15.10.10.js?v=16.1.3',
+ './v15.10.11.js?v=16.1.2',
+ './v15.10.10.js?v=16.1.2',
  './v15.10.8.js?v=15.10.8',
-  './v15.10.7.js?v=16.1.3',
+  './v15.10.7.js?v=16.1.4',
   './v15.10.6.js?v=15.10.6',
   './','./index.html','./manifest.webmanifest',
   './icon-180.png','./icon-192.png','./icon-512.png',
   './v15.css?v=15.0.0','./v15.1.css?v=15.1.0','./v15.2.css?v=15.2.0','./v15.3.css?v=15.3.0',
   './v15.5.css?v=15.5.0','./v15.7.css?v=15.7.1','./v15.8.css?v=15.8.2','./v15.9.css?v=15.9.0','./v15.10.css?v=15.10.0',
-  './v15.js?v=15.0.0','./v15-fix.js?v=15.0.0','./v15.1.js?v=15.1.0','./v15.2.js?v=15.2.0','./v15.3.js?v=15.3.0',
+  './v15.js?v=15.0.0','./v15-fix.js?v=15.0.0','./v15.1.js?v=15.1.0','./v15.2.js?v=15.2.0','./v15.3.js?v=16.1.2',
   './v15.5.js?v=15.5.0','./v15.7.js?v=15.7.1','./v15.8.js?v=15.8.2','./v15.9.js?v=15.9.0',
-  './v15.10.js?v=15.10.0','./v15.10.1.js?v=15.10.1','./v15.10.2.js','./v15.10.3.js?v=16.1.3','./v15.10.4.js?v=15.10.5'];
+  './v15.10.js?v=15.10.0','./v15.10.1.js?v=15.10.1','./v15.10.2.js?v=15.10.2','./v15.10.3.js?v=16.1.2','./v15.10.4.js?v=15.10.5'];
 
 function urlBase64ToUint8Array(value){
   const padding='='.repeat((4-value.length%4)%4);
