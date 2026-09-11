@@ -1,29 +1,63 @@
-/* Cardmarket pricing audit: exact identity, variant channels and honest estimates. */
+/* Cardmarket NM pricing audit v16.1.1: exact identity, variant channels and honest estimates. */
 (function(){
 'use strict';
-const AUDIT='cardmarket-identity-20260906';
+const AUDIT='cardmarket-nm-20260911';
 const DAY=86400000;
-const missing=()=>({value:Infinity,label:'Sem preço confirmado',key:null,source:null});
+const missing=()=>({value:Infinity,label:'Preço NM indisponível',key:null,source:null,condition:'Near Mint (NM)'});
 function dateMs(x){return typeof x==='number'? (x<1e12?x*1000:x):Date.parse(String(x||'').replace(/^(\d{4})\/(\d{2})\/(\d{2})/,'$1-$2-$3'));}
 function usableDate(x){const t=dateMs(x);return Number.isFinite(t)&&Date.now()-t<=7*DAY&&t<=Date.now()+DAY;}
 function price(p,reverse,source,updated){
- if(!p||!usableDate(updated)||p.unit&&p.unit!=='EUR')return missing();
- const fields=reverse?[['reverseHoloTrend','trend-holo'],['reverseHoloAvg7','avg7-holo'],['reverseHoloAvg30','avg30-holo']]:[['trendPrice','trend'],['avg7','avg7'],['avg30','avg30']];
- for(let i=0;i<fields.length;i++){
-  const [a,b]=fields[i],value=Number(p[a]??p[b]);
-  if(Number.isFinite(value)&&value>0)return {value,key:b,label:['Trend Cardmarket','Média Cardmarket 7d','Média Cardmarket 30d'][i],source,updated:new Date(dateMs(updated)).toISOString()};
+ if(!p||!usableDate(updated)||p.unit&&String(p.unit).toUpperCase()!=='EUR')return missing();
+ const stamp=new Date(dateMs(updated)).toISOString();
+ const finish=(value,key,label)=>({value,key,label:'Cardmarket · Near Mint (NM) · '+label,source:'Cardmarket',updated:stamp,condition:'Near Mint (NM)'});
+ const read=(node,fields)=>{
+  if(node==null)return null;
+  if(typeof node==='number'||typeof node==='string'){
+   const value=Number(node);
+   return Number.isFinite(value)&&value>0?finish(value,'nm','oferta'):null;
+  }
+  if(typeof node!=='object'||Array.isArray(node))return null;
+  const nested=node.prices||node.market||node.price;
+  if(nested&&nested!==node){
+   const nestedFound=read(nested,fields);
+   if(nestedFound)return nestedFound;
+  }
+  for(const [a,b,label] of fields){
+   const value=Number(node[a]??node[b]);
+   if(Number.isFinite(value)&&value>0)return finish(value,b,label);
+  }
+  return null;
+ };
+ const nmFields=reverse
+  ?[['trend','trend-reverse','Trend'],['avg7','avg7-reverse','Média 7d'],['avg30','avg30-reverse','Média 30d'],['avg1','avg1-reverse','Média 24h'],['low','low-reverse','Mínimo']]
+  :[['trend','trend','Trend'],['avg7','avg7','Média 7d'],['avg30','avg30','Média 30d'],['avg1','avg1','Média 24h'],['low','low','Mínimo']];
+ const conditionNodes=[
+  p.nearMint,p.near_mint,p.nm,p.NM,
+  p.conditions?.nearMint,p.conditions?.near_mint,p.conditions?.NM,p.conditions?.reverseHolo,
+  p.condition?.nearMint,p.condition?.near_mint,p.condition?.NM
+ ];
+ for(const node of conditionNodes){
+  const selected=node&&typeof node==='object'&&!Array.isArray(node)
+   ?(node[reverse?'reverseHolo':'normal']||node):node;
+  const found=read(selected,nmFields);
+  if(found)return found;
  }
+ const flatFields=reverse
+  ?[['reverseHoloNearMintTrend','trend-reverse','Trend'],['nearMintReverseHoloTrend','trend-reverse','Trend'],['reverseNearMintTrend','trend-reverse','Trend'],['reverseTrend','trend-reverse','Trend'],['reverseHoloTrend','trend-reverse','Trend'],['reverseHoloAvg7','avg7-reverse','Média 7d'],['reverseHoloAvg30','avg30-reverse','Média 30d'],['reverseHoloAvg1','avg1-reverse','Média 24h']]
+  :[['nearMintTrend','nearMint-trend','Trend'],['nmTrend','nm-trend','Trend'],['trendPrice','trend','Trend'],['trend','trend','Trend'],['nearMintAvg7','nearMint-avg7','Média 7d'],['avg7','avg7','Média 7d'],['nearMintAvg30','nearMint-avg30','Média 30d'],['avg30','avg30','Média 30d'],['nearMintAvg1','nearMint-avg1','Média 24h'],['avg1','avg1','Média 24h'],['nearMintLow','nearMint-low','Mínimo'],['low','low','Mínimo']];
+ const flat=read(p,flatFields);
+ if(flat)return flat;
  return missing();
 }
 function choose(rows){return rows.filter(x=>Number.isFinite(x.value)).sort((a,b)=>dateMs(b.updated)-dateMs(a.updated))[0]||missing();}
-primaryCardmarketPrice=function(card){return price(card.cardmarket?.prices,false,'Cardmarket via Pokémon TCG API',card.cardmarket?.updatedAt);};
-tcgdexCardmarketPrice=function(card){return price(card.__tcgdexCardmarket,false,'Cardmarket via TCGdex',card.__tcgdexCardmarket?.updated||card.__tcgdexPriceUpdated);};
+primaryCardmarketPrice=function(card){return price(card.cardmarket?.prices,false,'Cardmarket',card.cardmarket?.updatedAt);};
+tcgdexCardmarketPrice=function(card){return price(card.__tcgdexCardmarket,false,'Cardmarket',card.__tcgdexCardmarket?.updated||card.__tcgdexPriceUpdated);};
 cardmarketPrice=function(card){return choose([primaryCardmarketPrice(card),tcgdexCardmarketPrice(card)]);};
 cardmarketReversePrice=function(card){return choose([
- price(card.cardmarket?.prices,true,'Cardmarket via Pokémon TCG API',card.cardmarket?.updatedAt),
- price(card.__tcgdexCardmarket,true,'Cardmarket via TCGdex',card.__tcgdexCardmarket?.updated||card.__tcgdexPriceUpdated)
+ price(card.cardmarket?.prices,true,'Cardmarket',card.cardmarket?.updatedAt),
+ price(card.__tcgdexCardmarket,true,'Cardmarket',card.__tcgdexCardmarket?.updated||card.__tcgdexPriceUpdated)
 ]);};
-variantExplicitCardmarketPrice=function(v){const p=v?.pricing?.cardmarket||v?.pricing?.cardMarket;return price(p,v?.type==='reverse','Cardmarket via TCGdex · variante',p?.updated);};
+variantExplicitCardmarketPrice=function(v){const p=v?.pricing?.cardmarket||v?.pricing?.cardMarket;return price(p,v?.type==='reverse','Cardmarket',p?.updated);};
 function special(v){return !!(v.foil||v.stamps?.length||(v.subtype&&v.subtype!=='unlimited')||(v.size&&v.size!=='standard'));}
 variantCardmarketPrice=function(card,variant){
  const v=variant||defaultVariantForCard(card);
@@ -73,7 +107,7 @@ cardSnapshot=function(card,variant){
  const out=oldSnapshot(card,variant),p=variantCardmarketPrice(card,variant);
  out.priceAudit=AUDIT;out.priceAuditUpdated=p.updated||null;
  out.marketPriceUpdated=p.updated||'';
- out.priceModelLabel='Cardmarket · estimativa de mercado; NM não filtrado';
+ out.priceModelLabel='Cardmarket · Near Mint (NM) · EUR';
  return out;
 };
 const oldMerge=mergeSnapshotWithCard;
@@ -105,18 +139,34 @@ updateCollectionValueUI=function(){
  const el=document.getElementById('collectionValue'),meta=document.getElementById('collectionValueMeta');
  if(!el||!meta)return;
  const s=collectionValueStats();el.textContent=s.priced?'~ '+euro(s.total):'—';
- meta.textContent=s.cards?`${s.priced}/${s.cards} com preço · Cardmarket · estimativa`:'Escolhe cartas para calcular o valor';
+ meta.textContent=s.cards?`${s.priced}/${s.cards} com preço · Cardmarket · Near Mint (NM)`:'Escolhe cartas para calcular o valor';
  const coverage=document.getElementById('m7PriceCoverage');if(coverage)coverage.textContent=meta.textContent;
- el.title='Só preços Cardmarket com até 7 dias. Sem filtro Near Mint; valores em falta excluídos.';
+ el.title='Referência Cardmarket em euros, com condição Near Mint (NM); valores em falta excluídos.';
 };
 const oldResult=renderPokemonCardResult;
-renderPokemonCardResult=function(...args){return oldResult(...args).replaceAll(' · raw NM',' · estado não filtrado');};
+renderPokemonCardResult=function(...args){
+ const html=oldResult(...args);
+ return html.replaceAll(' · raw NM',' · Cardmarket · Near Mint (NM)').replaceAll('raw NM','Cardmarket · Near Mint (NM)').replaceAll('Cardmarket · Near Mint','Cardmarket · Near Mint (NM)').replaceAll('Near Mint (NM) (NM)','Near Mint (NM)');
+};
+const oldVariantUrl=variantCardmarketUrl;
+variantCardmarketUrl=function(card,variant){
+ const raw=oldVariantUrl(card,variant);
+ try{
+  const url=new URL(raw,location.href);
+  if(/(^|\.)cardmarket\.com$/i.test(url.hostname)){
+   url.searchParams.set('minCondition','2');
+   if(variant?.type==='reverse')url.searchParams.set('isReverseHolo','Y');
+   return url.href;
+  }
+ }catch(_){}
+ return raw;
+};
 const oldRenderVariant=renderVariantModal;
 renderVariantModal=function(...args){
  const out=oldRenderVariant(...args);
  const grid=document.getElementById('variantMarketGrid');
  if(grid){for(const el of grid.querySelectorAll('.market-copy span')){
-  if(el.textContent.includes('raw NM'))el.textContent=el.textContent.replace('estimativa raw NM','estimativa de mercado · estado não filtrado');
+  if(el.textContent.includes('raw NM'))el.textContent=el.textContent.replace('estimativa raw NM','Cardmarket · Near Mint (NM)');
  }}
  const market=grid?.querySelector('.cardmarket a');
  if(market){const url=new URL(market.href);url.searchParams.set('minCondition','2');if(currentVariantSelectedKey&&selectedVariantForModal()?.type==='reverse')url.searchParams.set('isReverseHolo','Y');market.href=url.href;market.textContent='Ver ofertas NM ↗';}
@@ -139,7 +189,7 @@ function init(){
   const button=document.createElement('button');button.id='m7RefreshPrices';button.type='button';button.textContent='Atualizar preços';
   button.style.cssText='display:block;margin-top:5px;padding:5px 8px;border:1px solid #ffffff40;border-radius:8px;background:#182633;color:white;font:700 10px system-ui;cursor:pointer';
   const panel=document.createElement('section');panel.className='m7-section-card';
-  const note=document.createElement('p');note.textContent='Cardmarket em euros · estimativa de mercado. O feed não filtra Near Mint nem idioma das ofertas. Preços sem correspondência segura ou com mais de 7 dias ficam fora do total. Nas cartas, usa “Ver ofertas NM” para confirmar o preço nesse estado.';
+  const note=document.createElement('p');note.textContent='Cardmarket em euros · referência Near Mint (NM). O botão Cardmarket abre as ofertas filtradas para NM; preços sem correspondência segura ou com mais de 7 dias ficam fora do total.';
   const coverage=document.createElement('p');coverage.id='m7PriceCoverage';
   panel.append(note,coverage,button);host.appendChild(panel);updateCollectionValueUI();
   button.onclick=async()=>{
@@ -155,9 +205,9 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 (function(){
  const s=document.createElement('script');s.src='./v15.10.8.js?v=15.10.8';
  s.addEventListener('load',()=>{
-  const ownership=document.createElement('script');ownership.src='./v15.10.11.js?v=15.10.11';
+  const ownership=document.createElement('script');ownership.src='./v15.10.11.js?v=16.1.1';
   ownership.addEventListener('load',()=>{
-   const wallet=document.createElement('script');wallet.src='./v15.10.10.js?v=15.10.11';document.head.appendChild(wallet);
+   const wallet=document.createElement('script');wallet.src='./v15.10.10.js?v=16.1.1';document.head.appendChild(wallet);
   },{once:true});
   document.head.appendChild(ownership);
  },{once:true});
