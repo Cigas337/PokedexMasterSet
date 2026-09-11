@@ -86,7 +86,7 @@ function init(){
     <tbody></tbody>
    </table>
   </div>
-  <p class="m7-wallet-note">Fonte única: Cardmarket · Near Mint (NM). As variantes sem cotação exata ficam sem preço e não entram no total.</p>
+  <p class="m7-wallet-note">Fonte única: Cardmarket · Near Mint (NM). Enquanto a variante não for confirmada, usa-se a base normal; se só existir uma variante, usa-se essa variante. A seleção continua disponível para corrigir a carta.</p>
  `;
  document.body.appendChild(dialog);
  const tbody=dialog.querySelector('tbody');
