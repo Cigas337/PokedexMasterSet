@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="Pokédex M7">
 <link rel="manifest" href="manifest.webmanifest">
-<title>Pokédex M7 — Master Set · v15.0.0 APP SHELL</title>
+<title>Pokédex M7 — Master Set · v16.1.1 CARDMARKET NM + CARTEIRA</title>
 <link rel="apple-touch-icon" href="icon-180.png">
 <style>
 :root{
@@ -4107,7 +4107,7 @@ window.addEventListener('appinstalled',()=>{
 
 if('serviceWorker' in navigator && location.protocol!=='file:'){
   window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('./sw.js?v=15.10.2-push1',{updateViaCache:'none'})
+    navigator.serviceWorker.register('./sw.js?v=16.1.1',{updateViaCache:'none'})
       .then(reg=>reg.update())
       .catch(err=>console.warn('Service Worker:',err));
   });
@@ -5916,19 +5916,19 @@ document.getElementById('resetGenBtn').addEventListener('click',()=>{state.gener
 <script src="./v15-fix.js?v=15.0.0"></script>
 <script src="./v15.1.js?v=15.1.0"></script>
 <script src="./v15.2.js?v=15.2.0"></script>
-<script src="./v15.3.js?v=16.1.0"></script>
+<script src="./v15.3.js?v=16.1.1"></script>
   <script src="./v15.5.js?v=15.5.0"></script>
 <script src="./v15.7.js?v=15.7.1"></script><script src="./v15.8.js?v=15.8.2"></script>
 <script src="./v15.9.js?v=15.9.0"></script>
 <script src="./v15.10.js?v=15.10.0"></script>
 <script src="./v15.10.1.js?v=15.10.1"></script>
 <script src="./v15.10.2.js?v=15.10.2"></script>
-<script src="./v15.10.3.js?v=16.1.0"></script>
-<script src="./pricing-core.js?v=16.1.0"></script>
-<script src="./pricing.js?v=16.1.0"></script>
+<script src="./v15.10.3.js?v=16.1.1"></script>
+<script src="./pricing-core.js?v=16.1.1"></script>
+<script src="./pricing.js?v=16.1.1"></script>
 <script src="./v15.10.8.js?v=15.10.8"></script>
-<script src="./v15.10.11.js?v=16.1.0"></script>
-<script src="./v15.10.10.js?v=16.1.0"></script>
+<script src="./v15.10.11.js?v=16.1.1"></script>
+<script src="./v15.10.10.js?v=16.1.1"></script>
 <script src="./scanner-core.js?v=16.0.0"></script>
 <script src="./scanner.js?v=16.0.0"></script>
 </body>
