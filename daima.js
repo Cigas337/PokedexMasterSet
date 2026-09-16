@@ -1,8 +1,8 @@
-/* Pokédex M7 v16.2.0 · Dragon Ball DAIMA checklist */
+/* Pokédex M7 v16.2.1 · Dragon Ball DAIMA checklist + repetidas */
 (function(){
   'use strict';
 
-  var VERSION = '16.2.0';
+  var VERSION = '16.2.1';
   var STORE_KEY = 'pokedexm7-daima-v1';
   var MAIN_TOTAL = 207;
   var mainNames = [
@@ -34,6 +34,7 @@
   var limited = [];
   var allItems = [];
   var allowedKeys = new Set();
+  var allowedRepeatKeys = new Set();
 
   function pad(n, size){
     var s = String(n);
@@ -104,24 +105,37 @@
     limited.push(item);
     allItems.push(item);
   });
-  allItems.forEach(function(item){ item.variants.forEach(function(variant){ allowedKeys.add(variant.key); }); });
+  allItems.forEach(function(item){
+    allowedRepeatKeys.add(item.id);
+    item.variants.forEach(function(variant){ allowedKeys.add(variant.key); });
+  });
 
-  var state = {owned:{}};
+  var state = {owned:{},repeats:{}};
   function loadState(){
     var source = {};
+    var repeatSource = {};
     try{
       var raw = JSON.parse(localStorage.getItem(STORE_KEY) || '{}');
       source = raw && raw.owned && typeof raw.owned === 'object' ? raw.owned : raw;
+      repeatSource = raw && raw.repeats && typeof raw.repeats === 'object' ? raw.repeats : {};
     }catch(_){}
     var cleaned = {};
     if(source && typeof source === 'object'){
       Object.keys(source).forEach(function(key){ if(allowedKeys.has(key) && source[key] === true)cleaned[key] = true; });
     }
+    var cleanedRepeats = {};
+    if(repeatSource && typeof repeatSource === 'object'){
+      Object.keys(repeatSource).forEach(function(key){
+        var count = Math.max(0,Math.min(99,parseInt(repeatSource[key],10) || 0));
+        if(allowedRepeatKeys.has(key) && count > 0)cleanedRepeats[key] = count;
+      });
+    }
     state.owned = cleaned;
+    state.repeats = cleanedRepeats;
   }
   function saveState(){
-    try{ localStorage.setItem(STORE_KEY,JSON.stringify({version:VERSION,updatedAt:new Date().toISOString(),owned:state.owned})); }catch(_){}
-    try{ window.dispatchEvent(new CustomEvent('m7-daima-change',{detail:{owned:state.owned}})); }catch(_){}
+    try{ localStorage.setItem(STORE_KEY,JSON.stringify({version:VERSION,updatedAt:new Date().toISOString(),owned:state.owned,repeats:state.repeats})); }catch(_){}
+    try{ window.dispatchEvent(new CustomEvent('m7-daima-change',{detail:{owned:state.owned,repeats:state.repeats}})); }catch(_){}
   }
 
   var nav = null;
@@ -141,6 +155,21 @@
     messageElement.classList.toggle('is-error',!!isError);
     clearTimeout(showMessage.timer);
     if(value)showMessage.timer = setTimeout(function(){ if(messageElement)messageElement.textContent = ''; },3200);
+  }
+  function repeatCount(item){
+    return Math.max(0,parseInt(state.repeats[item.id],10) || 0);
+  }
+  function repeatedItems(){
+    return allItems.filter(function(item){ return repeatCount(item) > 0; });
+  }
+  function repeatedNumberText(){
+    return repeatedItems().filter(function(item){ return item.number !== null; }).map(function(item){ return String(item.number); }).join(' ');
+  }
+  function setRepeatCount(itemId,nextCount){
+    if(!allowedRepeatKeys.has(itemId))return;
+    var count = Math.max(0,Math.min(99,parseInt(nextCount,10) || 0));
+    if(count > 0)state.repeats[itemId] = count;
+    else delete state.repeats[itemId];
   }
   function stats(){
     var mainVariants = cards.reduce(function(total,item){ return total + item.variants.length; },0);
@@ -181,6 +210,7 @@
     if(statusFilter === 'owned' && status.owned === 0)return false;
     if(statusFilter === 'partial' && !status.partial)return false;
     if(statusFilter === 'complete' && !status.complete)return false;
+    if(statusFilter === 'repeated' && repeatCount(item) === 0)return false;
     if(!query)return true;
     return normalise(item.numberLabel + ' ' + item.name + ' ' + item.categoryLabel).indexOf(query) >= 0;
   }
@@ -194,6 +224,7 @@
   function renderItem(item){
     var status = itemStatus(item);
     var stateLabel = status.owned === 0 ? 'Em falta' : (status.complete ? 'Completa' : status.owned + ' de ' + status.total);
+    var repeats = repeatCount(item);
     var variantsMarkup = item.variants.map(function(variant){
       var isOwned = !!state.owned[variant.key];
       return '<button type="button" class="m7-daima-variant daima-foil-' + escapeHtml(variant.kind) + (isOwned ? ' is-owned' : '') + '" data-daima-key="' + escapeHtml(variant.key) + '" aria-pressed="' + String(isOwned) + '" title="' + escapeHtml(variant.label) + '">' +
@@ -212,6 +243,7 @@
       '<div class="m7-daima-card-body">' +
         '<div class="m7-daima-card-heading"><div><span class="m7-daima-kicker">' + escapeHtml(item.categoryLabel) + '</span><h3>' + escapeHtml(item.numberLabel) + ' · ' + escapeHtml(item.name) + '</h3></div><span class="m7-daima-state">' + escapeHtml(stateLabel) + '</span></div>' +
         '<div class="m7-daima-variants" aria-label="Variantes de ' + escapeHtml(item.numberLabel) + '">' + variantsMarkup + '</div>' +
+        '<div class="m7-daima-repeat-row"><span><b>Repetidas</b><small>cópias extra desta carta</small></span><div class="m7-daima-repeat-stepper" aria-label="Repetidas de ' + escapeHtml(item.numberLabel) + '"><button type="button" data-daima-repeat="-1" data-daima-repeat-item="' + escapeHtml(item.id) + '" aria-label="Retirar uma repetida"' + (repeats === 0 ? ' disabled' : '') + '>−</button><strong>' + repeats + '</strong><button type="button" data-daima-repeat="1" data-daima-repeat-item="' + escapeHtml(item.id) + '" aria-label="Adicionar uma repetida">+</button></div></div>' +
       '</div>' +
     '</article>';
   }
@@ -223,6 +255,7 @@
     var visible = allItems.filter(function(item){ return cardMatches(item,query,category,statusFilter); });
     listElement.innerHTML = visible.length ? visible.map(renderItem).join('') : '<div class="m7-daima-empty"><strong>Nenhuma carta encontrada</strong><span>Altera a pesquisa ou limpa os filtros.</span></div>';
     renderStats();
+    renderRepeatsPanel();
     text('daimaVisibleCount',visible.length + ' de ' + allItems.length + ' cartões visíveis');
   }
 
@@ -302,11 +335,17 @@
         '<div class="m7-daima-toolbar">',
           '<label class="m7-daima-search"><span aria-hidden="true">⌕</span><input id="daimaSearch" type="search" autocomplete="off" placeholder="Pesquisar por número, personagem ou categoria"></label>',
           '<select id="daimaCategory" aria-label="Filtrar por categoria"><option value="all">Todas as categorias</option><option value="base">Base · 001–100</option><option value="puzzle">Puzzle · 101–135</option><option value="special">Episode / Highlight · 136–198</option><option value="lenticular">Lenticular · 199–207</option><option value="limited">Limited Edition · LE1–LE9</option></select>',
-          '<select id="daimaStatus" aria-label="Filtrar por estado"><option value="all">Todos os estados</option><option value="missing">Em falta</option><option value="owned">Com marcação</option><option value="partial">Parcial</option><option value="complete">Completas</option></select>',
+          '<select id="daimaStatus" aria-label="Filtrar por estado"><option value="all">Todos os estados</option><option value="missing">Em falta</option><option value="owned">Com marcação</option><option value="partial">Parcial</option><option value="complete">Completas</option><option value="repeated">Com repetidas</option></select>',
           '<div class="m7-daima-bulk"><button type="button" data-daima-bulk="base">Marcar base normal</button><button type="button" data-daima-bulk="all">Marcar tudo</button><button type="button" class="danger" data-daima-bulk="clear">Limpar</button></div>',
         '</div>',
-        '<div class="m7-daima-toolbar-foot"><span id="daimaVisibleCount">216 de 216 cartões visíveis</span><span>Base 001–100: Normal · Crystal Shard · Rainbow Spoke</span><span id="daimaMessage" role="status"></span><button type="button" data-daima-export>Exportar checklist</button><button type="button" data-daima-import>Importar checklist</button><input id="daimaImportFile" type="file" accept="application/json,.json" hidden></div>',
+        '<div class="m7-daima-toolbar-foot"><span id="daimaVisibleCount">216 de 216 cartões visíveis</span><span>Base 001–100: Normal · Crystal Shard · Rainbow Spoke</span><span id="daimaMessage" role="status"></span><button type="button" class="m7-daima-repeats-menu-btn" data-daima-repeats-toggle>Repetidas <b id="daimaRepeatsButtonCount">0</b></button><button type="button" data-daima-export>Exportar checklist</button><button type="button" data-daima-import>Importar checklist</button><input id="daimaImportFile" type="file" accept="application/json,.json" hidden></div>',
         '<div class="m7-daima-info"><strong>Como contar:</strong><span>os 207 números são a coleção principal; as 9 Limited Edition ficam fora da numeração. As variantes ocupam marcações próprias.</span></div>',
+        '<section id="daimaRepeatsPanel" class="m7-daima-repeats-panel" hidden aria-labelledby="daimaRepeatsTitle">',
+          '<div class="m7-daima-repeats-head"><div><span>LISTA PARA TROCAS</span><h2 id="daimaRepeatsTitle">Cartas repetidas</h2><p id="daimaRepeatsSummary">Ainda não tens repetidas marcadas.</p></div><button type="button" data-daima-repeats-toggle aria-label="Fechar repetidas">×</button></div>',
+          '<div class="m7-daima-repeats-copybox"><label for="daimaRepeatsText">Números prontos para copiar</label><textarea id="daimaRepeatsText" rows="3" readonly placeholder="Ex.: 2 3 5 7 22 23"></textarea><div><button type="button" data-daima-repeats-copy>Copiar números</button><button type="button" class="danger" data-daima-repeats-clear>Limpar repetidas</button></div></div>',
+          '<div id="daimaRepeatsLimited" class="m7-daima-repeats-limited"></div>',
+          '<div id="daimaRepeatsList" class="m7-daima-repeats-list"></div>',
+        '</section>',
         '<div id="daimaList" class="m7-daima-grid"></div>',
       '</div>'
     ].join('');
@@ -317,8 +356,64 @@
     return true;
   }
 
+  function renderRepeatsPanel(){
+    var repeated = repeatedItems();
+    var totalExtras = repeated.reduce(function(total,item){ return total + repeatCount(item); },0);
+    var numbered = repeated.filter(function(item){ return item.number !== null; });
+    var limitedRepeated = repeated.filter(function(item){ return item.number === null; });
+    text('daimaRepeatsButtonCount',String(repeated.length));
+    text('daimaRepeatsSummary',repeated.length ? repeated.length + ' números/cartas com ' + totalExtras + ' cópias extra no total.' : 'Ainda não tens repetidas marcadas.');
+    var textArea = document.getElementById('daimaRepeatsText');
+    if(textArea)textArea.value = numbered.map(function(item){ return String(item.number); }).join(' ');
+    var limitedElement = document.getElementById('daimaRepeatsLimited');
+    if(limitedElement){
+      limitedElement.innerHTML = limitedRepeated.length ? '<strong>Limited Edition repetidas:</strong> ' + limitedRepeated.map(function(item){ return escapeHtml(item.numberLabel) + ' ×' + repeatCount(item); }).join(' · ') : '';
+    }
+    var list = document.getElementById('daimaRepeatsList');
+    if(!list)return;
+    list.innerHTML = repeated.length ? repeated.map(function(item){
+      return '<div class="m7-daima-repeat-chip"><strong>' + escapeHtml(item.numberLabel) + '</strong><span>' + escapeHtml(item.name) + '</span><b>×' + repeatCount(item) + '</b></div>';
+    }).join('') : '<div class="m7-daima-repeats-empty">Usa o botão <b>+</b> em qualquer carta para a adicionar aqui.</div>';
+  }
+  function toggleRepeatsPanel(force){
+    var panel = document.getElementById('daimaRepeatsPanel');
+    if(!panel)return;
+    var shouldOpen = typeof force === 'boolean' ? force : panel.hidden;
+    panel.hidden = !shouldOpen;
+    if(shouldOpen){
+      renderRepeatsPanel();
+      panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+    }
+  }
+  function copyFallback(value){
+    var input = document.createElement('textarea');
+    input.value = value;
+    input.setAttribute('readonly','');
+    input.style.position = 'fixed';
+    input.style.opacity = '0';
+    document.body.appendChild(input);
+    input.select();
+    var ok = false;
+    try{ ok = document.execCommand('copy'); }catch(_){}
+    input.remove();
+    return ok;
+  }
+  async function copyRepeatNumbers(){
+    var value = repeatedNumberText();
+    if(!value){ showMessage('Ainda não tens números repetidos para copiar.',true); return; }
+    try{
+      if(navigator.clipboard && navigator.clipboard.writeText)await navigator.clipboard.writeText(value);
+      else if(!copyFallback(value))throw new Error('copy unavailable');
+      showMessage('Números repetidos copiados.');
+    }catch(_){
+      var field = document.getElementById('daimaRepeatsText');
+      if(field){ field.focus(); field.select(); }
+      showMessage('Seleciona os números e escolhe Copiar.',true);
+    }
+  }
+
   function exportChecklist(){
-    var payload = JSON.stringify({app:'Pokédex M7',collection:'Dragon Ball DAIMA',version:VERSION,exportedAt:new Date().toISOString(),owned:state.owned},null,2);
+    var payload = JSON.stringify({app:'Pokédex M7',collection:'Dragon Ball DAIMA',version:VERSION,exportedAt:new Date().toISOString(),owned:state.owned,repeats:state.repeats},null,2);
     var blob = new Blob([payload],{type:'application/json'});
     var url = URL.createObjectURL(blob);
     var anchor = document.createElement('a');
@@ -339,7 +434,14 @@
         var source = Array.isArray(raw) ? raw.reduce(function(map,key){ map[key] = true; return map; },{}) : (raw.owned || raw);
         var cleaned = {};
         if(source && typeof source === 'object')Object.keys(source).forEach(function(key){ if(allowedKeys.has(key) && source[key] === true)cleaned[key] = true; });
+        var repeatSource = raw && raw.repeats && typeof raw.repeats === 'object' ? raw.repeats : {};
+        var cleanedRepeats = {};
+        Object.keys(repeatSource).forEach(function(key){
+          var count = Math.max(0,Math.min(99,parseInt(repeatSource[key],10) || 0));
+          if(allowedRepeatKeys.has(key) && count > 0)cleanedRepeats[key] = count;
+        });
         state.owned = cleaned;
+        state.repeats = cleanedRepeats;
         saveState();
         render();
         showMessage('Checklist importada.');
@@ -362,6 +464,17 @@
     },true);
 
     view.addEventListener('click',function(event){
+      var repeatButton = event.target.closest && event.target.closest('[data-daima-repeat]');
+      if(repeatButton){
+        var itemId = repeatButton.getAttribute('data-daima-repeat-item');
+        var delta = parseInt(repeatButton.getAttribute('data-daima-repeat'),10) || 0;
+        var item = allItems.find(function(candidate){ return candidate.id === itemId; });
+        if(!item || !delta)return;
+        setRepeatCount(itemId,repeatCount(item) + delta);
+        saveState();
+        render();
+        return;
+      }
       var variantButton = event.target.closest && event.target.closest('[data-daima-key]');
       if(variantButton){
         var key = variantButton.getAttribute('data-daima-key');
@@ -384,6 +497,17 @@
         }
         saveState();
         render();
+        return;
+      }
+      if(event.target.closest('[data-daima-repeats-toggle]')){ toggleRepeatsPanel(); return; }
+      if(event.target.closest('[data-daima-repeats-copy]')){ copyRepeatNumbers(); return; }
+      if(event.target.closest('[data-daima-repeats-clear]')){
+        if(!repeatedItems().length){ showMessage('Não há repetidas para limpar.'); return; }
+        if(!window.confirm('Queres limpar apenas as quantidades de cartas repetidas?'))return;
+        state.repeats = {};
+        saveState();
+        render();
+        showMessage('Repetidas limpas.');
         return;
       }
       if(event.target.closest('[data-daima-export]')){ exportChecklist(); return; }
@@ -427,6 +551,8 @@
       hide:deactivateDaima,
       export:exportChecklist,
       getState:function(){ return JSON.parse(JSON.stringify(state.owned)); },
+      getRepeats:function(){ return JSON.parse(JSON.stringify(state.repeats)); },
+      getRepeatedNumbers:function(){ return repeatedNumberText(); },
       getStats:stats
     };
   }

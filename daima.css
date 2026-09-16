@@ -1,4 +1,4 @@
-/* Pokédex M7 v16.2.0 · Dragon Ball DAIMA checklist */
+/* Pokédex M7 v16.2.1 · Dragon Ball DAIMA checklist + repetidas */
 .m7-daima-view{display:none!important;min-width:0;color:#f4f7fb}
 .m7-daima-view.active{display:block!important}
 .m7-daima-view[hidden]{display:none!important}
@@ -140,4 +140,46 @@ body.m7-daima-installed .m7-app-nav{--daima-accent:#f0b83d}
 @media (max-width:380px){
   .m7-daima-grid{grid-template-columns:1fr}
   .m7-daima-variants{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+
+/* v16.2.1 repeats */
+.m7-daima-repeat-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.08)}
+.m7-daima-repeat-row>span{display:grid;gap:1px;color:#d8d5de;font-size:10px}
+.m7-daima-repeat-row>span small{color:#817f8a;font-size:8px}
+.m7-daima-repeat-stepper{display:grid;grid-template-columns:34px 38px 34px;align-items:center;overflow:hidden;border:1px solid rgba(240,189,67,.3);border-radius:10px;background:rgba(240,189,67,.06)}
+.m7-daima-repeat-stepper button{width:34px;height:32px;border:0;background:transparent;color:#f4d789;font-size:19px;font-weight:800;cursor:pointer}
+.m7-daima-repeat-stepper button:hover:not(:disabled){background:rgba(240,189,67,.14)}
+.m7-daima-repeat-stepper button:disabled{color:#55535e;cursor:default}
+.m7-daima-repeat-stepper strong{display:grid;height:32px;place-items:center;border-right:1px solid rgba(240,189,67,.2);border-left:1px solid rgba(240,189,67,.2);color:#fff;font-size:12px}
+.m7-daima-repeats-menu-btn b{display:inline-grid;min-width:18px;height:18px;margin-left:4px;place-items:center;border-radius:99px;background:rgba(240,189,67,.18);font-size:9px}
+.m7-daima-repeats-panel{margin:14px 0 18px;padding:16px;border:1px solid rgba(240,189,67,.28);border-radius:16px;background:linear-gradient(145deg,rgba(240,189,67,.07),rgba(239,90,70,.045)),#171821}
+.m7-daima-repeats-panel[hidden]{display:none!important}
+.m7-daima-repeats-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.m7-daima-repeats-head span{color:#f0bd43;font-size:9px;font-weight:800;letter-spacing:.14em}
+.m7-daima-repeats-head h2{margin:3px 0 2px;color:#fff;font-size:22px}
+.m7-daima-repeats-head p{margin:0;color:#97949f;font-size:11px}
+.m7-daima-repeats-head>button{width:36px;height:36px;border:1px solid rgba(255,255,255,.12);border-radius:10px;background:rgba(255,255,255,.05);color:#d9d6df;font-size:22px;cursor:pointer}
+.m7-daima-repeats-copybox{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:7px 10px;margin-top:14px}
+.m7-daima-repeats-copybox label{grid-column:1/-1;color:#c8c5ce;font-size:10px;font-weight:700}
+.m7-daima-repeats-copybox textarea{min-width:0;resize:vertical;min-height:68px;padding:10px 11px;border:1px solid rgba(255,255,255,.12);border-radius:10px;background:#11121a;color:#f5f2f7;font:600 13px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace}
+.m7-daima-repeats-copybox>div{display:grid;align-content:start;gap:6px}
+.m7-daima-repeats-copybox button{min-width:128px;height:32px;padding:0 10px;border:1px solid rgba(240,189,67,.34);border-radius:9px;background:rgba(240,189,67,.09);color:#f4d789;font:inherit;font-size:10px;font-weight:700;cursor:pointer}
+.m7-daima-repeats-copybox button.danger{border-color:rgba(239,90,70,.36);background:rgba(239,90,70,.07);color:#ff9b8d}
+.m7-daima-repeats-limited{margin-top:10px;color:#aaa7b1;font-size:10px}
+.m7-daima-repeats-limited strong{color:#f4d789}
+.m7-daima-repeats-list{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.m7-daima-repeat-chip{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:6px;max-width:260px;padding:6px 8px;border:1px solid rgba(255,255,255,.09);border-radius:9px;background:rgba(255,255,255,.035)}
+.m7-daima-repeat-chip strong{color:#f4d789;font-size:10px}
+.m7-daima-repeat-chip span{overflow:hidden;color:#9d9aa5;font-size:9px;text-overflow:ellipsis;white-space:nowrap}
+.m7-daima-repeat-chip b{color:#8fe0ae;font-size:10px}
+.m7-daima-repeats-empty{width:100%;padding:12px;border:1px dashed rgba(255,255,255,.12);border-radius:10px;color:#8e8c98;font-size:10px;text-align:center}
+@media (max-width:700px){
+  .m7-daima-repeat-row{gap:6px}
+  .m7-daima-repeat-stepper{grid-template-columns:32px 34px 32px}
+  .m7-daima-repeat-stepper button{width:32px}
+  .m7-daima-repeats-copybox{grid-template-columns:1fr}
+  .m7-daima-repeats-copybox label{grid-column:auto}
+  .m7-daima-repeats-copybox>div{grid-template-columns:1fr 1fr}
+  .m7-daima-repeats-copybox button{min-width:0}
+  .m7-daima-repeat-chip{max-width:100%;flex:1 1 145px}
 }
