@@ -1,0 +1,45 @@
+name: Apply v16.2.1 DAIMA repeats
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/apply_v16_2_1_daima_repeats.py'
+      - '.github/workflows/apply-v16-2-1-daima-repeats.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Apply DAIMA repeats patch
+        run: python3 scripts/apply_v16_2_1_daima_repeats.py
+      - name: Validate JavaScript and published markers
+        run: |
+          node --check daima.js
+          python3 -m py_compile scripts/apply_v16_2_1_daima_repeats.py
+          grep -q "var VERSION = '16.2.1'" daima.js
+          grep -q 'data-daima-repeat=' daima.js
+          grep -q 'data-daima-repeats-copy' daima.js
+          grep -q 'Com repetidas' daima.js
+          grep -q 'v16.2.1 DAIMA REPETIDAS' index.html
+          grep -q "pokedexm7-shell-v16.2.1-daima-repeats" sw.js
+      - name: Commit publication
+        run: |
+          if git diff --quiet; then
+            echo 'v16.2.1 already active.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add daima.js daima.css index.html sw.js
+          git commit -m 'M7: DAIMA repeated-card counters and copy list'
+          git push
