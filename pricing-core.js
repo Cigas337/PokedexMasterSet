@@ -6,7 +6,8 @@
  else root.M7PricingCore=api;
 })(typeof window!=='undefined'?window:globalThis,function(){
  'use strict';
- const VERSION='cardmarket-nm-verified-v2';
+ const VERSION='cardmarket-en-nm-eu-v3';
+ const MARKET_POLICY=Object.freeze({language:'en',condition:'NM',currency:'EUR',sellerCountries:['PT','ES','FR','DE','IT','NL','BE','AT','PL','CZ'],aggregation:'median'});
  const ESTIMATE_VERSION='cardmarket-reference-eur-v2';
  const text=value=>String(value??'').trim();
  const missing=()=>({value:Infinity,source:null,label:'Sem cotação Cardmarket NM',condition:'NM',currency:'EUR',verified:false});
@@ -98,13 +99,20 @@
   if(!choice.variant)return missing();
   const identity=cardIdentity(card);
   const quotes=(rows||[]).map(row=>validateQuote(row)).filter(Boolean).filter(row=>
-   identity.ids.includes(row.card_id)&&row.language===identity.language&&variantMatchesQuote(row,choice.variant)
+   identity.ids.includes(row.card_id)&&row.language===MARKET_POLICY.language&&identity.language===MARKET_POLICY.language&&variantMatchesQuote(row,choice.variant)
   ).sort((a,b)=>Date.parse(b.observed_at)-Date.parse(a.observed_at));
-  const row=quotes[0];
-  if(!row)return missing();
+  if(!quotes.length)return missing();
+  // Use the median when several independently observed NM English quotes exist.
+  // This avoids valuing a card from one isolated low/high listing.
+  const recent=quotes.filter(q=>Date.parse(quotes[0].observed_at)-Date.parse(q.observed_at)<=7*86400000);
+  const pool=recent.length?recent:quotes;
+  const values=pool.map(q=>q.price).sort((a,b)=>a-b);
+  const mid=Math.floor(values.length/2);
+  const robust=values.length%2?values[mid]:(values[mid-1]+values[mid])/2;
+  const row=pool[0];
   return {
-   value:row.price,source:'Cardmarket',condition:'NM',currency:'EUR',verified:true,
-   label:'Cardmarket · Near Mint'+(choice.base?' · base '+(choice.variant.label||typeOf(choice.variant)):''),
+   value:robust,source:'Cardmarket',condition:'NM',currency:'EUR',verified:true,
+   label:'Cardmarket · English · Near Mint'+(choice.base?' · base '+(choice.variant.label||typeOf(choice.variant)):''),
    updated:row.observed_at,url:row.source_url,variantKey:text(choice.variant.key),base:choice.base,quote:row
   };
  }
@@ -199,5 +207,5 @@
   }).sort((a,b)=>(b.value??-1)-(a.value??-1)||text(a.card.name||a.card.id).localeCompare(text(b.card.name||b.card.id),'pt-PT',{numeric:true}));
   return {total:cents/100,priced,cards:unique.size,estimated,confirmed,items};
  }
- return {VERSION,ESTIMATE_VERSION,missing,typeOf,special,shape,productId,cardIdentity,unknown,chooseVariant,validateQuote,quoteFor,referenceFor,snapshotPrice,stats};
+ return {VERSION,ESTIMATE_VERSION,MARKET_POLICY,missing,typeOf,special,shape,productId,cardIdentity,unknown,chooseVariant,validateQuote,quoteFor,referenceFor,snapshotPrice,stats};
 });
