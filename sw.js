@@ -1,4 +1,4 @@
-const CACHE_NAME='pokedexm7-shell-v16.2.1-daima-repeats';
+const CACHE_NAME='pokedexm7-shell-v16.3.0-pokemon-only';
 const PUSH_API='https://wdljzuqoftrontqhhatr.supabase.co/functions/v1/push-subscriptions';
 const PUSH_API_KEY='sb_publishable_MslRW16TUUxlAEnUNiQ2sQ_3FrG4sLy';
 const CORE=[
@@ -7,8 +7,6 @@ const CORE=[
  './scanner.css?v=16.0.0',
  './scanner-core.js?v=16.0.0',
  './scanner.js?v=16.0.0',
- './daima.css?v=16.2.1',
- './daima.js?v=16.2.1',
  './v15.10.11.js?v=16.1.2',
  './v15.10.10.js?v=16.1.2',
  './v15.10.8.js?v=15.10.8',
